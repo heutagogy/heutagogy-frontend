@@ -26,4 +26,4 @@ const fetchEntities = ({ href, viewId, schema }) => {
   };
 };
 
-export const loadEntities = ({ href, type }) => (dispatch) => dispatch(fetchEntities({ href, type }));
+export const loadEntities = ({ href, type, schema }) => (dispatch) => dispatch(fetchEntities({ href, type, schema }));

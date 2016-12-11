@@ -1,55 +1,30 @@
 import { PropTypes, Component } from 'react';
+import Radium from 'radium';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import HeaderBar from './../components/HeaderBar';
-import Snackbar from './../components/Snackbar';
-import styles from './App.less';
 
-import themes from './../uiTheme/themes';
-
-const activeTheme = themes.DARK_THEME;
-
-const theme = () => getMuiTheme({
-  palette: {
-    primary1Color: activeTheme.mainThemeColor,
+const inlineStyles = {
+  routerContainer: {
+    maxHeight: 'calc(100vh - 64px)',
+    overflowY: 'auto',
   },
-});
+};
 
+@Radium
 class App extends Component {
   static propTypes = {
     children: PropTypes.node,
     location: PropTypes.object,
   }
 
-  static childContextTypes = {
-    theme: PropTypes.object,
-  }
-
-  getChildContext() {
-    return {
-      theme: activeTheme,
-    };
-  }
-
-  getThematicStyles = () => ({
-    app: {
-      backgroundColor: activeTheme.mainBackgroundColor,
-    },
-  })
-
   render() {
-    const inlineStyles = this.getThematicStyles();
-
     return (
-      <div
-        className={styles.app}
-        style={inlineStyles.app}
-      >
-        <MuiThemeProvider muiTheme={theme()}>
+      <div>
+        <MuiThemeProvider muiTheme={getMuiTheme()}>
           <div>
             <HeaderBar location={this.props.location} />
-            <Snackbar />
-            <div className={`${styles.routerContainer} scroll-container`}>
+            <div style={inlineStyles.routerContainer}>
               {this.props.children}
             </div>
           </div>
