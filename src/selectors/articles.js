@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import Immutable from 'immutable';
 
 // TODO in future this logic should be changed to get data by query from location
-const getFilteredArticlesList = (state) => state.getIn(['entities', 'app']);
+const getFilteredArticlesList = (state) => state.getIn(['entities', 'article']);
 
 export const getFilteredArticles = createSelector(
   [getFilteredArticlesList],
