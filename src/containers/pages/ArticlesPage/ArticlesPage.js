@@ -34,6 +34,8 @@ const inlineStyles = {
     justifyContent: 'space-between',
     padding: '15px 15px 0 15px',
     width: 220,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 };
 
@@ -52,6 +54,17 @@ class ArticlesPage extends Component {
     this.props.loadEntities({ href: '/bookmarks', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
   }
 
+  truncateTitle(title) {
+    const start = 0;
+    const end = 25;
+
+    if (title.length > end) {
+      return `${title.substring(start, end)}...`;
+    }
+
+    return title;
+  }
+
   renderArticles() {
     return this.props.articles.map((article) => (
       <Paper
@@ -60,7 +73,7 @@ class ArticlesPage extends Component {
       >
         <div style={inlineStyles.articleField}>
           <div>{'Title:'}</div>
-          <div>{article.get('title')}</div>
+          <div>{this.truncateTitle(article.get('title'))}</div>
         </div>
         <div style={inlineStyles.articleField}>
           <div>{'Date:'}</div>
