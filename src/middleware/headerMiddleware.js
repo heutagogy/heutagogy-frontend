@@ -10,6 +10,7 @@ const headerMiddleware = () => () => (next) => (action) => {
 
     if (method === 'GET' || method === 'POST' || method === 'PUT' || method === 'DELETE') {
       headers.Authorization = headers.Authorization || token;
+      headers['Content-Type'] = 'application/json';
 
       return next(action);
     }

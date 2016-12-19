@@ -16,7 +16,7 @@ class Checkbox extends Component {
   }
 
   static contextTypes = {
-    theme: PropTypes.object,
+    muiTheme: PropTypes.object,
   }
 
   getThematicStyles = () => ({
@@ -26,16 +26,16 @@ class Checkbox extends Component {
     },
     label: {
       fontSize: 16,
-      color: this.context.theme.white,
+      color: this.context.muiTheme.white,
     },
   })
 
   render() {
-    const { theme } = this.context;
+    const { muiTheme } = this.context;
     const inlineStyles = this.getThematicStyles();
     const activeStyle = this.props.value
-      ? { color: theme.orange, fill: theme.orange }
-      : { color: theme.placeholderColor, fill: theme.placeholderColor };
+      ? { color: muiTheme.orange, fill: muiTheme.orange }
+      : { color: muiTheme.placeholderColor, fill: muiTheme.placeholderColor };
 
     const {
       value,

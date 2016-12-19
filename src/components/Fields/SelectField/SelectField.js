@@ -16,30 +16,30 @@ class SelectField extends Component {
   }
 
   static contextTypes = {
-    theme: PropTypes.object,
+    muiTheme: PropTypes.object,
   }
 
   getThematicStyles = () => ({
     underlineStyle: {
-      borderColor: this.context.theme.placeholderColor,
+      borderColor: this.context.muiTheme.placeholderColor,
     },
     underlineFocusStyle: {
-      borderColor: this.context.theme.orange,
+      borderColor: this.context.muiTheme.orange,
       borderWidth: 2,
     },
     floatingLabelStyle: {
-      color: this.context.theme.white,
+      color: this.context.muiTheme.white,
     },
     floatingLabelFocusStyle: {
-      color: this.context.theme.orange,
+      color: this.context.muiTheme.orange,
     },
     inputStyle: {
-      color: this.context.theme.white,
+      color: this.context.muiTheme.white,
       fontSize: 14,
       minWidth: 235,
     },
     hintStyle: {
-      color: this.context.theme.hintColor,
+      color: this.context.muiTheme.hintColor,
       fontSize: 14,
     },
     style: {
