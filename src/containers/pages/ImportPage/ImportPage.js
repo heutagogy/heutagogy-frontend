@@ -19,20 +19,8 @@ import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { getFilteredArticles } from './../../../selectors/articles';
 import { loadEntities } from './../../../actions/entity';
 import { rememberArticles } from './../../../actions/articles';
-
-const isJsonString = (str) => {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
-
-  return true;
-};
-
-const THOUSAND = 1000;
-const ZERO = 0;
-const ONE = 1;
+import { THOUSAND, ZERO, MINUS_ONE } from './../../../constants/Constants';
+import { isJsonString } from './../../../utils/jsonUtils';
 
 const inlineStyles = {
   dialogContentStyle: {
@@ -75,14 +63,9 @@ export class ImportPage extends Component {
     super(props);
 
     this.bind();
-
     this.state = {
       data: [],
       openModal: false,
-    };
-
-    // tried to use state but there is a bug with checkboxes in table.
-    window.heautagogy = {
       selectedRows: [],
     };
   }
@@ -91,21 +74,21 @@ export class ImportPage extends Component {
     this.props.loadEntities({ href: '/bookmarks', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
   }
 
-  getSelectedRows(data) {
+  getSelectedRows(data, selectedRows) {
     const result = [];
 
     if (data.length === ZERO ||
-        window.heautagogy.selectedRows.length === ZERO) {
+        selectedRows === 'none' ||
+        (Array.isArray(selectedRows) && selectedRows.length === ZERO)) {
       return [];
     }
 
-    if (window.heautagogy.selectedRows.length === ONE &&
-        window.heautagogy.selectedRows[ZERO] === 'all') {
+    if (selectedRows === 'all') {
       return data;
     }
 
-    for (let i = ZERO; i < window.heautagogy.selectedRows; i++) {
-      const index = window.heautagogy.selectedRows[i];
+    for (let i = ZERO; i < selectedRows; i++) {
+      const index = selectedRows[i];
 
       result.push(data[index]);
     }
@@ -120,25 +103,23 @@ export class ImportPage extends Component {
     this.handleOnSave = this.handleOnSave.bind(this);
   }
 
-  filterByServerEntities(data) {
-    const articles = this.props.articles;
-
-    if (!articles || articles.isEmpty() || data.length === ZERO) {
+  filterByServerEntities(data, articlesOnServer) {
+    if (!articlesOnServer || articlesOnServer.isEmpty() || data.length === ZERO) {
       return Immutable.fromJS(data);
     }
 
-    const normalizedArticles = articles.map((item) => item.delete('id')).toSet();
+    const normalizedArticles = articlesOnServer.map((item) => item.delete('id')).toSet();
     const newArticles = Immutable.fromJS(data).toSet().subtract(normalizedArticles);
 
     return newArticles.toList();
   }
 
   handleOnSave() {
-    const data = this.getSelectedRows(this.state.data);
-    const articles = this.filterByServerEntities(data);
+    const data = this.getSelectedRows(this.state.data, this.state.selectedRows);
+    const newArticles = this.filterByServerEntities(data, this.props.articles);
 
-    if (!articles.isEmpty()) {
-      this.props.rememberArticles({ articles });
+    if (!newArticles.isEmpty()) {
+      this.props.rememberArticles({ articles: newArticles });
       this.props.loadEntities({ href: '/bookmarks', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
     }
 
@@ -174,16 +155,7 @@ export class ImportPage extends Component {
   }
 
   handleOnRowSelection(selectedRows) {
-    switch (selectedRows) {
-      case 'all':
-        window.heautagogy.selectedRows = ['all'];
-        break;
-      case 'none':
-        window.heautagogy.selectedRows = [];
-        break;
-      default:
-        window.heautagogy.selectedRows = selectedRows;
-    }
+    this.setState({ selectedRows });
   }
 
   renderTable() {
@@ -201,11 +173,15 @@ export class ImportPage extends Component {
           </TableRow>
         </TableHeader>
         <TableBody
+          deselectOnClickaway={false}
           showRowHover
         >
-          {this.state.data.map((item) => {
+          {this.state.data.map((item, i) => {
             return (
-              <TableRow key={item.url}>
+              <TableRow
+                key={i}
+                selected={this.state.selectedRows.indexOf(i) !== MINUS_ONE}
+              >
                 <TableRowColumn>
                   <a
                     href={item.url}
@@ -216,7 +192,7 @@ export class ImportPage extends Component {
                 </TableRowColumn>
                 <TableRowColumn>{item.title}</TableRowColumn>
                 <TableRowColumn>{moment.unix(item.timestamp / THOUSAND).format('MM/DD/YYYY hh:mm')}</TableRowColumn>
-                <TableRowColumn>{item.state ? 'No' : 'Yes'}</TableRowColumn>
+                <TableRowColumn>{item.read ? 'Yes' : 'No'}</TableRowColumn>
               </TableRow>
             );
           })}
@@ -253,7 +229,7 @@ export class ImportPage extends Component {
           <div style={inlineStyles.leftButton}>
             <RaisedButton
               containerElement="label"
-              id={'import-button-import'}
+              id={'import-button'}
               label={'Import'}
               labelPosition="before"
               primary
@@ -271,7 +247,7 @@ export class ImportPage extends Component {
           <div style={inlineStyles.rightButton}>
             <RaisedButton
               disabled={this.state.data.length === ZERO}
-              id={'save-button-import'}
+              id={'save-button'}
               label={'Save'}
               primary
               onClick={this.handleOnSave}

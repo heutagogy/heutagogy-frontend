@@ -5,14 +5,24 @@ import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import Immutable from 'immutable';
 import { ImportPage } from '../../../../src/containers/pages/ImportPage/ImportPage';
+import { ZERO, ONE } from '../../../../src/constants/Constants';
 
-const ZERO = 0;
-const ONE = 1;
 const noop = () => ({});
-const saveButtonSelector = '#save-button-import';
-const importButtonSelector = '#import-button-import';
+const saveButtonSelector = '#save-button';
+const importButtonSelector = '#import-button';
+
 
 describe('Import page tests', () => {
+  let sandbox; //eslint-disable-line
+
+  beforeEach(() => {
+    sandbox = sinon.sandbox.create();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
   it('“Save” button is disabled by default', () => {
     const wrapper = shallow(<ImportPage loadEntities={noop} />);
 
@@ -66,7 +76,7 @@ describe('Import page tests', () => {
       ],
     };
 
-    const stub = sinon.stub(FileReader.prototype, 'readAsText', function callback() {
+    const stub = sandbox.stub(FileReader.prototype, 'readAsText', function callback() {
       this.onload({ target: { result: JSON.stringify(file.content) } });
     });
 
@@ -91,7 +101,7 @@ describe('Import page tests', () => {
       },
     };
 
-    const stub = sinon.stub(FileReader.prototype, 'readAsText', function callback() {
+    const stub = sandbox.stub(FileReader.prototype, 'readAsText', function callback() {
       this.onload({ target: { result: JSON.stringify(file.content) } });
     });
 
@@ -104,7 +114,7 @@ describe('Import page tests', () => {
   });
 
   it('Shouldn\'t send articles if there are no selected articles on Save', () => {
-    const rememberArticles = sinon.spy();
+    const rememberArticles = sandbox.spy();
     const wrapper = shallow(
       <ImportPage
         loadEntities={noop}
@@ -129,8 +139,7 @@ describe('Import page tests', () => {
       },
     ];
 
-    wrapper.setState({ data });
-    window.heautagogy.selectedRows = [];
+    wrapper.setState({ data, selectedRows: [] });
 
     wrapper.find(saveButtonSelector).simulate('click');
 
@@ -138,7 +147,7 @@ describe('Import page tests', () => {
   });
 
   it('Should send all articles if all articles are selecteled on Save', () => {
-    const rememberArticles = sinon.spy();
+    const rememberArticles = sandbox.spy();
     const wrapper = shallow(
       <ImportPage
         loadEntities={noop}
@@ -163,8 +172,7 @@ describe('Import page tests', () => {
       },
     ];
 
-    wrapper.setState({ data });
-    window.heautagogy.selectedRows = ['all'];
+    wrapper.setState({ data, selectedRows: 'all' });
 
     wrapper.find(saveButtonSelector).simulate('click');
 
@@ -174,7 +182,7 @@ describe('Import page tests', () => {
   });
 
   it('Should send selected articles on Save', () => {
-    const rememberArticles = sinon.spy();
+    const rememberArticles = sandbox.spy();
     const wrapper = shallow(
       <ImportPage
         loadEntities={noop}
@@ -199,8 +207,7 @@ describe('Import page tests', () => {
       },
     ];
 
-    wrapper.setState({ data });
-    window.heautagogy.selectedRows = [ONE];
+    wrapper.setState({ data, selectedRows: [ONE] });
 
     wrapper.find(saveButtonSelector).simulate('click');
 
@@ -209,8 +216,8 @@ describe('Import page tests', () => {
     });
   });
 
-  it('Should not send selected articles which already on server on Save', () => {
-    const rememberArticles = sinon.spy();
+  it('Shouldn\'t send selected articles which server already has on Save', () => {
+    const rememberArticles = sandbox.spy();
     const wrapper = shallow(
       <ImportPage
         loadEntities={noop}
@@ -249,8 +256,7 @@ describe('Import page tests', () => {
     ];
 
     wrapper.setProps({ articles: Immutable.fromJS(dataOnServer) });
-    wrapper.setState({ data });
-    window.heautagogy.selectedRows = ['all'];
+    wrapper.setState({ data, selectedRows: 'all' });
 
     wrapper.find(saveButtonSelector).simulate('click');
 
