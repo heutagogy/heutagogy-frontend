@@ -156,7 +156,7 @@ export class ExportPage extends Component {
           <div style={inlineStyles.leftButton}>
             <RaisedButton
               id={'export-button'}
-              label={'Export'}
+              label={'export'}
               primary
               onClick={this.handleOnExport}
             />
@@ -165,7 +165,7 @@ export class ExportPage extends Component {
             <RaisedButton
               disabled={this.props.articles.isEmpty()}
               id={'save-button'}
-              label={'Save'}
+              label={'save'}
               primary
               onClick={this.handleOnSave}
             />

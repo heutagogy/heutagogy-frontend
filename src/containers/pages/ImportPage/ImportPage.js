@@ -230,7 +230,7 @@ export class ImportPage extends Component {
             <RaisedButton
               containerElement="label"
               id={'import-button'}
-              label={'Import'}
+              label={'import'}
               labelPosition="before"
               primary
             >
@@ -248,7 +248,7 @@ export class ImportPage extends Component {
             <RaisedButton
               disabled={this.state.data.length === ZERO}
               id={'save-button'}
-              label={'Save'}
+              label={'save'}
               primary
               onClick={this.handleOnSave}
             />

@@ -1,3 +1,5 @@
+/* eslint-disable fp/no-mutation */
+
 import { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
@@ -37,6 +39,12 @@ const inlineStyles = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
+  buttonsContainer: {
+    margin: '0 0 0 60px',
+  },
+  buttons: {
+    margin: '70px 25px',
+  },
 };
 
 const TO_UNIX = 1000;
@@ -63,6 +71,14 @@ class ArticlesPage extends Component {
     }
 
     return title;
+  }
+
+  handleOpenImport() {
+    window.location = '/import';
+  }
+
+  handleOpenExport() {
+    window.location = '/export';
   }
 
   renderArticles() {
@@ -99,6 +115,20 @@ class ArticlesPage extends Component {
             {this.renderArticles()}
           </div>
         </ViewStateWrapper>
+        <div style={inlineStyles.buttonsContainer} >
+          <RaisedButton
+            label={'import page'}
+            primary
+            style={inlineStyles.buttons}
+            onClick={this.handleOpenImport}
+          />
+          <RaisedButton
+            label={'export page'}
+            primary
+            style={inlineStyles.buttons}
+            onClick={this.handleOpenExport}
+          />
+        </div>
       </div>
     );
   }
