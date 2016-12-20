@@ -87,7 +87,7 @@ export class ImportPage extends Component {
       return data;
     }
 
-    for (let i = ZERO; i < selectedRows; i++) {
+    for (let i = ZERO; i < selectedRows.length; i++) {
       const index = selectedRows[i];
 
       result.push(data[index]);
@@ -123,7 +123,7 @@ export class ImportPage extends Component {
       this.props.loadEntities({ href: '/bookmarks', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
     }
 
-    this.setState({ data: [] });
+    this.setState({ selectedRows: [] });
   }
 
   handleCloseModal = () => {
