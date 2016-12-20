@@ -7,6 +7,7 @@
     "start": "node server.js",
     "testserver": "npm run build && node testserver.js",
     "build": "rm -rf dist && cross-env NODE_ENV=production webpack -p",
+    "lint": "eslint src test",
     "test": "cross-env BABEL_ENV=test mocha --compilers js:babel-register --require ./test/testHelper.js --recursive ./test/**/*.spec.js",
     "test:unit": "cross-env BABEL_ENV=test mocha --compilers js:babel-register --require ./test/testHelper.js --recursive ./test/**/*.spec.js",
     "test:coverage": "cross-env BABEL_ENV=test nyc --require babel-core/register mocha --require ./test/testHelper.js --recursive ./test/**/*.spec.js",
