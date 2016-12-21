@@ -12,9 +12,11 @@
     "fp/no-mutation": ["error", {"allowThis": true, "exceptions": [{"property": "propTypes"}]}]
   },
   "globals": {
+    "afterEach": true,
+    "beforeEach": true,
     "describe": true,
+    "ga": true,
     "it": true,
-    "path": true,
-    "ga": true
+    "path": true
   }
 }
