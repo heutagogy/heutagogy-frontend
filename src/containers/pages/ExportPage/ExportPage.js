@@ -12,7 +12,7 @@ import articleSchema from './../../../schemas/article';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { getFilteredArticles } from './../../../selectors/articles';
 import { loadEntities } from './../../../actions/entity';
-import { THOUSAND, MINUS_ONE, ZERO } from './../../../constants/Constants';
+import { MINUS_ONE, ZERO } from './../../../constants/Constants';
 
 const inlineStyles = {
   leftButton: {
@@ -139,7 +139,7 @@ export class ExportPage extends Component {
                   </a>
                 </TableRowColumn>
                 <TableRowColumn>{item.get('title')}</TableRowColumn>
-                <TableRowColumn>{moment.unix(item.get('timestamp') / THOUSAND).format('MM/DD/YYYY hh:mm')}</TableRowColumn>
+                <TableRowColumn>{moment(item.get('timestamp')).format('ll')}</TableRowColumn>
                 <TableRowColumn>{item.get('read') ? 'Yes' : 'No'}</TableRowColumn>
               </TableRow>
             );

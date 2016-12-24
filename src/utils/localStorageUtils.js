@@ -1,7 +1,5 @@
 import Immutable from 'immutable';
 
-import { encodeUnicode } from './base64';
-
 const APP_KEY = 'globalApp';
 const emptyApp = {
   authUser: {},
@@ -15,14 +13,6 @@ class LocalStorageUtils {
     if (!app) {
       this.safeSave(APP_KEY, emptyApp);
     }
-  }
-
-  getAuthToken() {
-    const username = 'myuser'; // TODO we should get this from localStorage
-    const password = 'mypassword'; // TODO we should get this from localStorage
-    const token = encodeUnicode(`${username}:${password}`);
-
-    return `Basic ${token}`;
   }
 
   setAuthinticatedUser(user) {
@@ -72,4 +62,4 @@ class LocalStorageUtils {
   }
 }
 
-export default (new LocalStorageUtils());
+export default new LocalStorageUtils();

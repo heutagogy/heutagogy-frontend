@@ -64,13 +64,13 @@ describe('Import page tests', () => {
         {
           url: 'http://example.com/',
           title: 'Example Domain',
-          timestamp: '1481630891153',
+          timestamp: '2016-01-01T05:06:07',
           read: 0,
         },
         {
           url: 'https://github.com/',
           title: 'How people build software',
-          timestamp: '1481630891456',
+          timestamp: '2016-01-02T05:06:08',
           read: 1,
         },
       ],
@@ -96,7 +96,7 @@ describe('Import page tests', () => {
       content: {
         url: 'http://example.com/',
         title: 'Example Domain',
-        timestamp: '1481630891153',
+        timestamp: '2016-01-01T05:06:07',
         read: 0,
       },
     };
@@ -125,13 +125,13 @@ describe('Import page tests', () => {
       {
         url: 'http://example.com/',
         title: 'Example Domain',
-        timestamp: '1481630891153',
+        timestamp: '2016-01-03T05:06:09',
         read: 0,
       },
       {
         url: 'https://github.com/',
         title: 'How people build software',
-        timestamp: '1481630891456',
+        timestamp: '2016-01-04T05:06:10',
         read: 1,
       },
       {
@@ -158,13 +158,13 @@ describe('Import page tests', () => {
       {
         url: 'http://example.com/',
         title: 'Example Domain',
-        timestamp: '1481630891153',
+        timestamp: '2016-01-01T05:06:07',
         read: 0,
       },
       {
         url: 'https://github.com/',
         title: 'How people build software',
-        timestamp: '1481630891456',
+        timestamp: '2016-01-03T05:06:09',
         read: 1,
       },
       {
@@ -193,13 +193,13 @@ describe('Import page tests', () => {
       {
         url: 'http://example.com/',
         title: 'Example Domain',
-        timestamp: '1481630891153',
+        timestamp: '2016-01-04T05:06:10',
         read: 0,
       },
       {
         url: 'https://github.com/',
         title: 'How people build software',
-        timestamp: '1481630891456',
+        timestamp: '2016-01-01T05:06:07',
         read: 1,
       },
       {
@@ -229,7 +229,7 @@ describe('Import page tests', () => {
         id: 1,
         url: 'http://example.com/',
         title: 'Example Domain',
-        timestamp: '1481630891153',
+        timestamp: '2016-01-03T05:06:09',
         read: 0,
       },
       {
@@ -241,13 +241,13 @@ describe('Import page tests', () => {
       {
         url: 'http://example.com/',
         title: 'Example Domain',
-        timestamp: '1481630891153',
+        timestamp: '2016-01-03T05:06:09',
         read: 0,
       },
       {
         url: 'https://github.com/',
         title: 'How people build software',
-        timestamp: '1481630891456',
+        timestamp: '2016-01-05T05:06:10',
         read: 1,
       },
       {
