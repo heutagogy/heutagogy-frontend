@@ -1,5 +1,4 @@
 import { CALL_API } from 'redux-api-middleware';
-import { CALL_MOCK_API } from './../mockApi';
 import { API_URL } from './../constants/Api';
 import { LOGIN_VIEW_STATE } from './../constants/ViewStates';
 
@@ -22,34 +21,12 @@ const fetchUserLogin = ({ login, password }) => {
       ],
       method: 'POST',
       body: JSON.stringify({
-        login,
+        username: login,
         password,
       }),
-      mockResponse: {
-        responseJSON: {
-          login,
-          password,
-          roles: ['ADMIN'],
-        },
-      },
       endpoint: `${API_URL}/login`,
     },
   };
 };
 
 export const loginUser = ({ login, password }) => (dispatch) => dispatch(fetchUserLogin({ login, password }));
-
-export const USER_LOGOUT_STARTED = 'USER_LOGOUT_STARTED';
-export const USER_LOGOUT_SUCCESS = 'USER_LOGOUT_SUCCESS';
-export const USER_LOGOUT_FAILURE = 'USER_LOGOUT_FAILURE';
-
-const fetchUserLogout = () => ({
-  [CALL_MOCK_API]: {
-    types: [USER_LOGOUT_STARTED, USER_LOGOUT_SUCCESS, USER_LOGOUT_FAILURE],
-    method: 'POST',
-    mockResponse: { responseJSON: {} },
-    endpoint: `${API_URL}/logout`,
-  },
-});
-
-export const logoutUser = () => (dispatch) => dispatch(fetchUserLogout());

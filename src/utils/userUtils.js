@@ -5,10 +5,13 @@ class UserUtils {
     if (!userData) {
       return false;
     }
-    const now = moment();
-    const isExpired = userData.get('expires') && now.isBefore(moment(userData.get('expires')));
 
-    return userData.get('login') && !isExpired;
+    const now = moment();
+    const isNotExpired = userData.get('exp')
+          ? now.isSameOrBefore(moment(userData.get('exp')))
+          : false;
+
+    return userData.get('access_token') && isNotExpired;
   }
 }
 
