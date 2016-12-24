@@ -47,8 +47,6 @@ const inlineStyles = {
   },
 };
 
-const TO_UNIX = 1000;
-
 @Radium
 @pureRender
 class ArticlesPage extends Component {
@@ -93,7 +91,7 @@ class ArticlesPage extends Component {
         </div>
         <div style={inlineStyles.articleField}>
           <div>{'Date:'}</div>
-          <div>{moment.unix(article.get('timestamp') / TO_UNIX).format('MM/DD/YYYY hh:mm')}</div>
+          <div>{moment(article.get('timestamp')).format('ll')}</div>
         </div>
         <div style={inlineStyles.cardFooter}>
           <RaisedButton

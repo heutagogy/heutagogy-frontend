@@ -19,7 +19,7 @@ import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { getFilteredArticles } from './../../../selectors/articles';
 import { loadEntities } from './../../../actions/entity';
 import { rememberArticles } from './../../../actions/articles';
-import { THOUSAND, ZERO, MINUS_ONE } from './../../../constants/Constants';
+import { ZERO, MINUS_ONE } from './../../../constants/Constants';
 import { isJsonString } from './../../../utils/jsonUtils';
 
 const inlineStyles = {
@@ -191,7 +191,7 @@ export class ImportPage extends Component {
                   </a>
                 </TableRowColumn>
                 <TableRowColumn>{item.title}</TableRowColumn>
-                <TableRowColumn>{moment.unix(item.timestamp / THOUSAND).format('MM/DD/YYYY hh:mm')}</TableRowColumn>
+                <TableRowColumn>{moment(item.timestamp).format('ll')}</TableRowColumn>
                 <TableRowColumn>{item.read ? 'Yes' : 'No'}</TableRowColumn>
               </TableRow>
             );
