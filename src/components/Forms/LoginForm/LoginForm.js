@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
@@ -11,6 +13,7 @@ import { getViewState } from './../../../selectors/view';
 import { LOGIN_VIEW_STATE } from './../../../constants/ViewStates';
 
 import { loginUser } from './../../../actions/users';
+import { setServerAddress } from './../../../actions/server';
 
 import styles from './LoginForm.less';
 
@@ -19,6 +22,7 @@ class LoginForm extends Component {
   static propTypes = {
     handleSubmit: PropTypes.func, // from redux-form
     loginUser: PropTypes.func,
+    setServerAddress: PropTypes.func,
     viewState: PropTypes.instanceOf(Immutable.Map),
   }
 
@@ -27,6 +31,7 @@ class LoginForm extends Component {
   }
 
   submit = (form) => {
+    this.props.setServerAddress({ address: form.get('server') }); // TODO needs to be chained?
     this.props.loginUser({ login: form.get('login'), password: form.get('password') });
   }
 
@@ -52,6 +57,12 @@ class LoginForm extends Component {
             style={styles.field}
             type="password"
           />
+          <Field
+            component={renderTextField}
+            name="server"
+            placeholder={l('Server address')}
+            style={styles.field}
+          />
           <RaisedButton
             label="Login"
             spinButton={this.props.viewState && this.props.viewState.get('isInProgress')}
@@ -72,4 +83,4 @@ const mapStateToProps = (state) => ({
   viewState: getViewState(state, LOGIN_VIEW_STATE),
 });
 
-export default connect(mapStateToProps, { loginUser })(LoginFormWrapped);
+export default connect(mapStateToProps, { loginUser, setServerAddress })(LoginFormWrapped);

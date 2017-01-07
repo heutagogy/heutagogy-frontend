@@ -1,5 +1,5 @@
 import { CALL_API } from 'redux-api-middleware';
-import { API_URL } from './../constants/Api';
+import { API_VERSION } from './../constants/Api';
 
 export const REMEMBER_ARTICLE_START = 'REMEMBER_ARTICLE_START';
 export const REMEMBER_ARTICLE_SUCCESS = 'REMEMBER_ARTICLE_SUCCESS';
@@ -14,7 +14,7 @@ const postRememberArticles = ({ articles }) => ({
     ],
     method: 'POST',
     body: JSON.stringify(articles.toJS()),
-    endpoint: `${API_URL}/bookmarks`,
+    endpoint: `${API_VERSION}/bookmarks`,
   },
 });
 

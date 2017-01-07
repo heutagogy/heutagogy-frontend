@@ -1,5 +1,5 @@
 import { CALL_API } from 'redux-api-middleware';
-import { API_URL } from './../constants/Api';
+import { API_VERSION } from './../constants/Api';
 import { LOGIN_VIEW_STATE } from './../constants/ViewStates';
 
 import schemaUtils from './../utils/schemaUtils';
@@ -24,7 +24,7 @@ const fetchUserLogin = ({ login, password }) => {
         username: login,
         password,
       }),
-      endpoint: `${API_URL}/login`,
+      endpoint: `${API_VERSION}/login`,
     },
   };
 };

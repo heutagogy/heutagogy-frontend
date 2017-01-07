@@ -27,6 +27,18 @@ class LocalStorageUtils {
     return Immutable.fromJS(app.authUser);
   }
 
+  setServerInfo(server) {
+    const app = this.getApp();
+
+    this.setApp({ ...app, server: server && server.toJS && server.toJS() });
+  }
+
+  getServerInfo() {
+    const app = this.getApp();
+
+    return Immutable.fromJS(app.server);
+  }
+
   getApp() {
     return this.safeParse(localStorage.getItem(APP_KEY));
   }

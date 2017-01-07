@@ -69,9 +69,8 @@ and after that ```npm run build``` your build will be in Heutagogy/dist with mul
  - for ```npm run testserver``` use localhost:3001
  - for ```npm start``` use localhost:3002
  - for production use whatever you want
-# Quickstart: How to change api url or other configuration constants(like analytics)?
- 1) go to Heutagogy/src/Constants/Api.js
- 2) ```export const API_URL = 'http://10.2.3.103:8081';``` - you will see this, it's api url, change it on whatewer you want and rebuild project(```npm run build``` or ```npm start```)
+# Quickstart: How to change api url?
+ - Fill the server address on “Login” form: e.g. http://localhost:5000
 
 or, if you don't want to rebuild project
 
