@@ -65,10 +65,12 @@ and after that ```npm run build``` your build will be in Heutagogy/dist with mul
 # Quickstart: Requirments for production deploy
  - Production server should return index.html file for each request
  - Production server should serve Heutagogy/dist folder
+
 # Quickstart: How to see something?
  - for ```npm run testserver``` use localhost:3001
  - for ```npm start``` use localhost:3002
  - for production use whatever you want
+
 # Quickstart: How to change api url?
  - Fill the server address on “Login” form: e.g. http://localhost:5000
 
