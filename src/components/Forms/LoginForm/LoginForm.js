@@ -31,7 +31,7 @@ class LoginForm extends Component {
   }
 
   submit = (form) => {
-    this.props.setServerAddress({ address: form.get('server') }); // TODO needs to be chained?
+    this.props.setServerAddress({ address: form.get('server') });
     this.props.loginUser({ login: form.get('login'), password: form.get('password') });
   }
 
