@@ -1,5 +1,5 @@
 import { CALL_API } from 'redux-api-middleware';
-import { API_URL } from './../constants/Api';
+import { API_VERSION } from './../constants/Api';
 import schemaUtils from './../utils/schemaUtils';
 
 export const LOAD_ENTITIES_START = 'LOAD_ENTITIES_START';
@@ -21,7 +21,7 @@ const fetchEntities = ({ href, viewId, schema }) => {
         { type: LOAD_ENTITIES_FAILURE, meta },
       ],
       method: 'GET',
-      endpoint: `${API_URL}${href}`,
+      endpoint: `${API_VERSION}${href}`,
     },
   };
 };

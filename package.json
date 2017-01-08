@@ -4,6 +4,7 @@
   "description": "Heutagogy web part",
   "main": "src/index.js",
   "scripts": {
+    "heroku-postbuild": "npm run build",
     "start": "node server.js",
     "testserver": "npm run build && node testserver.js",
     "build": "rm -rf dist && cross-env NODE_ENV=production webpack -p",

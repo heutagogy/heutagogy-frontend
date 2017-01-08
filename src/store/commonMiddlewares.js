@@ -4,7 +4,7 @@ import { routerMiddleware } from 'react-router-redux';
 import { browserHistory } from 'react-router';
 import rootReducer from '../reducers';
 import { mockApiMiddleware } from '../mockApi';
-import headerMiddleware from './../middleware/headerMiddleware';
+import requestMiddleware from './../middleware/requestMiddleware';
 
 export const basicMiddleware = [
   rootReducer,
@@ -13,7 +13,7 @@ export const basicMiddleware = [
 export const middlewaresToApply = [
   thunk,
   mockApiMiddleware,
-  headerMiddleware,
+  requestMiddleware,
   apiMiddleware,
   routerMiddleware(browserHistory),
 ];

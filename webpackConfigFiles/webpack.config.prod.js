@@ -22,7 +22,6 @@ module.exports = {
   },
   plugins: [
     ...commonPlugins,
-    new webpack.optimize.DedupePlugin(),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,

@@ -5,10 +5,11 @@ import { combineReducers } from 'redux-immutablejs';
 import Immutable from 'immutable';
 import { reducer as formReducer } from 'redux-form/immutable';
 
-import routing from './routing';
-import view from './view';
-import dataView from './dataView';
 import analytic from './../utils/analytic';
+import dataView from './dataView';
+import routing from './routing';
+import server from './server';
+import view from './view';
 
 import * as entityReducers from './entityReducers';
 
@@ -43,9 +44,10 @@ const entities = (state = initialState, action) => {
 };
 
 export default combineReducers({
-  entities,
-  routing,
-  view,
   dataView,
+  entities,
   form: formReducer,
+  routing,
+  server,
+  view,
 });
