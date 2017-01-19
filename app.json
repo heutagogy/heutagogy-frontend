@@ -1,7 +1,12 @@
 {
   "name": "heutagogy-frontend",
   "scripts": {},
-  "env": {},
+  "env": {
+    "NPM_CONFIG_PRODUCTION": {
+      "description": "Install all dependencies",
+      "value": false
+    }
+  },
   "formation": {},
   "addons": [],
   "buildpacks": [
