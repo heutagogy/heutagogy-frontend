@@ -140,7 +140,7 @@ export class ExportPage extends Component {
                 </TableRowColumn>
                 <TableRowColumn>{item.get('title')}</TableRowColumn>
                 <TableRowColumn>{moment(item.get('timestamp')).format('ll')}</TableRowColumn>
-                <TableRowColumn>{item.get('read') ? 'Yes' : 'No'}</TableRowColumn>
+                <TableRowColumn>{item.get('read') ? moment(item.get('read')).format('ll') : 'No'}</TableRowColumn>
               </TableRow>
             );
           })}

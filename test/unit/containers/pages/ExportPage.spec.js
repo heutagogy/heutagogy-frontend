@@ -59,13 +59,13 @@ describe('Export page tests', () => {
         url: 'http://example.com/',
         title: 'Example Domain',
         timestamp: '2016-01-01T05:06:07',
-        read: 0,
+        read: null,
       },
       {
         url: 'https://github.com/',
         title: 'How people build software',
         timestamp: '2016-01-02T05:06:08',
-        read: 1,
+        read: '2016-01-03T05:06:08',
       },
       {
         url: 'https://www.google.com.ua',
@@ -99,13 +99,13 @@ describe('Export page tests', () => {
         url: 'http://example.com/',
         title: 'Example Domain',
         timestamp: '2016-01-01T05:06:07',
-        read: 0,
+        read: null,
       },
       {
         url: 'https://github.com/',
         title: 'How people build software',
         timestamp: '2016-01-02T05:06:08',
-        read: 1,
+        read: '2016-01-02T09:06:08',
       },
       {
         url: 'https://www.google.com.ua',
@@ -139,13 +139,13 @@ describe('Export page tests', () => {
         url: 'http://example.com/',
         title: 'Example Domain',
         timestamp: '2016-01-01T05:06:07',
-        read: 0,
+        read: null,
       },
       {
         url: 'https://github.com/',
         title: 'How people build software',
         timestamp: '2016-01-02T05:06:08',
-        read: 1,
+        read: '2016-01-03T05:06:08',
       },
       {
         url: 'https://www.google.com.ua',
