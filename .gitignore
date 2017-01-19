@@ -21,3 +21,4 @@ output/**
 target/
 .settings/
 logs
+.dir-locals.el
