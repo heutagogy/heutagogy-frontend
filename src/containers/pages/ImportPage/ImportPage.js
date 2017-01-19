@@ -192,7 +192,7 @@ export class ImportPage extends Component {
                 </TableRowColumn>
                 <TableRowColumn>{item.title}</TableRowColumn>
                 <TableRowColumn>{moment(item.timestamp).format('ll')}</TableRowColumn>
-                <TableRowColumn>{item.read ? 'Yes' : 'No'}</TableRowColumn>
+                <TableRowColumn>{item.read ? moment(item.read).format('ll') : 'No'}</TableRowColumn>
               </TableRow>
             );
           })}
