@@ -13,9 +13,11 @@ class RaisedButton extends Component {
     buttonStyle: PropTypes.object,
     className: PropTypes.string,
     disabled: PropTypes.bool,
+    fullWidth: PropTypes.bool,
     href: PropTypes.string,
     label: PropTypes.string.isRequired,
     labelStyle: PropTypes.object,
+    primary: PropTypes.bool,
     secondary: PropTypes.bool,
     spinButton: PropTypes.bool,
     style: PropTypes.object,
@@ -38,8 +40,10 @@ class RaisedButton extends Component {
           className={this.props.className}
           {...makeHrefButton}
           disabled={this.props.disabled}
+          fullWidth={this.props.fullWidth}
           label={this.props.spinButton ? <Spinner size={SPINNER_SIZE} /> : this.props.label}
           labelStyle={this.props.labelStyle}
+          primary={this.props.primary}
           secondary={this.props.secondary}
           style={this.props.style}
           type={this.props.type}

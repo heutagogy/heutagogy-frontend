@@ -6,6 +6,7 @@ import Immutable from 'immutable';
 import PureRender from 'pure-render-decorator';
 import { reduxForm, Field } from 'redux-form/immutable';
 import { renderTextField } from './../renders';
+import { blue500 } from 'material-ui/styles/colors';
 import RaisedButton from './../../Fields/RaisedButton';
 
 import { loginValidation } from './../../../utils/forms/validation';
@@ -16,6 +17,23 @@ import { loginUser } from './../../../actions/users';
 import { setServerAddress } from './../../../actions/server';
 
 import styles from './LoginForm.less';
+
+const inlineStyles = {
+  input: {
+    backgroundColor: '#fafafa',
+  },
+  floatingLabelStyle: {
+    fontSize: '18px',
+  },
+  blue500: {
+    color: blue500,
+  },
+  title: {
+    fontFamily: 'Ubuntu, sans-serif',
+    textAlign: 'center',
+    margin: '7px 0 35px 0',
+  },
+}
 
 @PureRender
 class LoginForm extends Component {
@@ -43,30 +61,52 @@ class LoginForm extends Component {
         className={styles.loginForm}
         onSubmit={this.props.handleSubmit(this.submit)}
       >
-        <div className={styles.searchField}>
+        <div>
+          <h2 style={inlineStyles.title}>{'Heutagogy'}</h2>
           <Field
             component={renderTextField}
-            name="login"
-            placeholder={l('Login')}
-            style={styles.field}
+            floatingLabelFixed
+            floatingLabelStyle={inlineStyles.floatingLabelStyle}
+            floatingLabelFocusStyle={inlineStyles.blue500}
+            floatingLabelText={l('Login')}
+            fullWidth
+            inputStyle={inlineStyles.input}
+            underlineFocusStyle={inlineStyles.blue500}
+            name='login'
+            placeholder={l('My username')}
           />
           <Field
             component={renderTextField}
-            name="password"
-            placeholder={l('Password')}
-            style={styles.field}
-            type="password"
+            floatingLabelFixed
+            floatingLabelStyle={inlineStyles.floatingLabelStyle}
+            floatingLabelFocusStyle={inlineStyles.blue500}
+            floatingLabelText={l('Password')}
+            fullWidth
+            inputStyle={inlineStyles.input}
+            underlineFocusStyle={inlineStyles.blue500}
+            name='password'
+            placeholder={l('My secret password')}
+            type='password'
           />
           <Field
             component={renderTextField}
-            name="server"
-            placeholder={l('Server address')}
-            style={styles.field}
+            floatingLabelFixed
+            floatingLabelStyle={inlineStyles.floatingLabelStyle}
+            floatingLabelFocusStyle={inlineStyles.blue500}
+            floatingLabelText={l('Server address')}
+            fullWidth
+            inputStyle={inlineStyles.input}
+            underlineFocusStyle={inlineStyles.blue500}
+            name='server'
+            placeholder={'http://localhost:5000'}
           />
           <RaisedButton
-            label="Login"
+            className={styles.login}
+            fullWidth
+            label='Login'
+            primary
             spinButton={this.props.viewState && this.props.viewState.get('isInProgress')}
-            type="submit"
+            type='submit'
           />
         </div>
       </form>
