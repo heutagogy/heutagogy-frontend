@@ -1,40 +1,27 @@
 import Immutable from 'immutable';
-import RaisedButton from 'material-ui/RaisedButton';
 import { Component, PropTypes } from 'react';
 import { arrayOf } from 'normalizr';
 import { connect } from 'react-redux';
-import { isJsonString } from './../../../utils/jsonUtils';
+import RaisedButton from 'material-ui/RaisedButton';
 
+import { isJsonString } from './../../../utils/jsonUtils';
 import articleSchema from './../../../schemas/article';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { getFilteredArticles } from './../../../selectors/articles';
 import { loadEntities } from './../../../actions/entity';
 import { ArticlesTable, getSelectedArticles } from './ArticlesTable';
+import { ImportModal } from './ImportModal';
+
+import styles from './ExportPage.less';
 
 const inlineStyles = {
   topButton: {
     disable: 'inline-block',
-    margin: '110px 40px 30px 70px',
+    margin: '110px 70px 30px 40px',
   },
   bottomButton: {
     disable: 'inline-block',
-    margin: '30px 40px 30px 70px',
-  },
-  buttons: {
-    float: 'left',
-  },
-  table: {
-    padding: '70px 70px 0 0',
-  },
-  input: {
-    cursor: 'pointer',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    right: 0,
-    left: 0,
-    width: '100%',
-    opacity: 0,
+    margin: '30px 70px 30px 40px',
   },
 };
 
@@ -49,7 +36,11 @@ export class ExportPage extends Component {
 
     this.bind();
 
-    this.state = { selectedRows: [] };
+    this.state = {
+      selectedRows: [],
+      articlesToImport: Immutable.fromJS([]),
+      importModalIsOpened: false,
+    };
   }
 
   componentWillMount() {
@@ -64,9 +55,6 @@ export class ExportPage extends Component {
     this.handleOnExport = this.handleOnExport.bind(this);
     this.handleOnImport = this.handleOnImport.bind(this);
     this.onRowSelection = this.onRowSelection.bind(this);
-  }
-
-  handleOnImport() {
   }
 
   handleOnExport() {
@@ -93,31 +81,28 @@ export class ExportPage extends Component {
     this.setState({ selectedRows: [] });
   }
 
-  handleOnFileUploadChange(event) {
+  handleOnImport(event) {
     const file = event.target.files[0];
     const fr = new FileReader();
 
     fr.onload = (e) => { // eslint-disable-line
       const res = e.target.result;
 
+
       if (isJsonString(res) && Array.isArray(JSON.parse(res))) {
-        this.setState({ data: JSON.parse(res) });
-      } else {
-        this.setState({ openModal: true });
+        this.setState({ articlesToImport: Immutable.fromJS(JSON.parse(res)) });
       }
+
+      this.setState({ importModalIsOpened: true });
     };
 
     fr.readAsText(file);
   }
 
   render() {
-    console.log('•••');
-    console.log(JSON.stringify(this.state.selectedRows, null, 2)); // eslint-disable-line
-    console.log('•••');
-
     return (
       <div>
-        <div style={inlineStyles.buttons}>
+        <div className={styles.buttons}>
           <div style={inlineStyles.topButton}>
             <RaisedButton
               id={'export-button'}
@@ -136,15 +121,21 @@ export class ExportPage extends Component {
             >
               <input
                 accept=".json"
+                className={styles.input}
                 id="upload"
-                style={inlineStyles.input}
                 type="file"
-                onChange={this.handleOnFileUploadChange}
+                onChange={this.handleOnImport}
               />
             </RaisedButton>
           </div>
         </div>
-        <div style={inlineStyles.table}>
+        <div>
+          <ImportModal
+            articles={this.state.articlesToImport}
+            open={this.state.importModalIsOpened}
+          />
+        </div>
+        <div className={styles.table}>
           <ArticlesTable
             articles={this.props.articles}
             handleOnRowSelection={this.onRowSelection}

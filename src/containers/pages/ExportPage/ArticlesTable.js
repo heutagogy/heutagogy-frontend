@@ -5,6 +5,12 @@ import { Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowCol
 
 import { ZERO, MINUS_ONE } from './../../../constants/Constants';
 
+const inlineStyles = {
+  wrapWordColumn: {
+    whiteSpace: 'normal',
+    wordWrap: 'break-word',
+  },
+};
 
 export class ArticlesTable extends Component {
   static propTypes = {
@@ -48,7 +54,7 @@ export class ArticlesTable extends Component {
                     {item.get('url')}
                   </a>
                 </TableRowColumn>
-                <TableRowColumn>{item.get('title')}</TableRowColumn>
+                <TableRowColumn style={inlineStyles.wrapWordColumn}>{item.get('title')}</TableRowColumn>
                 <TableRowColumn>{moment(item.get('timestamp')).format('ll')}</TableRowColumn>
                 <TableRowColumn>{item.get('read') ? moment(item.get('read')).format('ll') : 'No'}</TableRowColumn>
               </TableRow>
