@@ -1,25 +1,22 @@
-/* eslint-disable arrow-body-style */
-
 import Immutable from 'immutable';
 import RaisedButton from 'material-ui/RaisedButton';
-import moment from 'moment';
 import { Component, PropTypes } from 'react';
-import { Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 import { arrayOf } from 'normalizr';
 import { connect } from 'react-redux';
+import { isJsonString } from './../../../utils/jsonUtils';
 
 import articleSchema from './../../../schemas/article';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { getFilteredArticles } from './../../../selectors/articles';
 import { loadEntities } from './../../../actions/entity';
-import { MINUS_ONE, ZERO } from './../../../constants/Constants';
+import { ArticlesTable, getSelectedArticles } from './ArticlesTable';
 
 const inlineStyles = {
-  leftButton: {
+  topButton: {
     disable: 'inline-block',
     margin: '110px 40px 30px 70px',
   },
-  rightButton: {
+  bottomButton: {
     disable: 'inline-block',
     margin: '30px 40px 30px 70px',
   },
@@ -51,36 +48,30 @@ export class ExportPage extends Component {
     super(props);
 
     this.bind();
+
     this.state = { selectedRows: [] };
   }
 
-  getSelectedRows(articles, selectedRows) {
-    if (articles.isEmpty() ||
-        selectedRows === 'none' ||
-        (Array.isArray(selectedRows) && selectedRows.length === ZERO)) {
-      return Immutable.fromJS([]);
-    }
+  componentWillMount() {
+    this.props.loadEntities({ href: '/bookmarks', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
+  }
 
-    if (selectedRows === 'all') {
-      return articles;
-    }
-
-    return articles.filter((x, i) => selectedRows.includes(i));
+  onRowSelection(selectedRows) {
+    this.setState({ selectedRows });
   }
 
   bind() {
     this.handleOnExport = this.handleOnExport.bind(this);
-    this.handleOnRowSelection = this.handleOnRowSelection.bind(this);
-    this.handleOnSave = this.handleOnSave.bind(this);
+    this.handleOnImport = this.handleOnImport.bind(this);
+    this.onRowSelection = this.onRowSelection.bind(this);
+  }
+
+  handleOnImport() {
   }
 
   handleOnExport() {
-    this.props.loadEntities({ href: '/bookmarks', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
-  }
-
-  handleOnSave() {
     const tempLink = document.createElement('a');
-    const newArticles = this.getSelectedRows(this.props.articles, this.state.selectedRows);
+    const newArticles = getSelectedArticles(this.props.articles, this.state.selectedRows);
     const content = encodeURIComponent(JSON.stringify(newArticles));
 
     if (newArticles.isEmpty()) {
@@ -102,58 +93,32 @@ export class ExportPage extends Component {
     this.setState({ selectedRows: [] });
   }
 
-  handleOnRowSelection(selectedRows) {
-    this.setState({ selectedRows });
-  }
+  handleOnFileUploadChange(event) {
+    const file = event.target.files[0];
+    const fr = new FileReader();
 
-  renderTable() {
-    return (
-      <Table
-        multiSelectable
-        onRowSelection={this.handleOnRowSelection}
-      >
-        <TableHeader>
-          <TableRow>
-            <TableHeaderColumn>{'Link'}</TableHeaderColumn>
-            <TableHeaderColumn>{'Title'}</TableHeaderColumn>
-            <TableHeaderColumn>{'Saved'}</TableHeaderColumn>
-            <TableHeaderColumn>{'Read'}</TableHeaderColumn>
-          </TableRow>
-        </TableHeader>
-        <TableBody
-          deselectOnClickaway={false}
-          showRowHover
-        >
-          {this.props.articles.map((item, i) => {
-            return (
-              <TableRow
-                key={i}
-                selected={this.state.selectedRows.indexOf(i) !== MINUS_ONE}
-              >
-                <TableRowColumn>
-                  <a
-                    href={item.get('url')}
-                    target="_blank"
-                  >
-                    {item.get('url')}
-                  </a>
-                </TableRowColumn>
-                <TableRowColumn>{item.get('title')}</TableRowColumn>
-                <TableRowColumn>{moment(item.get('timestamp')).format('ll')}</TableRowColumn>
-                <TableRowColumn>{item.get('read') ? moment(item.get('read')).format('ll') : 'No'}</TableRowColumn>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    );
+    fr.onload = (e) => { // eslint-disable-line
+      const res = e.target.result;
+
+      if (isJsonString(res) && Array.isArray(JSON.parse(res))) {
+        this.setState({ data: JSON.parse(res) });
+      } else {
+        this.setState({ openModal: true });
+      }
+    };
+
+    fr.readAsText(file);
   }
 
   render() {
+    console.log('•••');
+    console.log(JSON.stringify(this.state.selectedRows, null, 2)); // eslint-disable-line
+    console.log('•••');
+
     return (
       <div>
         <div style={inlineStyles.buttons}>
-          <div style={inlineStyles.leftButton}>
+          <div style={inlineStyles.topButton}>
             <RaisedButton
               id={'export-button'}
               label={'export'}
@@ -161,18 +126,30 @@ export class ExportPage extends Component {
               onClick={this.handleOnExport}
             />
           </div>
-          <div style={inlineStyles.rightButton}>
+          <div style={inlineStyles.bottomButton}>
             <RaisedButton
-              disabled={this.props.articles.isEmpty()}
-              id={'save-button'}
-              label={'save'}
+              containerElement="label"
+              id={'import-button'}
+              label={'import'}
+              labelPosition="before"
               primary
-              onClick={this.handleOnSave}
-            />
+            >
+              <input
+                accept=".json"
+                id="upload"
+                style={inlineStyles.input}
+                type="file"
+                onChange={this.handleOnFileUploadChange}
+              />
+            </RaisedButton>
           </div>
         </div>
         <div style={inlineStyles.table}>
-          {this.renderTable()}
+          <ArticlesTable
+            articles={this.props.articles}
+            handleOnRowSelection={this.onRowSelection}
+            selectedRows={this.state.selectedRows}
+          />
         </div>
       </div>
     );
