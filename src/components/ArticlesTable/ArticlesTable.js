@@ -7,6 +7,13 @@ import { ZERO, ONE, MINUS_ONE } from './../../constants/Constants';
 
 import styles from './ArticlesTable.less';
 
+const inlineStyles = {
+  wrapWordColumn: {
+    whiteSpace: 'normal',
+    wordWrap: 'break-word',
+  },
+};
+
 const comparator = (articleA, articleB) => {
   const timestampA = articleA.get('timestamp');
   const timestampB = articleB.get('timestamp');
@@ -67,7 +74,7 @@ export class ArticlesTable extends Component {
               key={i}
               selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
             >
-              <TableRowColumn className={styles.wrapWordColumn}>
+              <TableRowColumn style={inlineStyles.wrapWordColumn}>
                 <div className={styles.linkDiv}>
                   <a
                     className={styles.link}
@@ -78,8 +85,8 @@ export class ArticlesTable extends Component {
                   </a>
                 </div>
               </TableRowColumn>
-              <TableRowColumn>{moment(item.get('timestamp')).format('ll')}</TableRowColumn>
-              <TableRowColumn>{item.get('read') ? moment(item.get('read')).format('ll') : 'No'}</TableRowColumn>
+              <TableRowColumn>{moment(item.get('timestamp')).format('lll')}</TableRowColumn>
+              <TableRowColumn>{item.get('read') ? moment(item.get('read')).format('lll') : 'No'}</TableRowColumn>
             </TableRow>
           );
         })}
