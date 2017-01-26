@@ -5,12 +5,7 @@ import { Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowCol
 
 import { ZERO, ONE, MINUS_ONE } from './../../constants/Constants';
 
-const inlineStyles = {
-  wrapWordColumn: {
-    whiteSpace: 'normal',
-    wordWrap: 'break-word',
-  },
-};
+import styles from './ArticlesTable.less';
 
 const comparator = (articleA, articleB) => {
   const timestampA = articleA.get('timestamp');
@@ -72,13 +67,16 @@ export class ArticlesTable extends Component {
               key={i}
               selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
             >
-              <TableRowColumn style={inlineStyles.wrapWordColumn}>
-                <a
-                  href={item.get('url')}
-                  target="_blank"
-                >
-                  {item.get('title')}
-                </a>
+              <TableRowColumn className={styles.wrapWordColumn}>
+                <div className={styles.linkDiv}>
+                  <a
+                    className={styles.link}
+                    href={item.get('url')}
+                    target="_blank"
+                  >
+                    {item.get('title')}
+                  </a>
+                </div>
               </TableRowColumn>
               <TableRowColumn>{moment(item.get('timestamp')).format('ll')}</TableRowColumn>
               <TableRowColumn>{item.get('read') ? moment(item.get('read')).format('ll') : 'No'}</TableRowColumn>
