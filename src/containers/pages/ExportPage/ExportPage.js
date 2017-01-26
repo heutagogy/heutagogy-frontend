@@ -9,6 +9,7 @@ import articleSchema from './../../../schemas/article';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { getFilteredArticles } from './../../../selectors/articles';
 import { loadEntities } from './../../../actions/entity';
+import { rememberArticles } from './../../../actions/articles';
 import { ArticlesTable, getSelectedArticles } from './ArticlesTable';
 import { ImportModal } from './ImportModal';
 
@@ -29,6 +30,7 @@ export class ExportPage extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
     loadEntities: PropTypes.func,
+    rememberArticles: PropTypes.func,
   }
 
   constructor(props) {
@@ -39,7 +41,7 @@ export class ExportPage extends Component {
     this.state = {
       selectedRows: [],
       articlesToImport: Immutable.fromJS([]),
-      importModalIsOpened: false,
+      openImport: false,
     };
   }
 
@@ -55,6 +57,7 @@ export class ExportPage extends Component {
     this.handleOnExport = this.handleOnExport.bind(this);
     this.handleOnImport = this.handleOnImport.bind(this);
     this.onRowSelection = this.onRowSelection.bind(this);
+    this.unmountImport = this.unmountImport.bind(this);
   }
 
   handleOnExport() {
@@ -93,10 +96,20 @@ export class ExportPage extends Component {
         this.setState({ articlesToImport: Immutable.fromJS(JSON.parse(res)) });
       }
 
-      this.setState({ importModalIsOpened: true });
+      this.setState({ openImport: true });
     };
 
     fr.readAsText(file);
+  }
+
+  unmountImport() {
+    this.setState({ openImport: false });
+  }
+
+  handleFileUploadClick(event) {
+    // allow to select the same file few times in a row.
+
+    event.target.value = null; // eslint-disable-line
   }
 
   render() {
@@ -125,15 +138,19 @@ export class ExportPage extends Component {
                 id="upload"
                 type="file"
                 onChange={this.handleOnImport}
+                onClick={this.handleFileUploadClick}
               />
             </RaisedButton>
           </div>
         </div>
         <div>
-          <ImportModal
-            articles={this.state.articlesToImport}
-            open={this.state.importModalIsOpened}
-          />
+          { this.state.openImport
+            ? <ImportModal
+              articles={this.state.articlesToImport}
+              loadEntities={this.props.loadEntities}
+              rememberArticles={this.props.rememberArticles}
+              unmount={this.unmountImport}
+            /> : null }
         </div>
         <div className={styles.table}>
           <ArticlesTable
@@ -151,4 +168,4 @@ const mapStateToProps = (state) => ({
   articles: getFilteredArticles(state),
 });
 
-export default connect(mapStateToProps, { loadEntities })(ExportPage);
+export default connect(mapStateToProps, { loadEntities, rememberArticles })(ExportPage);
