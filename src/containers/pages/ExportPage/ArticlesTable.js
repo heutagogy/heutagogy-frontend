@@ -3,13 +3,40 @@ import moment from 'moment';
 import { Component, PropTypes } from 'react';
 import { Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 
-import { ZERO, MINUS_ONE } from './../../../constants/Constants';
+import { ZERO, ONE, MINUS_ONE } from './../../../constants/Constants';
 
 const inlineStyles = {
   wrapWordColumn: {
     whiteSpace: 'normal',
     wordWrap: 'break-word',
   },
+};
+
+const comparator = (articleA, articleB) => {
+  const timestampA = articleA.get('timestamp');
+  const timestampB = articleB.get('timestamp');
+  const readA = articleA.get('read');
+  const readB = articleB.get('read');
+
+  const compareDates = (momentA, momentB) => {
+    if (momentA > momentB) {
+      return MINUS_ONE;
+    } else if (momentA < momentB) {
+      return ONE;
+    }
+
+    return ZERO;
+  };
+
+  if (readA && !readB) {
+    return ONE;
+  } else if (!readA && readB) {
+    return MINUS_ONE;
+  } else if (readA && readB) {
+    return compareDates(moment(readA), moment(readB));
+  }
+
+  return compareDates(moment(timestampA), moment(timestampB));
 };
 
 export class ArticlesTable extends Component {
@@ -39,25 +66,25 @@ export class ArticlesTable extends Component {
           deselectOnClickaway={false}
           showRowHover
         >
-          {this.props.articles.map((item, i) => { // eslint-disable-line
-            return (
-              <TableRow
-                key={i}
-                selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
-              >
-                <TableRowColumn style={inlineStyles.wrapWordColumn}>
-                  <a
-                    href={item.get('url')}
-                    target="_blank"
-                  >
-                    {item.get('title')}
-                  </a>
-                </TableRowColumn>
-                <TableRowColumn>{moment(item.get('timestamp')).format('ll')}</TableRowColumn>
-                <TableRowColumn>{item.get('read') ? moment(item.get('read')).format('ll') : 'No'}</TableRowColumn>
-              </TableRow>
-            );
-          })}
+        {this.props.articles.sort(comparator).map((item, i) => { // eslint-disable-line
+          return (
+            <TableRow
+              key={i}
+              selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
+            >
+              <TableRowColumn style={inlineStyles.wrapWordColumn}>
+                <a
+                  href={item.get('url')}
+                  target="_blank"
+                >
+                  {item.get('title')}
+                </a>
+              </TableRowColumn>
+              <TableRowColumn>{moment(item.get('timestamp')).format('ll')}</TableRowColumn>
+              <TableRowColumn>{item.get('read') ? moment(item.get('read')).format('ll') : 'No'}</TableRowColumn>
+            </TableRow>
+          );
+        })}
         </TableBody>
       </Table>
     );
