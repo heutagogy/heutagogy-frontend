@@ -25,7 +25,7 @@ const inlineStyles = {
   },
 };
 
-class ImportModal extends Component {
+export class ImportModal extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
     loadEntities: PropTypes.func,
@@ -95,13 +95,17 @@ class ImportModal extends Component {
           onRequestClose={this.handleClose}
         >
           { this.props.articles.isEmpty()
-            ? <div className={styles.error}>
+            ? <div
+              className={styles.error}
+              id={'message'}
+            >
               {'Please, choose the file containing a valid json array with articles.'}
             </div>
             : <div className={styles.table}>
               <ArticlesTable
                 articles={this.props.articles}
                 handleOnRowSelection={this.onRowSelection}
+                id={'importing-table'}
                 selectedRows={this.state.selectedRows}
               />
             </div>}
