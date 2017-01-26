@@ -30,7 +30,6 @@ export class ArticlesTable extends Component {
       >
         <TableHeader>
           <TableRow>
-            <TableHeaderColumn>{'Link'}</TableHeaderColumn>
             <TableHeaderColumn>{'Title'}</TableHeaderColumn>
             <TableHeaderColumn>{'Saved'}</TableHeaderColumn>
             <TableHeaderColumn>{'Read'}</TableHeaderColumn>
@@ -46,15 +45,14 @@ export class ArticlesTable extends Component {
                 key={i}
                 selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
               >
-                <TableRowColumn>
+                <TableRowColumn style={inlineStyles.wrapWordColumn}>
                   <a
                     href={item.get('url')}
                     target="_blank"
                   >
-                    {item.get('url')}
+                    {item.get('title')}
                   </a>
                 </TableRowColumn>
-                <TableRowColumn style={inlineStyles.wrapWordColumn}>{item.get('title')}</TableRowColumn>
                 <TableRowColumn>{moment(item.get('timestamp')).format('ll')}</TableRowColumn>
                 <TableRowColumn>{item.get('read') ? moment(item.get('read')).format('ll') : 'No'}</TableRowColumn>
               </TableRow>
