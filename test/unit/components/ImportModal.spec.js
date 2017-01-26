@@ -23,7 +23,7 @@ describe('Import modal tests', () => {
     sandbox.restore();
   });
 
-  it('Show message if there is no articles after choosing an import file', () => {
+  it('Show message if there are no articles', () => {
     const wrapper = shallow(
       <ImportModal
         articles={Immutable.fromJS([])}
@@ -34,7 +34,7 @@ describe('Import modal tests', () => {
     expect(wrapper.find(messageSelector)).to.have.length(ONE);
   });
 
-  it('Show import table if there is articles after choosing an import file', () => {
+  it('Show import table if there are articles', () => {
     const data = [
       {
         url: 'http://example.com/',
