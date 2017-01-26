@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Component, PropTypes } from 'react';
 import { Table, TableHeader, TableHeaderColumn, TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 
-import { ZERO, ONE, MINUS_ONE } from './../../../constants/Constants';
+import { ZERO, ONE, MINUS_ONE } from './../../constants/Constants';
 
 const inlineStyles = {
   wrapWordColumn: {

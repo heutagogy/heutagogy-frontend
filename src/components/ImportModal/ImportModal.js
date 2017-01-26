@@ -4,10 +4,10 @@ import Immutable from 'immutable';
 import Dialog from 'material-ui/Dialog';
 import { arrayOf } from 'normalizr';
 
-import articleSchema from './../../../schemas/article';
-import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
-import FlatButton from './../../../components/Fields/FlatButton';
-import { ArticlesTable, getSelectedArticles } from './ArticlesTable';
+import articleSchema from './../../schemas/article';
+import { ARTICLES_VIEW_STATE } from './../../constants/ViewStates';
+import FlatButton from './../Fields/FlatButton';
+import { ArticlesTable, getSelectedArticles } from './../ArticlesTable/ArticlesTable';
 
 import styles from './ImportModal.less';
 
@@ -25,7 +25,7 @@ const inlineStyles = {
   },
 };
 
-export class ImportModal extends Component {
+class ImportModal extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
     loadEntities: PropTypes.func,
@@ -110,3 +110,5 @@ export class ImportModal extends Component {
     );
   }
 }
+
+export default ImportModal;
