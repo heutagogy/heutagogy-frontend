@@ -1,130 +1,162 @@
-/* eslint-disable fp/no-mutation */
-
-import { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import Immutable from 'immutable';
-import pureRender from 'pure-render-decorator';
-import Radium from 'radium';
-import moment from 'moment';
+import { Component, PropTypes } from 'react';
 import { arrayOf } from 'normalizr';
-import { Paper, RaisedButton } from 'material-ui';
+import { connect } from 'react-redux';
+import RaisedButton from 'material-ui/RaisedButton';
 
-import ViewStateWrapper from './../../../components/ViewStateWrapper';
-
-import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
-import { loadEntities } from './../../../actions/entity';
-import { getFilteredArticles } from './../../../selectors/articles';
-import { getViewState } from './../../../selectors/view';
+import { isJsonString } from './../../../utils/jsonUtils';
 import articleSchema from './../../../schemas/article';
+import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
+import { getFilteredArticles } from './../../../selectors/articles';
+import { loadEntities } from './../../../actions/entity';
+import { rememberArticles } from './../../../actions/articles';
+import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
+import ImportModal from './../../../components/ImportModal';
+
+import styles from './ArticlesPage.less';
 
 const inlineStyles = {
-  articles: {
-    display: 'flex',
+  topButton: {
+    disable: 'inline-block',
+    margin: '110px 70px 30px 40px',
   },
-  articleCard: {
-    height: 140,
-    width: 250,
-    margin: 10,
-  },
-  cardFooter: {
-    display: 'flex',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  articleField: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '15px 15px 0 15px',
-    width: 220,
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  },
-  buttonsContainer: {
-    margin: '0 0 0 60px',
-  },
-  buttons: {
-    margin: '70px 25px',
+  bottomButton: {
+    disable: 'inline-block',
+    margin: '30px 70px 30px 40px',
   },
 };
 
-@Radium
-@pureRender
-class ArticlesPage extends Component {
+export class ArticlesPage extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
     loadEntities: PropTypes.func,
-    viewState: PropTypes.instanceOf(Immutable.Map),
+    rememberArticles: PropTypes.func,
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.bind();
+
+    this.state = {
+      selectedRows: [],
+      articlesToImport: Immutable.fromJS([]),
+      openImport: false,
+    };
   }
 
   componentWillMount() {
     this.props.loadEntities({ href: '/bookmarks', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
   }
 
-  truncateTitle(title) {
-    const start = 0;
-    const end = 25;
+  onRowSelection(selectedRows) {
+    this.setState({ selectedRows });
+  }
 
-    if (title.length > end) {
-      return `${title.substring(start, end)}...`;
+  bind() {
+    this.handleOnExport = this.handleOnExport.bind(this);
+    this.handleOnImport = this.handleOnImport.bind(this);
+    this.onRowSelection = this.onRowSelection.bind(this);
+    this.unmountImport = this.unmountImport.bind(this);
+  }
+
+  handleOnExport() {
+    const tempLink = document.createElement('a');
+    const newArticles = getSelectedArticles(this.props.articles, this.state.selectedRows);
+    const content = encodeURIComponent(JSON.stringify(newArticles));
+
+    if (newArticles.isEmpty()) {
+      return;
     }
 
-    return title;
+    tempLink.setAttribute('href', `data:text/plain;charset=utf-8,${content}`);
+    tempLink.setAttribute('download', 'heutagogy.json');
+
+    if (document.createEvent) {
+      const event = document.createEvent('MouseEvents');
+
+      event.initEvent('click', true, true);
+      tempLink.dispatchEvent(event);
+    } else {
+      tempLink.click();
+    }
+
+    this.setState({ selectedRows: [] });
   }
 
-  handleOpenImport() {
-    window.location = '/import';
+  handleOnImport(event) {
+    const file = event.target.files[0];
+    const fr = new FileReader();
+
+    fr.onload = (e) => { // eslint-disable-line
+      const res = e.target.result;
+
+
+      if (isJsonString(res) && Array.isArray(JSON.parse(res))) {
+        this.setState({ articlesToImport: Immutable.fromJS(JSON.parse(res)) });
+      }
+
+      this.setState({ openImport: true });
+    };
+
+    fr.readAsText(file);
   }
 
-  handleOpenExport() {
-    window.location = '/export';
+  unmountImport() {
+    this.setState({ openImport: false });
   }
 
-  renderArticles() {
-    return this.props.articles.map((article) => (
-      <Paper
-        key={article.get('id')}
-        style={inlineStyles.articleCard}
-      >
-        <div style={inlineStyles.articleField}>
-          <div>{'Title:'}</div>
-          <div>{this.truncateTitle(article.get('title'))}</div>
-        </div>
-        <div style={inlineStyles.articleField}>
-          <div>{'Date:'}</div>
-          <div>{moment(article.get('timestamp')).format('ll')}</div>
-        </div>
-        <div style={inlineStyles.cardFooter}>
-          <RaisedButton
-            href={article.get('url')}
-            label="Open article"
-            secondary
-            target="_blank"
-          />
-        </div>
-      </Paper>
-    ));
+  handleFileUploadClick(event) {
+    // allow to select the same file few times in a row.
+
+    event.target.value = null; // eslint-disable-line
   }
 
   render() {
     return (
       <div>
-        <ViewStateWrapper viewState={this.props.viewState}>
-          <div style={inlineStyles.articles}>
-            {this.renderArticles()}
+        <div className={styles.buttons}>
+          <div style={inlineStyles.topButton}>
+            <RaisedButton
+              id={'export-button'}
+              label={'export'}
+              primary
+              onClick={this.handleOnExport}
+            />
           </div>
-        </ViewStateWrapper>
-        <div style={inlineStyles.buttonsContainer} >
-          <RaisedButton
-            label={'import page'}
-            primary
-            style={inlineStyles.buttons}
-            onClick={this.handleOpenImport}
-          />
-          <RaisedButton
-            label={'export page'}
-            primary
-            style={inlineStyles.buttons}
-            onClick={this.handleOpenExport}
+          <div style={inlineStyles.bottomButton}>
+            <RaisedButton
+              containerElement="label"
+              id={'import-button'}
+              label={'import'}
+              labelPosition="before"
+              primary
+            >
+              <input
+                accept=".json"
+                className={styles.input}
+                id="upload"
+                type="file"
+                onChange={this.handleOnImport}
+                onClick={this.handleFileUploadClick}
+              />
+            </RaisedButton>
+          </div>
+        </div>
+        <div>
+          { this.state.openImport
+            ? <ImportModal
+              articles={this.state.articlesToImport}
+              loadEntities={this.props.loadEntities}
+              rememberArticles={this.props.rememberArticles}
+              unmount={this.unmountImport}
+            /> : null }
+        </div>
+        <div className={styles.table}>
+          <ArticlesTable
+            articles={this.props.articles}
+            handleOnRowSelection={this.onRowSelection}
+            selectedRows={this.state.selectedRows}
           />
         </div>
       </div>
@@ -134,7 +166,6 @@ class ArticlesPage extends Component {
 
 const mapStateToProps = (state) => ({
   articles: getFilteredArticles(state),
-  viewState: getViewState(state, ARTICLES_VIEW_STATE),
 });
 
-export default connect(mapStateToProps, { loadEntities })(ArticlesPage);
+export default connect(mapStateToProps, { loadEntities, rememberArticles })(ArticlesPage);

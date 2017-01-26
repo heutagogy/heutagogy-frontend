@@ -2,15 +2,15 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import Immutable from 'immutable';
-import { ExportPage } from '../../../../src/containers/pages/ExportPage/ExportPage';
-import { ZERO, ONE } from '../../../../src/constants/Constants';
+import { ArticlesPage } from './../../../../../src/containers/pages/ArticlesPage/ArticlesPage';
+import { ZERO, ONE } from './../../../../../src/constants/Constants';
 
-const saveButtonSelector = '#save-button';
 const exportButtonSelector = '#export-button';
 const meta = 'data:text/plain;charset=utf-8,';
 
+const noop = () => null;
 
-describe('Export page tests', () => {
+describe('Exporting tests', () => {
   let sandbox; //eslint-disable-line
 
   beforeEach(() => {
@@ -21,26 +21,24 @@ describe('Export page tests', () => {
     sandbox.restore();
   });
 
-  it('“Save” button is disabled by default', () => {
-    const wrapper = shallow(<ExportPage articles={Immutable.fromJS([])} />);
-
-    expect(wrapper.find(saveButtonSelector).prop('disabled')).to.equal(true);
-  });
-
-  it('“Save” button is enabled when data is imported', () => {
-    const wrapper = shallow(<ExportPage articles={Immutable.fromJS([{ url: 'https://github.com/' }])} />);
-
-    expect(wrapper.find(saveButtonSelector).prop('disabled')).to.equal(false);
-  });
-
-  it('“Export” button is enabled by default', () => {
-    const wrapper = shallow(<ExportPage articles={Immutable.fromJS([])} />);
+  it('"Export" button is enabled', () => {
+    const wrapper = shallow(
+      <ArticlesPage
+        articles={Immutable.fromJS([])}
+        loadEntities={noop}
+      />
+    );
 
     expect(wrapper.find(exportButtonSelector).prop('disabled')).to.equal(false);
   });
 
   it('Table is empty by default', () => {
-    const wrapper = shallow(<ExportPage articles={Immutable.fromJS([])} />);
+    const wrapper = shallow(
+      <ArticlesPage
+        articles={Immutable.fromJS([])}
+        loadEntities={noop}
+      />
+    );
 
     expect(wrapper.find('td')).to.have.length(ZERO);
   });
@@ -71,12 +69,18 @@ describe('Export page tests', () => {
         url: 'https://www.google.com.ua',
       },
     ];
-    const wrapper = shallow(<ExportPage articles={Immutable.fromJS(data)} />);
+
+    const wrapper = shallow(
+      <ArticlesPage
+        articles={Immutable.fromJS(data)}
+        loadEntities={noop}
+      />
+    );
 
 
     wrapper.setState({ selectedRows: [ONE] });
 
-    wrapper.find(saveButtonSelector).simulate('click');
+    wrapper.find(exportButtonSelector).simulate('click');
 
     expect(setAttributeSpy.getCall(ZERO).args).to.deep.equal([
       'href',
@@ -111,12 +115,16 @@ describe('Export page tests', () => {
         url: 'https://www.google.com.ua',
       },
     ];
-    const wrapper = shallow(<ExportPage articles={Immutable.fromJS(data)} />);
 
+    const wrapper = shallow(
+      <ArticlesPage
+        articles={Immutable.fromJS(data)}
+        loadEntities={noop}
+      />);
 
     wrapper.setState({ selectedRows: 'all' });
 
-    wrapper.find(saveButtonSelector).simulate('click');
+    wrapper.find(exportButtonSelector).simulate('click');
 
     expect(setAttributeSpy.getCall(ZERO).args).to.deep.equal([
       'href',
@@ -151,11 +159,17 @@ describe('Export page tests', () => {
         url: 'https://www.google.com.ua',
       },
     ];
-    const wrapper = shallow(<ExportPage articles={Immutable.fromJS(data)} />);
+
+    const wrapper = shallow(
+      <ArticlesPage
+        articles={Immutable.fromJS(data)}
+        loadEntities={noop}
+      />
+    );
 
     wrapper.setState({ selectedRows: [] });
 
-    wrapper.find(saveButtonSelector).simulate('click');
+    wrapper.find(exportButtonSelector).simulate('click');
 
     expect(setAttributeSpy.called).to.equal(false);
     expect(clickSpy.called).to.equal(false);
