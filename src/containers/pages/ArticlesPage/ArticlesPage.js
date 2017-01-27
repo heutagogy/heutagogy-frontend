@@ -4,14 +4,16 @@ import { arrayOf } from 'normalizr';
 import { connect } from 'react-redux';
 import RaisedButton from 'material-ui/RaisedButton';
 
-import { isJsonString } from './../../../utils/jsonUtils';
+import ImportModal from './../../../components/ImportModal';
 import articleSchema from './../../../schemas/article';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
-import { getFilteredArticles } from './../../../selectors/articles';
-import { loadEntities } from './../../../actions/entity';
-import { rememberArticles } from './../../../actions/articles';
 import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
-import ImportModal from './../../../components/ImportModal';
+import { getAuthenticatedUser } from './../../../selectors/users';
+import { getFilteredArticles } from './../../../selectors/articles';
+import { isJsonString } from './../../../utils/jsonUtils';
+import { loadEntities } from './../../../actions/entity';
+import { logoutUser } from './../../../actions/users';
+import { rememberArticles } from './../../../actions/articles';
 
 import styles from './ArticlesPage.less';
 
@@ -20,9 +22,14 @@ const inlineStyles = {
     disable: 'inline-block',
     margin: '110px 70px 30px 40px',
   },
-  bottomButton: {
+  button: {
     disable: 'inline-block',
     margin: '30px 70px 30px 40px',
+  },
+  title: {
+    fontFamily: 'Ubuntu, sans-serif',
+    textAlign: 'center',
+    margin: '60px 0 0 0',
   },
 };
 
@@ -30,7 +37,9 @@ export class ArticlesPage extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
     loadEntities: PropTypes.func,
+    logoutUser: PropTypes.func,
     rememberArticles: PropTypes.func,
+    user: PropTypes.instanceOf(Immutable.Map),
   }
 
   constructor(props) {
@@ -56,8 +65,13 @@ export class ArticlesPage extends Component {
   bind() {
     this.handleOnExport = this.handleOnExport.bind(this);
     this.handleOnImport = this.handleOnImport.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
     this.onRowSelection = this.onRowSelection.bind(this);
     this.unmountImport = this.unmountImport.bind(this);
+  }
+
+  handleLogout() {
+    this.props.logoutUser();
   }
 
   handleOnExport() {
@@ -113,10 +127,21 @@ export class ArticlesPage extends Component {
   }
 
   render() {
+    const greetings = `Welcome to Heutagogy, ${this.props.user.get('login')}!`;
+
     return (
       <div>
+        <h5 style={inlineStyles.title}>{greetings}</h5>
         <div className={styles.buttons}>
           <div style={inlineStyles.topButton}>
+            <RaisedButton
+              id={'logout-button'}
+              label={'logout'}
+              primary
+              onClick={this.handleLogout}
+            />
+          </div>
+          <div style={inlineStyles.button}>
             <RaisedButton
               id={'export-button'}
               label={'export'}
@@ -124,7 +149,7 @@ export class ArticlesPage extends Component {
               onClick={this.handleOnExport}
             />
           </div>
-          <div style={inlineStyles.bottomButton}>
+          <div style={inlineStyles.button}>
             <RaisedButton
               containerElement="label"
               id={'import-button'}
@@ -166,6 +191,7 @@ export class ArticlesPage extends Component {
 
 const mapStateToProps = (state) => ({
   articles: getFilteredArticles(state),
+  user: getAuthenticatedUser(state),
 });
 
-export default connect(mapStateToProps, { loadEntities, rememberArticles })(ArticlesPage);
+export default connect(mapStateToProps, { loadEntities, logoutUser, rememberArticles })(ArticlesPage);

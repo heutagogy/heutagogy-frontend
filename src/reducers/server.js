@@ -11,9 +11,7 @@ const initialState = Immutable.fromJS({
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_SERVER_ADDRESS: {
-      localStorageUtils.setServerInfo(Immutable.fromJS({
-        address: action.address,
-      }));
+      localStorageUtils.setServerInfo(Immutable.fromJS({ address: action.address }));
 
       return state.set('address', action.address);
     }
