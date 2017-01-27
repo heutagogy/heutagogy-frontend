@@ -1,22 +1,26 @@
 .linkDiv {
-  a {
-    transition: color 0.4s;
-    color: #265c83;
+  a:link {
+    color: #008ace;
+    text-decoration: none;
   }
-
-  a:link,
   a:visited {
-    color: #265c83;
+    color: #b40eb4;
+    text-decoration: none;
   }
   a:hover {
-    color: #7fdbff;
-  }
-  a:active {
-    transition: color 0.3s;
-    color: #007be6;
+    text-decoration: underline;
   }
 }
 
-.link {
-  text-decoration: none;
+.preventCellClick {
+  position: relative;
+}
+
+.preventCellClickWrapper::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }

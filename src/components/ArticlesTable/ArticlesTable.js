@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-bind */
+
 import Immutable from 'immutable';
 import moment from 'moment';
 import { Component, PropTypes } from 'react';
@@ -74,10 +76,15 @@ export class ArticlesTable extends Component {
               key={i}
               selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
             >
-              <TableRowColumn style={inlineStyles.wrapWordColumn}>
-                <div className={styles.linkDiv}>
+              <TableRowColumn
+                className={styles.preventCellClick}
+                style={inlineStyles.wrapWordColumn}
+              >
+                <div
+                  className={styles.linkDiv}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <a
-                    className={styles.link}
                     href={item.get('url')}
                     target="_blank"
                   >
@@ -85,8 +92,22 @@ export class ArticlesTable extends Component {
                   </a>
                 </div>
               </TableRowColumn>
-              <TableRowColumn>{moment(item.get('timestamp')).format('lll')}</TableRowColumn>
-              <TableRowColumn>{item.get('read') ? moment(item.get('read')).format('lll') : 'No'}</TableRowColumn>
+              <TableRowColumn className={styles.preventCellClick}>
+                <div
+                  className={styles.preventCellClickWrapper}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {moment(item.get('timestamp')).format('lll')}
+                </div>
+              </TableRowColumn>
+              <TableRowColumn className={styles.preventCellClick}>
+                <div
+                  className={styles.preventCellClickWrapper}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {item.get('read') ? moment(item.get('read')).format('lll') : 'No'}
+                </div>
+              </TableRowColumn>
             </TableRow>
           );
         })}
