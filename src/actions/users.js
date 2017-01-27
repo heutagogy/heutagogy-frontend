@@ -11,7 +11,7 @@ export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS';
 export const USER_LOGIN_FAILURE = 'USER_LOGIN_FAILURE';
 
 const fetchUserLogin = ({ login, password }) => {
-  const meta = { viewId: LOGIN_VIEW_STATE };
+  const meta = { viewId: LOGIN_VIEW_STATE, login };
 
   return {
     [CALL_API]: {

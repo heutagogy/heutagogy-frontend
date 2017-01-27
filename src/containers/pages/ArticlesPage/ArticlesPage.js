@@ -8,6 +8,7 @@ import ImportModal from './../../../components/ImportModal';
 import articleSchema from './../../../schemas/article';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
+import { getAuthenticatedUser } from './../../../selectors/users';
 import { getFilteredArticles } from './../../../selectors/articles';
 import { isJsonString } from './../../../utils/jsonUtils';
 import { loadEntities } from './../../../actions/entity';
@@ -25,6 +26,11 @@ const inlineStyles = {
     disable: 'inline-block',
     margin: '30px 70px 30px 40px',
   },
+  title: {
+    fontFamily: 'Ubuntu, sans-serif',
+    textAlign: 'center',
+    margin: '60px 0 0 0',
+  },
 };
 
 export class ArticlesPage extends Component {
@@ -33,6 +39,7 @@ export class ArticlesPage extends Component {
     loadEntities: PropTypes.func,
     logoutUser: PropTypes.func,
     rememberArticles: PropTypes.func,
+    user: PropTypes.instanceOf(Immutable.Map),
   }
 
   constructor(props) {
@@ -120,8 +127,11 @@ export class ArticlesPage extends Component {
   }
 
   render() {
+    const greetings = `Welcome to Heutagogy, ${this.props.user.get('login')}!`;
+
     return (
       <div>
+        <h5 style={inlineStyles.title}>{greetings}</h5>
         <div className={styles.buttons}>
           <div style={inlineStyles.topButton}>
             <RaisedButton
@@ -181,6 +191,7 @@ export class ArticlesPage extends Component {
 
 const mapStateToProps = (state) => ({
   articles: getFilteredArticles(state),
+  user: getAuthenticatedUser(state),
 });
 
 export default connect(mapStateToProps, { loadEntities, logoutUser, rememberArticles })(ArticlesPage);

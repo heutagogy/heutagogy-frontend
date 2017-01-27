@@ -21,17 +21,10 @@ import './assets/media.less';
 import './assets/typography.less';
 import './styles.less';
 
+
 const authUser = localStorageUtils.getAuthinticatedUser();
 
-const initialState = authUser
-  ? Immutable.fromJS({
-    entities: {
-      authUser: {
-        [authUser.login]: authUser,
-      },
-    },
-  })
-  : new Immutable.Map();
+const initialState = authUser && !authUser.isEmpty() ? Immutable.fromJS({ entities: { authUser } }) : new Immutable.Map();
 
 const store = configureStore(initialState);
 const history = syncHistoryWithStore(browserHistory, store, {

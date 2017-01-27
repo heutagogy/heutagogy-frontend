@@ -26,6 +26,7 @@ describe('Exporting tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS([])}
         loadEntities={noop}
+        user={Immutable.fromJS({})}
       />
     );
 
@@ -37,6 +38,7 @@ describe('Exporting tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS([])}
         loadEntities={noop}
+        user={Immutable.fromJS({})}
       />
     );
 
@@ -74,6 +76,7 @@ describe('Exporting tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS(data)}
         loadEntities={noop}
+        user={Immutable.fromJS({})}
       />
     );
 
@@ -120,6 +123,7 @@ describe('Exporting tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS(data)}
         loadEntities={noop}
+        user={Immutable.fromJS({})}
       />);
 
     wrapper.setState({ selectedRows: 'all' });
@@ -164,6 +168,7 @@ describe('Exporting tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS(data)}
         loadEntities={noop}
+        user={Immutable.fromJS({})}
       />
     );
 
