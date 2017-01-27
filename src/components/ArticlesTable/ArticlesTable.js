@@ -81,7 +81,7 @@ export class ArticlesTable extends Component {
                 style={inlineStyles.wrapWordColumn}
               >
                 <div
-                  className={styles.linkDiv}
+                  className={item.get('read') ? styles.linkDivRead : styles.linkDivUnread}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <a
