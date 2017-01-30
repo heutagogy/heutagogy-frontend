@@ -9,7 +9,6 @@ import { renderTextField } from './../renders';
 import { blue500 } from 'material-ui/styles/colors';
 import RaisedButton from './../../Fields/RaisedButton';
 
-import { loginValidation } from './../../../utils/forms/validation';
 import { getViewState } from './../../../selectors/view';
 import { LOGIN_VIEW_STATE } from './../../../constants/ViewStates';
 
@@ -116,7 +115,6 @@ class LoginForm extends Component {
 
 const LoginFormWrapped = reduxForm({
   form: 'LoginForm',
-  validate: loginValidation,
 })(LoginForm);
 
 const mapStateToProps = (state) => ({
