@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
 import { arrayOf } from 'normalizr';
@@ -29,7 +30,7 @@ const inlineStyles = {
   title: {
     fontFamily: 'Ubuntu, sans-serif',
     textAlign: 'center',
-    margin: '60px 0 0 0',
+    margin: '40px 0 0 0',
   },
 };
 
@@ -131,43 +132,6 @@ export class ArticlesPage extends Component {
 
     return (
       <div>
-        <h5 style={inlineStyles.title}>{greetings}</h5>
-        <div className={styles.buttons}>
-          <div style={inlineStyles.topButton}>
-            <RaisedButton
-              id={'logout-button'}
-              label={'logout'}
-              primary
-              onClick={this.handleLogout}
-            />
-          </div>
-          <div style={inlineStyles.button}>
-            <RaisedButton
-              id={'export-button'}
-              label={'export'}
-              primary
-              onClick={this.handleOnExport}
-            />
-          </div>
-          <div style={inlineStyles.button}>
-            <RaisedButton
-              containerElement="label"
-              id={'import-button'}
-              label={'import'}
-              labelPosition="before"
-              primary
-            >
-              <input
-                accept=".json"
-                className={styles.input}
-                id="upload"
-                type="file"
-                onChange={this.handleOnImport}
-                onClick={this.handleFileUploadClick}
-              />
-            </RaisedButton>
-          </div>
-        </div>
         <div>
           { this.state.openImport
             ? <ImportModal
