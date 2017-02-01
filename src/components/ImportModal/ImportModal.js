@@ -2,10 +2,7 @@
 import { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
 import Dialog from 'material-ui/Dialog';
-import { arrayOf } from 'normalizr';
 
-import articleSchema from './../../schemas/article';
-import { ARTICLES_VIEW_STATE } from './../../constants/ViewStates';
 import FlatButton from './../Fields/FlatButton';
 import { ArticlesTable, getSelectedArticles } from './../ArticlesTable/ArticlesTable';
 
@@ -28,7 +25,6 @@ const inlineStyles = {
 export class ImportModal extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
-    loadEntities: PropTypes.func,
     rememberArticles: PropTypes.func,
     unmount: PropTypes.func,
   }
@@ -56,7 +52,6 @@ export class ImportModal extends Component {
 
     if (!articlesToImport.isEmpty()) {
       this.props.rememberArticles({ articles: articlesToImport });
-      this.props.loadEntities({ href: '/bookmarks', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
     }
 
     this.props.unmount();
