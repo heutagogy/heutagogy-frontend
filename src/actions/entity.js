@@ -6,8 +6,9 @@ export const LOAD_ENTITIES_START = 'LOAD_ENTITIES_START';
 export const LOAD_ENTITIES_SUCCESS = 'LOAD_ENTITIES_SUCCESS';
 export const LOAD_ENTITIES_FAILURE = 'LOAD_ENTITIES_FAILURE';
 
-const fetchEntities = ({ href, viewId, schema }) => {
-  const meta = { viewId };
+
+const fetchEntities = ({ href, type, schema }) => {
+  const meta = { viewId: type };
 
   return {
     [CALL_API]: {

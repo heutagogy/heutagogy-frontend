@@ -5,11 +5,7 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import Immutable from 'immutable';
-import { ArticlesPage } from './../../../../../src/containers/pages/ArticlesPage/ArticlesPage';
-
-const noop = () => null;
-const importButtonSelector = '#import-button';
-
+import { HeaderBar } from './../../../src/containers/HeaderBar/HeaderBar';
 
 describe('Import page tests', () => {
   let sandbox; //eslint-disable-line
@@ -22,20 +18,16 @@ describe('Import page tests', () => {
     sandbox.restore();
   });
 
-  it('"Import" button is enabled by default', () => {
-    const wrapper = shallow(<ArticlesPage loadEntities={noop} user={Immutable.fromJS({})} />);
-
-    expect(wrapper.find(importButtonSelector).prop('disabled')).to.equal(false);
-  });
-
   it('Input file accepts only json', () => {
-    const wrapper = shallow(<ArticlesPage loadEntities={noop} user={Immutable.fromJS({})} />);
+    const wrapper = shallow(<HeaderBar user={Immutable.fromJS({})} />);
+
+    wrapper.setState({ openMenu: true });
 
     expect(wrapper.find('input[type="file"]').html()).to.contain('accept=".json"');
   });
 
   it('Data is set when uploading file is valid json array', () => {
-    const wrapper = shallow(<ArticlesPage loadEntities={noop} user={Immutable.fromJS({})} />);
+    const wrapper = shallow(<HeaderBar user={Immutable.fromJS({})} />);
     const file = {
       name: 'valid_array.json',
       type: 'application/json',
@@ -59,6 +51,7 @@ describe('Import page tests', () => {
       this.onload({ target: { result: JSON.stringify(file.content) } });
     });
 
+    wrapper.setState({ openMenu: true });
     wrapper.find('input').simulate('change', { target: { files: [file] } });
 
     stub.restore();

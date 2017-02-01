@@ -2,44 +2,22 @@ import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
 import { arrayOf } from 'normalizr';
 import { connect } from 'react-redux';
-import RaisedButton from 'material-ui/RaisedButton';
+import LinearProgress from 'material-ui/LinearProgress';
 
-import ImportModal from './../../../components/ImportModal';
 import articleSchema from './../../../schemas/article';
+import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
-import { getAuthenticatedUser } from './../../../selectors/users';
 import { getFilteredArticles } from './../../../selectors/articles';
-import { isJsonString } from './../../../utils/jsonUtils';
+import { getViewState } from './../../../selectors/view';
 import { loadEntities } from './../../../actions/entity';
-import { logoutUser } from './../../../actions/users';
-import { rememberArticles } from './../../../actions/articles';
 
-import styles from './ArticlesPage.less';
-
-const inlineStyles = {
-  topButton: {
-    disable: 'inline-block',
-    margin: '110px 70px 30px 40px',
-  },
-  button: {
-    disable: 'inline-block',
-    margin: '30px 70px 30px 40px',
-  },
-  title: {
-    fontFamily: 'Ubuntu, sans-serif',
-    textAlign: 'center',
-    margin: '60px 0 0 0',
-  },
-};
 
 export class ArticlesPage extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
     loadEntities: PropTypes.func,
-    logoutUser: PropTypes.func,
-    rememberArticles: PropTypes.func,
-    user: PropTypes.instanceOf(Immutable.Map),
+    loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
   }
 
   constructor(props) {
@@ -47,15 +25,15 @@ export class ArticlesPage extends Component {
 
     this.bind();
 
-    this.state = {
-      selectedRows: [],
-      articlesToImport: Immutable.fromJS([]),
-      openImport: false,
-    };
+    this.state = { selectedRows: [] };
   }
 
   componentWillMount() {
     this.props.loadEntities({ href: '/bookmarks?per_page=200', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
+  }
+
+  componentDidMount() {
+    window.addEventListener('export', this.handleOnExport);
   }
 
   onRowSelection(selectedRows) {
@@ -64,14 +42,7 @@ export class ArticlesPage extends Component {
 
   bind() {
     this.handleOnExport = this.handleOnExport.bind(this);
-    this.handleOnImport = this.handleOnImport.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
     this.onRowSelection = this.onRowSelection.bind(this);
-    this.unmountImport = this.unmountImport.bind(this);
-  }
-
-  handleLogout() {
-    this.props.logoutUser();
   }
 
   handleOnExport() {
@@ -95,88 +66,14 @@ export class ArticlesPage extends Component {
       tempLink.click();
     }
 
+    // unselect all (only works if you selected each row separately, see https://github.com/callemall/material-ui/issues/3074)
     this.setState({ selectedRows: [] });
   }
 
-  handleOnImport(event) {
-    const file = event.target.files[0];
-    const fr = new FileReader();
-
-    fr.onload = (e) => { // eslint-disable-line
-      const res = e.target.result;
-
-
-      if (isJsonString(res) && Array.isArray(JSON.parse(res))) {
-        this.setState({ articlesToImport: Immutable.fromJS(JSON.parse(res)) });
-      }
-
-      this.setState({ openImport: true });
-    };
-
-    fr.readAsText(file);
-  }
-
-  unmountImport() {
-    this.setState({ openImport: false });
-  }
-
-  handleFileUploadClick(event) {
-    // allow to select the same file few times in a row.
-
-    event.target.value = null; // eslint-disable-line
-  }
-
   render() {
-    const greetings = `Welcome to Heutagogy, ${this.props.user.get('login')}!`;
-
     return (
       <div>
-        <h5 style={inlineStyles.title}>{greetings}</h5>
-        <div className={styles.buttons}>
-          <div style={inlineStyles.topButton}>
-            <RaisedButton
-              id={'logout-button'}
-              label={'logout'}
-              primary
-              onClick={this.handleLogout}
-            />
-          </div>
-          <div style={inlineStyles.button}>
-            <RaisedButton
-              id={'export-button'}
-              label={'export'}
-              primary
-              onClick={this.handleOnExport}
-            />
-          </div>
-          <div style={inlineStyles.button}>
-            <RaisedButton
-              containerElement="label"
-              id={'import-button'}
-              label={'import'}
-              labelPosition="before"
-              primary
-            >
-              <input
-                accept=".json"
-                className={styles.input}
-                id="upload"
-                type="file"
-                onChange={this.handleOnImport}
-                onClick={this.handleFileUploadClick}
-              />
-            </RaisedButton>
-          </div>
-        </div>
-        <div>
-          { this.state.openImport
-            ? <ImportModal
-              articles={this.state.articlesToImport}
-              loadEntities={this.props.loadEntities}
-              rememberArticles={this.props.rememberArticles}
-              unmount={this.unmountImport}
-            /> : null }
-        </div>
+        { this.loadingArticlesStatus}
         <div className={styles.table}>
           <ArticlesTable
             articles={this.props.articles}
@@ -184,6 +81,13 @@ export class ArticlesPage extends Component {
             selectedRows={this.state.selectedRows}
           />
         </div>
+        { this.props.loadingArticlesStatus && this.props.loadingArticlesStatus.get('isInProgress')
+          ? <div className={styles.linearProgress}>
+            <div style={{ margin: 10 }}>{'Loading articles...'}</div>
+            <LinearProgress mode="indeterminate" />
+          </div> : null }
+        { this.props.loadingArticlesStatus && this.props.loadingArticlesStatus.get('isFailed')
+          ? <div><i>{this.props.loadingArticlesStatus.get('message')}</i></div> : null }
       </div>
     );
   }
@@ -191,7 +95,7 @@ export class ArticlesPage extends Component {
 
 const mapStateToProps = (state) => ({
   articles: getFilteredArticles(state),
-  user: getAuthenticatedUser(state),
+  loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
 });
 
-export default connect(mapStateToProps, { loadEntities, logoutUser, rememberArticles })(ArticlesPage);
+export default connect(mapStateToProps, { loadEntities })(ArticlesPage);

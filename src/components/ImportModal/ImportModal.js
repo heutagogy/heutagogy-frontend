@@ -2,19 +2,17 @@
 import { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
 import Dialog from 'material-ui/Dialog';
-import { arrayOf } from 'normalizr';
 
-import articleSchema from './../../schemas/article';
-import { ARTICLES_VIEW_STATE } from './../../constants/ViewStates';
 import FlatButton from './../Fields/FlatButton';
 import { ArticlesTable, getSelectedArticles } from './../ArticlesTable/ArticlesTable';
 
 import styles from './ImportModal.less';
+import Spinner from './../Spinner';
 
 const inlineStyles = {
   titleStyle: {
-    fontFamily: 'Ubuntu, sans-serif',
     textAlign: 'center',
+    padding: '15px',
   },
   submit: {
     float: 'left',
@@ -28,8 +26,8 @@ const inlineStyles = {
 export class ImportModal extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
-    loadEntities: PropTypes.func,
     rememberArticles: PropTypes.func,
+    rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
     unmount: PropTypes.func,
   }
 
@@ -56,10 +54,10 @@ export class ImportModal extends Component {
 
     if (!articlesToImport.isEmpty()) {
       this.props.rememberArticles({ articles: articlesToImport });
-      this.props.loadEntities({ href: '/bookmarks', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
     }
 
-    this.props.unmount();
+    // unselect all (only works if you selected each row separately, see https://github.com/callemall/material-ui/issues/3074)
+    this.state = { selectedRows: [] };
   }
 
   handleClose() {
@@ -70,7 +68,8 @@ export class ImportModal extends Component {
     const actions = [
       <FlatButton
         disabled={this.props.articles.isEmpty()}
-        label={'Submit'}
+        label={this.props.rememberArticlesState && this.props.rememberArticlesState.get('isInProgress')
+          ? <Spinner size={25} /> : 'Submit'}
         primary
         style={inlineStyles.submit}
         onTouchTap={this.handleSubmit}
@@ -88,6 +87,7 @@ export class ImportModal extends Component {
         <Dialog
           actions={actions}
           autoScrollBodyContent
+          bodyStyle={{ padding: 0, backgroundColor: '#eee' }}
           modal={false}
           open
           title={'Import Articles'}
