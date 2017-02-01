@@ -2,7 +2,7 @@ import { PropTypes, Component } from 'react';
 import Radium from 'radium';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import HeaderBar from './../components/HeaderBar';
+import HeaderBar from './HeaderBar';
 
 const inlineStyles = {
   routerContainer: {

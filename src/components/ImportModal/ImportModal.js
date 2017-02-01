@@ -13,8 +13,8 @@ import styles from './ImportModal.less';
 
 const inlineStyles = {
   titleStyle: {
-    fontFamily: 'Ubuntu, sans-serif',
     textAlign: 'center',
+    padding: '15px',
   },
   submit: {
     float: 'left',
@@ -88,6 +88,7 @@ export class ImportModal extends Component {
         <Dialog
           actions={actions}
           autoScrollBodyContent
+          bodyStyle={{ padding: 0, backgroundColor: '#eee' }}
           modal={false}
           open
           title={'Import Articles'}
