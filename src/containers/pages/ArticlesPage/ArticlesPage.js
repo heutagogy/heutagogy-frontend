@@ -1,22 +1,23 @@
-/* eslint-disable */
-
 import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
 import { arrayOf } from 'normalizr';
 import { connect } from 'react-redux';
+import LinearProgress from 'material-ui/LinearProgress';
 
 import articleSchema from './../../../schemas/article';
+import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
 import { getFilteredArticles } from './../../../selectors/articles';
+import { getViewState } from './../../../selectors/view';
 import { loadEntities } from './../../../actions/entity';
-import styles from './ArticlesPage.less';
 
 
 export class ArticlesPage extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
     loadEntities: PropTypes.func,
+    loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
   }
 
   constructor(props) {
@@ -65,12 +66,14 @@ export class ArticlesPage extends Component {
       tempLink.click();
     }
 
+    // unselect all (only works if you selected each row separately, see https://github.com/callemall/material-ui/issues/3074)
     this.setState({ selectedRows: [] });
   }
 
   render() {
     return (
       <div>
+        { this.loadingArticlesStatus}
         <div className={styles.table}>
           <ArticlesTable
             articles={this.props.articles}
@@ -78,6 +81,13 @@ export class ArticlesPage extends Component {
             selectedRows={this.state.selectedRows}
           />
         </div>
+        { this.props.loadingArticlesStatus && this.props.loadingArticlesStatus.get('isInProgress')
+          ? <div className={styles.linearProgress}>
+            <div style={{ margin: 10 }}>{'Loading articles...'}</div>
+            <LinearProgress mode="indeterminate" />
+          </div> : null }
+        { this.props.loadingArticlesStatus && this.props.loadingArticlesStatus.get('isFailed')
+          ? <div><i>{this.props.loadingArticlesStatus.get('message')}</i></div> : null }
       </div>
     );
   }
@@ -85,6 +95,7 @@ export class ArticlesPage extends Component {
 
 const mapStateToProps = (state) => ({
   articles: getFilteredArticles(state),
+  loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
 });
 
 export default connect(mapStateToProps, { loadEntities })(ArticlesPage);

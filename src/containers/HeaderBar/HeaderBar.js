@@ -10,18 +10,21 @@ import MenuItem from 'material-ui/MenuItem';
 import { connect } from 'react-redux';
 
 import ImportModal from './../../components/ImportModal';
+import { REMEMBER_ARTICLES_VIEW_STATE } from './../../constants/ViewStates';
 import { getAuthenticatedUser } from './../../selectors/users';
 import { logoutUser } from './../../actions/users';
 import styles from './HeaderBar.less';
 import userUtils from './../../utils/userUtils';
 import { rememberArticles } from './../../actions/articles';
 import { isJsonString } from './../../utils/jsonUtils';
+import { getViewState } from './../../selectors/view';
 
 
 export class HeaderBar extends Component {
   static propTypes = {
     logoutUser: PropTypes.func,
     rememberArticles: PropTypes.func,
+    rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
     user: PropTypes.instanceOf(Immutable.Map),
   }
 
@@ -137,6 +140,7 @@ export class HeaderBar extends Component {
             ? <ImportModal
               articles={this.state.articlesToImport}
               rememberArticles={this.props.rememberArticles}
+              rememberArticlesState={this.props.rememberArticlesState}
               unmount={this.unmountImport}
             /> : null }
         </div>
@@ -146,6 +150,7 @@ export class HeaderBar extends Component {
 }
 
 const mapStateToProps = (state) => ({
+  rememberArticlesState: getViewState(state, REMEMBER_ARTICLES_VIEW_STATE),
   user: getAuthenticatedUser(state),
 });
 

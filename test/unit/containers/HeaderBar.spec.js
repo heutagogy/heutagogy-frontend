@@ -7,8 +7,6 @@ import sinon from 'sinon';
 import Immutable from 'immutable';
 import { HeaderBar } from './../../../src/containers/HeaderBar/HeaderBar';
 
-const noop = () => null;
-
 describe('Import page tests', () => {
   let sandbox; //eslint-disable-line
 
@@ -21,7 +19,7 @@ describe('Import page tests', () => {
   });
 
   it('Input file accepts only json', () => {
-    const wrapper = shallow(<HeaderBar loadEntities={noop} user={Immutable.fromJS({})} />);
+    const wrapper = shallow(<HeaderBar user={Immutable.fromJS({})} />);
 
     wrapper.setState({ openMenu: true });
 
@@ -29,7 +27,7 @@ describe('Import page tests', () => {
   });
 
   it('Data is set when uploading file is valid json array', () => {
-    const wrapper = shallow(<HeaderBar loadEntities={noop} user={Immutable.fromJS({})} />);
+    const wrapper = shallow(<HeaderBar user={Immutable.fromJS({})} />);
     const file = {
       name: 'valid_array.json',
       type: 'application/json',

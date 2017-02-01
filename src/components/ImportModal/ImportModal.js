@@ -7,6 +7,7 @@ import FlatButton from './../Fields/FlatButton';
 import { ArticlesTable, getSelectedArticles } from './../ArticlesTable/ArticlesTable';
 
 import styles from './ImportModal.less';
+import Spinner from './../Spinner';
 
 const inlineStyles = {
   titleStyle: {
@@ -26,6 +27,7 @@ export class ImportModal extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
     rememberArticles: PropTypes.func,
+    rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
     unmount: PropTypes.func,
   }
 
@@ -54,7 +56,8 @@ export class ImportModal extends Component {
       this.props.rememberArticles({ articles: articlesToImport });
     }
 
-    this.props.unmount();
+    // unselect all (only works if you selected each row separately, see https://github.com/callemall/material-ui/issues/3074)
+    this.state = { selectedRows: [] };
   }
 
   handleClose() {
@@ -65,7 +68,8 @@ export class ImportModal extends Component {
     const actions = [
       <FlatButton
         disabled={this.props.articles.isEmpty()}
-        label={'Submit'}
+        label={this.props.rememberArticlesState && this.props.rememberArticlesState.get('isInProgress')
+          ? <Spinner size={25} /> : 'Submit'}
         primary
         style={inlineStyles.submit}
         onTouchTap={this.handleSubmit}
