@@ -9,7 +9,7 @@ const meta = 'data:text/plain;charset=utf-8,';
 
 const noop = () => null;
 
-describe('Article page tests', () => {
+describe('Articles page tests', () => {
   let sandbox; //eslint-disable-line
 
   beforeEach(() => {
