@@ -18,7 +18,7 @@ import { rememberArticles } from './../../actions/articles';
 import { isJsonString } from './../../utils/jsonUtils';
 
 
-class HeaderBar extends Component {
+export class HeaderBar extends Component {
   static propTypes = {
     logoutUser: PropTypes.func,
     rememberArticles: PropTypes.func,

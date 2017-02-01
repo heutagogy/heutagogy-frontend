@@ -2,15 +2,14 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import Immutable from 'immutable';
-import { ArticlesPage } from './../../../../../src/containers/pages/ArticlesPage/ArticlesPage';
-import { ZERO, ONE } from './../../../../../src/constants/Constants';
+import { ArticlesPage } from './../../../../src/containers/pages/ArticlesPage/ArticlesPage';
+import { ZERO, ONE } from './../../../../src/constants/Constants';
 
-const exportButtonSelector = '#export-button';
 const meta = 'data:text/plain;charset=utf-8,';
 
 const noop = () => null;
 
-describe('Exporting tests', () => {
+describe('Article page tests', () => {
   let sandbox; //eslint-disable-line
 
   beforeEach(() => {
@@ -21,24 +20,11 @@ describe('Exporting tests', () => {
     sandbox.restore();
   });
 
-  it('"Export" button is enabled', () => {
-    const wrapper = shallow(
-      <ArticlesPage
-        articles={Immutable.fromJS([])}
-        loadEntities={noop}
-        user={Immutable.fromJS({})}
-      />
-    );
-
-    expect(wrapper.find(exportButtonSelector).prop('disabled')).to.equal(false);
-  });
-
   it('Table is empty by default', () => {
     const wrapper = shallow(
       <ArticlesPage
         articles={Immutable.fromJS([])}
         loadEntities={noop}
-        user={Immutable.fromJS({})}
       />
     );
 
@@ -76,14 +62,13 @@ describe('Exporting tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS(data)}
         loadEntities={noop}
-        user={Immutable.fromJS({})}
       />
     );
 
 
     wrapper.setState({ selectedRows: [ONE] });
 
-    wrapper.find(exportButtonSelector).simulate('click');
+    wrapper.instance().handleOnExport();
 
     expect(setAttributeSpy.getCall(ZERO).args).to.deep.equal([
       'href',
@@ -123,12 +108,11 @@ describe('Exporting tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS(data)}
         loadEntities={noop}
-        user={Immutable.fromJS({})}
       />);
 
     wrapper.setState({ selectedRows: 'all' });
 
-    wrapper.find(exportButtonSelector).simulate('click');
+    wrapper.instance().handleOnExport();
 
     expect(setAttributeSpy.getCall(ZERO).args).to.deep.equal([
       'href',
@@ -168,13 +152,12 @@ describe('Exporting tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS(data)}
         loadEntities={noop}
-        user={Immutable.fromJS({})}
       />
     );
 
     wrapper.setState({ selectedRows: [] });
 
-    wrapper.find(exportButtonSelector).simulate('click');
+    wrapper.instance().handleOnExport();
 
     expect(setAttributeSpy.called).to.equal(false);
     expect(clickSpy.called).to.equal(false);

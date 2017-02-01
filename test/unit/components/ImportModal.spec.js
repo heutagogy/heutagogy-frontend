@@ -7,7 +7,6 @@ import Immutable from 'immutable';
 import { ImportModal } from './../../../src/components/ImportModal/ImportModal';
 import { ONE } from './../../../src/constants/Constants';
 
-const noop = () => null;
 const importTableSelector = '#importing-table';
 const messageSelector = '#message';
 
@@ -27,7 +26,6 @@ describe('Import modal tests', () => {
     const wrapper = shallow(
       <ImportModal
         articles={Immutable.fromJS([])}
-        loadEntities={noop}
       />
     );
 
@@ -56,7 +54,6 @@ describe('Import modal tests', () => {
     const wrapper = shallow(
       <ImportModal
         articles={Immutable.fromJS(data)}
-        loadEntities={noop}
       />
     );
 
