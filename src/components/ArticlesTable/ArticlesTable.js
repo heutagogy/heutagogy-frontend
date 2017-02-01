@@ -71,7 +71,7 @@ export class ArticlesTable extends Component {
           <TableHeader style={{ backgroundColor: '#eee' }}>
             <TableRow>
               <TableHeaderColumn>{'Title'}</TableHeaderColumn>
-              <TableHeaderColumn style={{ width: '5px' }}>{'Info'}</TableHeaderColumn>
+              <TableHeaderColumn style={{ width: '10px' }}>{'Meta'}</TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
@@ -103,7 +103,7 @@ export class ArticlesTable extends Component {
                 </TableRowColumn>
                 <TableRowColumn
                   className={styles.preventCellClick}
-                  style={{ width: '5px', paddingLeft: '10px' }}
+                  style={{ width: '5px', paddingLeft: '13px' }}
                 >
                   <div
                     className={styles.preventCellClickWrapper}

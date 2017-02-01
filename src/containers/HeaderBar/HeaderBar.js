@@ -3,6 +3,7 @@
 import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
 import AppBar from 'material-ui/AppBar';
+import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui/svg-icons/navigation/menu';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
@@ -116,7 +117,6 @@ class HeaderBar extends Component {
           width={250}
           onRequestChange={(openMenu) => this.setState({ openMenu })}
         >
-          <MenuItem onTouchTap={this.handleLogout}>{`Logout (${this.props.user.get('login')})`}</MenuItem>
           <MenuItem onTouchTap={this.handleExport}>{'Export selected articles'}</MenuItem>
           <MenuItem>
             {'Open import modal'}
@@ -129,6 +129,8 @@ class HeaderBar extends Component {
               onClick={this.handleFileUploadClick}
             />
           </MenuItem>
+          <Divider />
+          <MenuItem onTouchTap={this.handleLogout}>{`Logout (${this.props.user.get('login')})`}</MenuItem>
         </Drawer>
         <div>
           { this.state.openImport
