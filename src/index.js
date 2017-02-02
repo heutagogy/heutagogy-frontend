@@ -22,7 +22,7 @@ import './assets/typography.less';
 import './styles.less';
 
 
-const authUser = localStorageUtils.getAuthinticatedUser();
+const authUser = localStorageUtils.getAuthenticatedUser();
 
 const initialState = authUser && !authUser.isEmpty() ? Immutable.fromJS({ entities: { authUser } }) : new Immutable.Map();
 

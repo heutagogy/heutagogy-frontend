@@ -15,13 +15,13 @@ class LocalStorageUtils {
     }
   }
 
-  setAuthinticatedUser(user) {
+  setAuthenticatedUser(user) {
     const app = this.getApp();
 
     this.setApp({ ...app, authUser: user && user.toJS && user.toJS() });
   }
 
-  getAuthinticatedUser() {
+  getAuthenticatedUser() {
     const app = this.getApp();
 
     return Immutable.fromJS(app.authUser);

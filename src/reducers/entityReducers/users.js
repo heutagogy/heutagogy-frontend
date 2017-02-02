@@ -6,7 +6,7 @@ const users = (state, action) => {
   switch (action.type) {
     case USER_LOGOUT:
     case USER_LOGIN_STARTED: {
-      localStorageUtils.setAuthinticatedUser({});
+      localStorageUtils.setAuthenticatedUser({});
 
       return state.set('authUser', new Immutable.Map());
     }
@@ -14,7 +14,7 @@ const users = (state, action) => {
       const user = action.payload.getIn(['entities', 'authUser']).toList().first();
       const userWithLogin = user.set('login', action.meta.login);
 
-      localStorageUtils.setAuthinticatedUser(userWithLogin);
+      localStorageUtils.setAuthenticatedUser(userWithLogin);
 
       return state.set('authUser', userWithLogin);
     }
