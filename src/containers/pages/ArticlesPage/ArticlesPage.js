@@ -87,7 +87,7 @@ export class ArticlesPage extends Component {
             <LinearProgress mode="indeterminate" />
           </div> : null }
         { this.props.loadingArticlesStatus && this.props.loadingArticlesStatus.get('isFailed')
-          ? <div><i>{this.props.loadingArticlesStatus.get('message')}</i></div> : null }
+          ? <div className={styles.errorMessage}><i>{this.props.loadingArticlesStatus.get('message')}</i></div> : null }
       </div>
     );
   }
