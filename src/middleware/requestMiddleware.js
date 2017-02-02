@@ -6,7 +6,7 @@ const requestMiddleware = () => () => (next) => (action) => {
   if (action[CALL_API]) {
     const headers = action[CALL_API].headers = action[CALL_API].headers || {}; // eslint-disable-line
     const method = action[CALL_API].method;
-    const user = localStorageUtils.getAuthinticatedUser();
+    const user = localStorageUtils.getAuthenticatedUser();
     const serverAddress = localStorageUtils.getServerInfo().get('address');
 
     if (method === 'GET' || method === 'POST' || method === 'PUT' || method === 'DELETE') {
