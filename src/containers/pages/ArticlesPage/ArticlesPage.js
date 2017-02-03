@@ -4,6 +4,7 @@ import { arrayOf } from 'normalizr';
 import { connect } from 'react-redux';
 import LinearProgress from 'material-ui/LinearProgress';
 import Pagination from 'rc-pagination';
+import en from 'rc-pagination/lib/locale/en_US';
 
 import 'rc-pagination/assets/index.css';
 import './ArticlePage.css'; // should be placed after rc-pagination/assets/index.css
@@ -11,15 +12,18 @@ import './ArticlePage.css'; // should be placed after rc-pagination/assets/index
 import articleSchema from './../../../schemas/article';
 import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
+import { ZERO } from './../../../constants/Constants';
 import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
 import { getFilteredArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
+import { getLinkHeader } from './../../../selectors/linkHeader';
 import { loadEntities } from './../../../actions/entity';
 
 
 export class ArticlesPage extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
+    linkHeader: PropTypes.instanceOf(Immutable.Map),
     loadEntities: PropTypes.func,
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
   }
@@ -29,11 +33,37 @@ export class ArticlesPage extends Component {
 
     this.bind();
 
-    this.state = { selectedRows: [] };
+    this.state = {
+      currentArticles: Immutable.fromJS([]),
+      pageSize: 30,
+      selectedRows: [],
+      total: 1,
+    };
   }
 
   componentWillMount() {
-    this.props.loadEntities({ href: '/bookmarks?per_page=10', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
+    this.props.loadEntities({
+      href: `/bookmarks?per_page=${this.state.pageSize}`,
+      type: ARTICLES_VIEW_STATE,
+      schema: arrayOf(articleSchema),
+    }).then(() => {
+      const last = this.props.linkHeader.get('last');
+
+      if (last.isEmpty()) {
+        return;
+      }
+
+      const total = parseInt(last.get('per_page'), 10) * parseInt(last.get('page'), 10);
+
+      this.setState({ total });
+      this.setState({ currentArticles: this.props.articles });
+
+      this.props.loadEntities({
+        href: `/bookmarks?per_page=${total}`,
+        type: ARTICLES_VIEW_STATE,
+        schema: arrayOf(articleSchema),
+      });
+    });
   }
 
   componentDidMount() {
@@ -47,11 +77,12 @@ export class ArticlesPage extends Component {
   bind() {
     this.handleOnExport = this.handleOnExport.bind(this);
     this.onRowSelection = this.onRowSelection.bind(this);
+    this.handleOnPageChange = this.handleOnPageChange.bind(this);
   }
 
   handleOnExport() {
     const tempLink = document.createElement('a');
-    const newArticles = getSelectedArticles(this.props.articles, this.state.selectedRows);
+    const newArticles = getSelectedArticles(this.state.currentArticles, this.state.selectedRows);
     const content = encodeURIComponent(JSON.stringify(newArticles));
 
     if (newArticles.isEmpty()) {
@@ -74,22 +105,19 @@ export class ArticlesPage extends Component {
     this.setState({ selectedRows: [] });
   }
 
-  render() {
+  handleOnPageChange(selectedPage) {
+    const lastCurrentPageIndex = selectedPage * this.state.pageSize;
+
+    const currentArticles = this.props.articles.slice(lastCurrentPageIndex - this.state.pageSize, lastCurrentPageIndex);
+
+    setTimeout(() => {
+      this.setState({ currentArticles });
+    }, ZERO);
+  }
+
+  renderStatus() {
     return (
       <div>
-        { this.loadingArticlesStatus}
-        <div className={styles.table}>
-          <ArticlesTable
-            articles={this.props.articles}
-            handleOnRowSelection={this.onRowSelection}
-            selectedRows={this.state.selectedRows}
-          />
-          <div className={styles.pagination}>
-            <Pagination
-              total={450}
-            />
-          </div>
-        </div>
         { this.props.loadingArticlesStatus && this.props.loadingArticlesStatus.get('isInProgress')
           ? <div className={styles.linearProgress}>
             <div style={{ margin: 10 }}>{'Loading articles...'}</div>
@@ -100,10 +128,34 @@ export class ArticlesPage extends Component {
       </div>
     );
   }
+
+  render() {
+    return (
+      <div>
+        <div className={styles.table}>
+          <ArticlesTable
+            articles={this.state.currentArticles}
+            handleOnRowSelection={this.onRowSelection}
+            selectedRows={this.state.selectedRows}
+          />
+          {this.renderStatus()}
+          <div className={styles.pagination}>
+            <Pagination
+              locale={en}
+              pageSize={this.state.pageSize}
+              total={this.state.total}
+              onChange={this.handleOnPageChange}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 const mapStateToProps = (state) => ({
   articles: getFilteredArticles(state),
+  linkHeader: getLinkHeader(state),
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
 });
 

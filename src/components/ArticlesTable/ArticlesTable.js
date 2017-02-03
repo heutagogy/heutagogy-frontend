@@ -9,7 +9,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
-import { ZERO, ONE, MINUS_ONE } from './../../constants/Constants';
+import { ZERO, MINUS_ONE } from './../../constants/Constants';
 
 import styles from './ArticlesTable.less';
 
@@ -23,32 +23,6 @@ const inlineStyles = {
   },
 };
 
-const comparator = (articleA, articleB) => {
-  const timestampA = articleA.get('timestamp');
-  const timestampB = articleB.get('timestamp');
-  const readA = articleA.get('read');
-  const readB = articleB.get('read');
-
-  const compareDates = (momentA, momentB) => {
-    if (momentA > momentB) {
-      return MINUS_ONE;
-    } else if (momentA < momentB) {
-      return ONE;
-    }
-
-    return ZERO;
-  };
-
-  if (readA && !readB) {
-    return ONE;
-  } else if (!readA && readB) {
-    return MINUS_ONE;
-  } else if (readA && readB) {
-    return compareDates(moment(readA), moment(readB));
-  }
-
-  return compareDates(moment(timestampA), moment(timestampB));
-};
 
 export class ArticlesTable extends Component {
   static propTypes = {
@@ -77,7 +51,7 @@ export class ArticlesTable extends Component {
           <TableBody
             deselectOnClickaway={false}
           >
-          {this.props.articles.sort(comparator).map((item, i) => { // eslint-disable-line
+          {this.props.articles.map((item, i) => { // eslint-disable-line
             return (
               <TableRow
                 displayBorder={false}

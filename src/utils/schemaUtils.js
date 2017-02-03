@@ -18,7 +18,7 @@ class SchemaUtils {
             const data = Immutable.fromJS(normalize(json, schema));
 
             if (link !== null) {
-              return data.setIn(['headers', 'link'], parse(link));
+              return data.setIn(['headers', 'link'], Immutable.fromJS(parse(link)));
             }
 
             return data;

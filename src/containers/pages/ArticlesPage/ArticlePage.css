@@ -2,3 +2,7 @@
   background-color: #00bcd4;
   border-color: #00bcd4;
 }
+
+.rc-pagination-item {
+  margin-right: 4px;
+}
