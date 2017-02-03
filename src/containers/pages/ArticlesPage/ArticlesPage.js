@@ -29,7 +29,7 @@ export class ArticlesPage extends Component {
   }
 
   componentWillMount() {
-    this.props.loadEntities({ href: '/bookmarks?per_page=200', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
+    this.props.loadEntities({ href: '/bookmarks?per_page=10', type: ARTICLES_VIEW_STATE, schema: arrayOf(articleSchema) });
   }
 
   componentDidMount() {
