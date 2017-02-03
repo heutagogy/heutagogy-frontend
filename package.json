@@ -41,6 +41,7 @@
     "parse-link-header": "^0.4.1",
     "pure-render-decorator": "^1.1.1",
     "radium": "^0.18.1",
+    "rc-pagination": "^1.6.9",
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.3.2",
     "react-addons-test-utils": "^15.3.1",
