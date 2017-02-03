@@ -12,7 +12,7 @@ import './ArticlePage.css'; // should be placed after rc-pagination/assets/index
 import articleSchema from './../../../schemas/article';
 import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
-import { ZERO } from './../../../constants/Constants';
+import { ZERO, ONE } from './../../../constants/Constants';
 import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
 import { getFilteredArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
@@ -47,16 +47,17 @@ export class ArticlesPage extends Component {
       type: ARTICLES_VIEW_STATE,
       schema: arrayOf(articleSchema),
     }).then(() => {
+      this.setState({ currentArticles: this.props.articles });
+
       const last = this.props.linkHeader.get('last');
 
-      if (last.isEmpty()) {
+      if (!last) {
         return;
       }
 
       const total = parseInt(last.get('per_page'), 10) * parseInt(last.get('page'), 10);
 
       this.setState({ total });
-      this.setState({ currentArticles: this.props.articles });
 
       this.props.loadEntities({
         href: `/bookmarks?per_page=${total}`,
@@ -106,13 +107,11 @@ export class ArticlesPage extends Component {
   }
 
   handleOnPageChange(selectedPage) {
-    const lastCurrentPageIndex = selectedPage * this.state.pageSize;
+    setTimeout(() => this.setState((prevState, props) => {
+      const lastCurrentPageIndex = selectedPage * prevState.pageSize;
 
-    const currentArticles = this.props.articles.slice(lastCurrentPageIndex - this.state.pageSize, lastCurrentPageIndex);
-
-    setTimeout(() => {
-      this.setState({ currentArticles });
-    }, ZERO);
+      return { currentArticles: props.articles.slice(lastCurrentPageIndex - prevState.pageSize, lastCurrentPageIndex) };
+    }), ZERO);
   }
 
   renderStatus() {
@@ -139,14 +138,15 @@ export class ArticlesPage extends Component {
             selectedRows={this.state.selectedRows}
           />
           {this.renderStatus()}
-          <div className={styles.pagination}>
+          { this.state.total > ONE
+          ? <div className={styles.pagination}>
             <Pagination
               locale={en}
               pageSize={this.state.pageSize}
               total={this.state.total}
               onChange={this.handleOnPageChange}
             />
-          </div>
+          </div> : null }
         </div>
       </div>
     );

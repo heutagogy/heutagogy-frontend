@@ -1,24 +1,23 @@
 /* eslint-disable fp/no-let */
 /* eslint-disable fp/no-mutation */
-// import Immutable from 'immutable';
+
+import Immutable from 'immutable';
 import { LOAD_ENTITIES_SUCCESS } from './../../actions/entity';
+
 
 export default (state, action) => {
   switch (action.type) {
     case LOAD_ENTITIES_SUCCESS: {
-      const entities = action.payload.get('entities');
+      const stateWithHeaders = state.setIn(['headers'], action.payload.get('headers'));
+      const payloadArticles = action.payload.getIn(['entities', 'article']);
+      const serverOrderIds = action.payload.get('result');
+      let articles = Immutable.fromJS([]);
 
-      let result = state.delete('article');
-
-      entities.forEach((theEntities, entityType) => {
-        theEntities.forEach((entity, entityId) => {
-          result = result.mergeIn([entityType, entityId], entity);
-        });
+      serverOrderIds.forEach((id) => {
+        articles = articles.push(payloadArticles.get(id.toString()));
       });
 
-      result = result.setIn(['headers'], action.payload.get('headers'));
-
-      return result;
+      return stateWithHeaders.set('article', articles);
     }
     default: {
       return state;
