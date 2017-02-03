@@ -7,7 +7,7 @@ import Pagination from 'rc-pagination';
 import en from 'rc-pagination/lib/locale/en_US';
 
 import 'rc-pagination/assets/index.css';
-import './ArticlePage.css'; // should be placed after rc-pagination/assets/index.css
+import './RcPaginationOverride.css'; // should be placed after rc-pagination/assets/index.css
 
 import articleSchema from './../../../schemas/article';
 import styles from './ArticlesPage.less';
@@ -31,7 +31,11 @@ export class ArticlesPage extends Component {
   constructor(props) {
     super(props);
 
-    this.bind();
+    ['handleOnExport',
+      'onRowSelection',
+      'handleOnPageChange',
+      'loadAllArticlesFromServer',
+    ].forEach((method) => { this[method] = this[method].bind(this); });
 
     this.state = {
       currentArticles: Immutable.fromJS([]),
@@ -48,22 +52,7 @@ export class ArticlesPage extends Component {
       schema: arrayOf(articleSchema),
     }).then(() => {
       this.setState({ currentArticles: this.props.articles });
-
-      const last = this.props.linkHeader.get('last');
-
-      if (!last) {
-        return;
-      }
-
-      const total = parseInt(last.get('per_page'), 10) * parseInt(last.get('page'), 10);
-
-      this.setState({ total });
-
-      this.props.loadEntities({
-        href: `/bookmarks?per_page=${total}`,
-        type: ARTICLES_VIEW_STATE,
-        schema: arrayOf(articleSchema),
-      });
+      this.loadAllArticlesFromServer(this.props.linkHeader.get('last'));
     });
   }
 
@@ -75,10 +64,20 @@ export class ArticlesPage extends Component {
     this.setState({ selectedRows });
   }
 
-  bind() {
-    this.handleOnExport = this.handleOnExport.bind(this);
-    this.onRowSelection = this.onRowSelection.bind(this);
-    this.handleOnPageChange = this.handleOnPageChange.bind(this);
+  loadAllArticlesFromServer(last) {
+    if (!last) {
+      return;
+    }
+
+    const total = parseInt(last.get('per_page'), 10) * parseInt(last.get('page'), 10);
+
+    this.setState({ total });
+
+    this.props.loadEntities({
+      href: `/bookmarks?per_page=${total}`,
+      type: ARTICLES_VIEW_STATE,
+      schema: arrayOf(articleSchema),
+    });
   }
 
   handleOnExport() {
