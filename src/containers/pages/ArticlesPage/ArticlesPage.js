@@ -3,8 +3,10 @@ import { Component, PropTypes } from 'react';
 import { arrayOf } from 'normalizr';
 import { connect } from 'react-redux';
 import LinearProgress from 'material-ui/LinearProgress';
-import 'rc-pagination/assets/index.css';
 import Pagination from 'rc-pagination';
+
+import 'rc-pagination/assets/index.css';
+import './ArticlePage.css'; // should be placed after rc-pagination/assets/index.css
 
 import articleSchema from './../../../schemas/article';
 import styles from './ArticlesPage.less';
@@ -83,7 +85,9 @@ export class ArticlesPage extends Component {
             selectedRows={this.state.selectedRows}
           />
           <div className={styles.pagination}>
-            <Pagination total={450} />
+            <Pagination
+              total={450}
+            />
           </div>
         </div>
         { this.props.loadingArticlesStatus && this.props.loadingArticlesStatus.get('isInProgress')
