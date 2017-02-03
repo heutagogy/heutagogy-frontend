@@ -7,7 +7,7 @@ import { ZERO, ONE } from './../../../../src/constants/Constants';
 
 const meta = 'data:text/plain;charset=utf-8,';
 
-const noop = () => null;
+const mockLoadEntities = () => ({ then: () => null });
 
 describe('Articles page tests', () => {
   let sandbox; //eslint-disable-line
@@ -24,7 +24,7 @@ describe('Articles page tests', () => {
     const wrapper = shallow(
       <ArticlesPage
         articles={Immutable.fromJS([])}
-        loadEntities={noop}
+        loadEntities={mockLoadEntities}
       />
     );
 
@@ -60,12 +60,12 @@ describe('Articles page tests', () => {
 
     const wrapper = shallow(
       <ArticlesPage
-        articles={Immutable.fromJS(data)}
-        loadEntities={noop}
+        articles={Immutable.fromJS([])}
+        loadEntities={mockLoadEntities}
       />
     );
 
-
+    wrapper.setState({ currentArticles: Immutable.fromJS(data) });
     wrapper.setState({ selectedRows: [ONE] });
 
     wrapper.instance().handleOnExport();
@@ -106,10 +106,11 @@ describe('Articles page tests', () => {
 
     const wrapper = shallow(
       <ArticlesPage
-        articles={Immutable.fromJS(data)}
-        loadEntities={noop}
+        articles={Immutable.fromJS([])}
+        loadEntities={mockLoadEntities}
       />);
 
+    wrapper.setState({ currentArticles: Immutable.fromJS(data) });
     wrapper.setState({ selectedRows: 'all' });
 
     wrapper.instance().handleOnExport();
@@ -150,11 +151,12 @@ describe('Articles page tests', () => {
 
     const wrapper = shallow(
       <ArticlesPage
-        articles={Immutable.fromJS(data)}
-        loadEntities={noop}
+        articles={Immutable.fromJS([])}
+        loadEntities={mockLoadEntities}
       />
     );
 
+    wrapper.setState({ currentArticles: Immutable.fromJS(data) });
     wrapper.setState({ selectedRows: [] });
 
     wrapper.instance().handleOnExport();

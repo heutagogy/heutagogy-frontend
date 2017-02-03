@@ -1,5 +1,5 @@
 .table {
-  padding: 30px 0 0 0;
+  padding: 30px 0 40px 0;
 }
 
 .errorMessage,
@@ -7,4 +7,15 @@
   max-width: 300px;
   margin: 10px auto;
   text-align: center;
+}
+
+.pagination {
+  display: table;
+  margin: 10px auto;
+
+  @media only screen and (min-width: 400px) {
+    ul {
+      margin-right: 40px;
+    }
+  }
 }
