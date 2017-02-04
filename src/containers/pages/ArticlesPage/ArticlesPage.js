@@ -20,7 +20,7 @@ import { getLinkHeader } from './../../../selectors/linkHeader';
 import { loadEntities } from './../../../actions/entity';
 
 
-const MAX_PER_PAGE = 5;
+const MAX_PER_PAGE = 1000;
 
 export class ArticlesPage extends Component {
   static propTypes = {
@@ -41,7 +41,7 @@ export class ArticlesPage extends Component {
 
     this.state = {
       currentArticles: Immutable.fromJS([]),
-      pageSize: 3,
+      pageSize: 30,
       selectedRows: [],
       total: 1,
     };
