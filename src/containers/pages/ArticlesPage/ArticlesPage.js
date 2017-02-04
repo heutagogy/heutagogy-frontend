@@ -78,16 +78,19 @@ export class ArticlesPage extends Component {
     const numberOfRequests = Math.ceil(total / MAX_PER_PAGE);
     const perPage = Math.min(total, MAX_PER_PAGE);
 
-    [...Array(numberOfRequests).keys()].forEach((i) => {
+    [...Array(numberOfRequests).keys()].reduce((seq, i) => {
       const page = i + ONE;
 
-      this.props.loadEntities({
+      return seq.then(() => this.props.loadEntities({
         href: `/bookmarks?per_page=${perPage}&page=${page}`,
         type: ARTICLES_VIEW_STATE,
         schema: arrayOf(articleSchema),
         resetState: page === ONE,
-      });
-    });
+      }));
+    }, Promise.resolve()).then(
+      () => console.log('ArticlesPage: all articles are loaded.'),
+      (e) => console.log('ArticlesPage: ', e),
+    );
   }
 
   handleOnExport() {
