@@ -4,11 +4,8 @@ import { SET_SERVER_ADDRESS } from './../actions/server';
 
 import localStorageUtils from './../utils/localStorageUtils';
 
-const initialState = Immutable.fromJS({
-  address: 'http://localhost:5000',
-});
 
-export default (state = initialState, action) => {
+export default (state = Immutable.fromJS({}), action) => {
   switch (action.type) {
     case SET_SERVER_ADDRESS: {
       localStorageUtils.setServerInfo(Immutable.fromJS({ address: action.address }));

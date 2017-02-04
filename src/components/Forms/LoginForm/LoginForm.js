@@ -97,7 +97,6 @@ class LoginForm extends Component {
             inputStyle={inlineStyles.input}
             underlineFocusStyle={inlineStyles.blue500}
             name='server'
-            placeholder={'http://localhost:5000'}
           />
           <RaisedButton
             className={styles.login}
@@ -113,12 +112,13 @@ class LoginForm extends Component {
   }
 }
 
-const LoginFormWrapped = reduxForm({
-  form: 'LoginForm',
-})(LoginForm);
+const LoginFormWrapped = reduxForm({ form: 'LoginForm' })(LoginForm);
 
 const mapStateToProps = (state) => ({
   viewState: getViewState(state, LOGIN_VIEW_STATE),
+  initialValues: {
+    server: state.getIn(['server', 'address']) || 'https://heutagogy.herokuapp.com',
+  },
 });
 
 export default connect(mapStateToProps, { loginUser, setServerAddress })(LoginFormWrapped);
