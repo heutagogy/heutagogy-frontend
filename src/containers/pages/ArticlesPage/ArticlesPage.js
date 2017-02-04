@@ -14,11 +14,13 @@ import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { ZERO, ONE } from './../../../constants/Constants';
 import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
-import { getFilteredArticles } from './../../../selectors/articles';
+import { getArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
 import { loadEntities } from './../../../actions/entity';
 
+
+// const MAX_PER_PAGE = 1000;
 
 export class ArticlesPage extends Component {
   static propTypes = {
@@ -39,7 +41,7 @@ export class ArticlesPage extends Component {
 
     this.state = {
       currentArticles: Immutable.fromJS([]),
-      pageSize: 30,
+      pageSize: 3,
       selectedRows: [],
       total: 1,
     };
@@ -153,7 +155,7 @@ export class ArticlesPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  articles: getFilteredArticles(state),
+  articles: getArticles(state),
   linkHeader: getLinkHeader(state),
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
 });
