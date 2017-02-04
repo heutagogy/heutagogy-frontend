@@ -41,7 +41,7 @@ export class ArticlesPage extends Component {
 
     this.state = {
       currentArticles: Immutable.fromJS([]),
-      pageSize: 30,
+      pageSize: Math.min(MAX_PER_PAGE, 30), // eslint-disable-line
       selectedRows: [],
       total: 1,
     };
@@ -71,12 +71,14 @@ export class ArticlesPage extends Component {
       return;
     }
 
-    const total = parseInt(last.get('per_page'), 10) * parseInt(last.get('page'), 10);
+    const pageLast = parseInt(last.get('page'), 10);
+    const perPageLast = parseInt(last.get('per_page'), 10);
+    const total = pageLast * perPageLast;
 
     this.setState({ total });
 
-    const numberOfRequests = Math.ceil(total / MAX_PER_PAGE);
-    const perPage = Math.min(total, MAX_PER_PAGE);
+    const perPage = Math.trunc(Math.min(MAX_PER_PAGE, total) / perPageLast) * perPageLast;
+    const numberOfRequests = Math.ceil(total / perPage);
 
     [...Array(numberOfRequests).keys()].reduce((seq, i) => {
       const page = i + ONE;
@@ -87,10 +89,7 @@ export class ArticlesPage extends Component {
         schema: arrayOf(articleSchema),
         resetState: page === ONE,
       }));
-    }, Promise.resolve()).then(
-      () => console.log('ArticlesPage: all articles are loaded.'),
-      (e) => console.log('ArticlesPage: ', e),
-    );
+    }, Promise.resolve());
   }
 
   handleOnExport() {
