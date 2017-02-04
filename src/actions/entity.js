@@ -7,8 +7,8 @@ export const LOAD_ENTITIES_SUCCESS = 'LOAD_ENTITIES_SUCCESS';
 export const LOAD_ENTITIES_FAILURE = 'LOAD_ENTITIES_FAILURE';
 
 
-const fetchEntities = ({ href, type, schema }) => {
-  const meta = { viewId: type };
+const fetchEntities = ({ href, type, schema, resetState }) => {
+  const meta = { viewId: type, resetState };
 
   return {
     [CALL_API]: {
@@ -27,4 +27,5 @@ const fetchEntities = ({ href, type, schema }) => {
   };
 };
 
-export const loadEntities = ({ href, type, schema }) => (dispatch) => dispatch(fetchEntities({ href, type, schema }));
+export const loadEntities = ({ href, type, schema, resetState = true }) =>
+  (dispatch) => dispatch(fetchEntities({ href, type, schema, resetState }));

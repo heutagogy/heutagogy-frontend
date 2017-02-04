@@ -26,8 +26,8 @@ const inlineStyles = {
 
 export class ArticlesTable extends Component {
   static propTypes = {
-    articles: PropTypes.instanceOf(Immutable.List).isRequired,
-    handleOnRowSelection: PropTypes.func.isRequired,
+    articles: PropTypes.instanceOf(Immutable.List),
+    handleOnRowSelection: PropTypes.func,
     selectedRows: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.array,

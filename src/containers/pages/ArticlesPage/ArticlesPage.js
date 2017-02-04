@@ -14,11 +14,13 @@ import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { ZERO, ONE } from './../../../constants/Constants';
 import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
-import { getFilteredArticles } from './../../../selectors/articles';
+import { getArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
 import { loadEntities } from './../../../actions/entity';
 
+
+const MAX_PER_PAGE = 1000;
 
 export class ArticlesPage extends Component {
   static propTypes = {
@@ -73,11 +75,22 @@ export class ArticlesPage extends Component {
 
     this.setState({ total });
 
-    this.props.loadEntities({
-      href: `/bookmarks?per_page=${total}`,
-      type: ARTICLES_VIEW_STATE,
-      schema: arrayOf(articleSchema),
-    });
+    const numberOfRequests = Math.ceil(total / MAX_PER_PAGE);
+    const perPage = Math.min(total, MAX_PER_PAGE);
+
+    [...Array(numberOfRequests).keys()].reduce((seq, i) => {
+      const page = i + ONE;
+
+      return seq.then(() => this.props.loadEntities({
+        href: `/bookmarks?per_page=${perPage}&page=${page}`,
+        type: ARTICLES_VIEW_STATE,
+        schema: arrayOf(articleSchema),
+        resetState: page === ONE,
+      }));
+    }, Promise.resolve()).then(
+      () => console.log('ArticlesPage: all articles are loaded.'),
+      (e) => console.log('ArticlesPage: ', e),
+    );
   }
 
   handleOnExport() {
@@ -153,7 +166,7 @@ export class ArticlesPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  articles: getFilteredArticles(state),
+  articles: getArticles(state),
   linkHeader: getLinkHeader(state),
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
 });
