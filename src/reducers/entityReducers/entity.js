@@ -13,10 +13,10 @@ export default (state, action) => {
 
       const payloadArticles = action.payload.getIn(['entities', 'article']);
       const serverOrderIds = action.payload.getIn(['result']);
-      let articles = stateWithHeaders.getIn(['article']) || new Immutable.OrderedMap();
+      let articles = action.meta.resetState ? Immutable.fromJS([]) : state.getIn(['article']);
 
       serverOrderIds.forEach((id) => {
-        articles = articles.setIn([id.toString()], payloadArticles.get(id.toString()));
+        articles = articles.push(payloadArticles.get(id.toString()));
       });
 
       return stateWithHeaders.setIn(['article'], articles);

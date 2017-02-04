@@ -5,5 +5,5 @@ const getArticlesList = (state) => state.getIn(['entities', 'article']);
 
 export const getArticles = createSelector(
   [getArticlesList],
-  (articles) => articles && articles.toList() || new Immutable.List()
+  (articles) => articles || Immutable.fromJS([])
 );

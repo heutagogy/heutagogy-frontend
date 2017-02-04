@@ -20,7 +20,7 @@ import { getLinkHeader } from './../../../selectors/linkHeader';
 import { loadEntities } from './../../../actions/entity';
 
 
-// const MAX_PER_PAGE = 1000;
+const MAX_PER_PAGE = 5;
 
 export class ArticlesPage extends Component {
   static propTypes = {
@@ -75,10 +75,18 @@ export class ArticlesPage extends Component {
 
     this.setState({ total });
 
-    this.props.loadEntities({
-      href: `/bookmarks?per_page=${total}`,
-      type: ARTICLES_VIEW_STATE,
-      schema: arrayOf(articleSchema),
+    const numberOfRequests = Math.ceil(total / MAX_PER_PAGE);
+    const perPage = Math.min(total, MAX_PER_PAGE);
+
+    [...Array(numberOfRequests).keys()].forEach((i) => {
+      const page = i + ONE;
+
+      this.props.loadEntities({
+        href: `/bookmarks?per_page=${perPage}&page=${page}`,
+        type: ARTICLES_VIEW_STATE,
+        schema: arrayOf(articleSchema),
+        resetState: page === ONE,
+      });
     });
   }
 
