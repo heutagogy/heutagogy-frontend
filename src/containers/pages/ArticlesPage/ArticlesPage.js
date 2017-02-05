@@ -112,9 +112,6 @@ export class ArticlesPage extends Component {
     } else {
       tempLink.click();
     }
-
-    // unselect all (only works if you selected each row separately, see https://github.com/callemall/material-ui/issues/3074)
-    this.setState({ selectedRows: [] });
   }
 
   handleOnPageChange(selectedPage) {
