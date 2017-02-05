@@ -55,9 +55,6 @@ export class ImportModal extends Component {
     if (!articlesToImport.isEmpty()) {
       this.props.rememberArticles({ articles: articlesToImport });
     }
-
-    // unselect all (only works if you selected each row separately, see https://github.com/callemall/material-ui/issues/3074)
-    this.state = { selectedRows: [] };
   }
 
   handleClose() {
