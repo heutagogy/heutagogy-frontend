@@ -145,7 +145,7 @@ export class ArticlesPage extends Component {
             handleOnRowSelection={this.onRowSelection}
             selectedRows={this.state.selectedRows}
           />
-          {this.renderStatus()}
+          { this.renderStatus() }
           { this.state.total > ONE
           ? <div className={styles.pagination}>
             <Pagination
