@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 
 import Immutable from 'immutable';
-import moment from 'moment';
 import { Component, PropTypes } from 'react';
 import { TableHeader, TableHeaderColumn, Table, TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
 import IconMenu from 'material-ui/IconMenu';
@@ -10,6 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import { ZERO, MINUS_ONE } from './../../constants/Constants';
+import { formatTimeToUser } from './../../utils/timeUtils';
 
 import styles from './ArticlesTable.less';
 
@@ -91,11 +91,11 @@ export class ArticlesTable extends Component {
                     >
                       <MenuItem
                         disabled
-                        primaryText={`Saved: ${moment.utc(item.get('timestamp')).local().format('lll')}`}
+                        primaryText={`Saved: ${formatTimeToUser(item.get('timestamp'))}`}
                       />
                       <MenuItem
                         disabled
-                        primaryText={`Read: ${item.get('read') ? moment.utc(item.get('read')).local().format('lll') : 'No'}`}
+                        primaryText={`Read: ${item.get('read') ? formatTimeToUser(item.get('read')) : 'No'}`}
                       />
                     </IconMenu>
                   </div>
