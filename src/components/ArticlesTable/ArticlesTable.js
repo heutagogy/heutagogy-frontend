@@ -91,11 +91,11 @@ export class ArticlesTable extends Component {
                     >
                       <MenuItem
                         disabled
-                        primaryText={`Saved: ${moment(item.get('timestamp')).format('lll')}`}
+                        primaryText={`Saved: ${moment.utc(item.get('timestamp')).local().format('lll')}`}
                       />
                       <MenuItem
                         disabled
-                        primaryText={`Read: ${item.get('read') ? moment(item.get('read')).format('lll') : 'No'}`}
+                        primaryText={`Read: ${item.get('read') ? moment.utc(item.get('read')).local().format('lll') : 'No'}`}
                       />
                     </IconMenu>
                   </div>
