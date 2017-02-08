@@ -11,13 +11,14 @@ import './RcPaginationOverride.css'; // should be placed after rc-pagination/ass
 
 import articleSchema from './../../../schemas/article';
 import styles from './ArticlesPage.less';
-import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
+import { ARTICLES_VIEW_STATE, UPDATE_ARTICLE_VIEW_STATE } from './../../../constants/ViewStates';
 import { ZERO, ONE } from './../../../constants/Constants';
 import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
 import { getArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
 import { loadEntities } from './../../../actions/entity';
+import { updateArticle } from './../../../actions/articles';
 
 
 const MAX_PER_PAGE = 1000;
@@ -28,6 +29,8 @@ export class ArticlesPage extends Component {
     linkHeader: PropTypes.instanceOf(Immutable.Map),
     loadEntities: PropTypes.func,
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
+    updateArticle: PropTypes.func,
+    updateArticleState: PropTypes.instanceOf(Immutable.Map),
   }
 
   constructor(props) {
@@ -35,14 +38,15 @@ export class ArticlesPage extends Component {
 
     ['handleOnExport',
       'onRowSelection',
+      'getCurrentArticles',
       'handleOnPageChange',
       'loadAllArticlesFromServer',
     ].forEach((method) => { this[method] = this[method].bind(this); });
 
     this.state = {
-      currentArticles: Immutable.fromJS([]),
       pageSize: Math.min(MAX_PER_PAGE, 30), // eslint-disable-line
       selectedRows: [],
+      selectedPage: null,
       total: 1,
     };
   }
@@ -53,7 +57,7 @@ export class ArticlesPage extends Component {
       type: ARTICLES_VIEW_STATE,
       schema: arrayOf(articleSchema),
     }).then(() => {
-      this.setState({ currentArticles: this.props.articles });
+      this.setState({ selectedPage: ONE });
       this.loadAllArticlesFromServer(this.props.linkHeader.get('last'));
     });
   }
@@ -64,6 +68,16 @@ export class ArticlesPage extends Component {
 
   onRowSelection(selectedRows) {
     this.setState({ selectedRows });
+  }
+
+  getCurrentArticles() {
+    if (this.state.selectedPage === null) {
+      return this.props.articles;
+    }
+
+    const lastCurrentPageIndex = this.state.selectedPage * this.state.pageSize;
+
+    return this.props.articles.slice(lastCurrentPageIndex - this.state.pageSize, lastCurrentPageIndex);
   }
 
   loadAllArticlesFromServer(last) {
@@ -94,7 +108,7 @@ export class ArticlesPage extends Component {
 
   handleOnExport() {
     const tempLink = document.createElement('a');
-    const newArticles = getSelectedArticles(this.state.currentArticles, this.state.selectedRows);
+    const newArticles = getSelectedArticles(this.getCurrentArticles(), this.state.selectedRows);
     const content = encodeURIComponent(JSON.stringify(newArticles));
 
     if (newArticles.isEmpty()) {
@@ -115,11 +129,7 @@ export class ArticlesPage extends Component {
   }
 
   handleOnPageChange(selectedPage) {
-    setTimeout(() => this.setState((prevState, props) => {
-      const lastCurrentPageIndex = selectedPage * prevState.pageSize;
-
-      return { currentArticles: props.articles.slice(lastCurrentPageIndex - prevState.pageSize, lastCurrentPageIndex) };
-    }), ZERO);
+    setTimeout(() => this.setState({ selectedPage }), ZERO);
   }
 
   renderStatus() {
@@ -141,9 +151,11 @@ export class ArticlesPage extends Component {
       <div>
         <div className={styles.table}>
           <ArticlesTable
-            articles={this.state.currentArticles}
+            articles={this.getCurrentArticles()}
             handleOnRowSelection={this.onRowSelection}
             selectedRows={this.state.selectedRows}
+            updateArticle={this.props.updateArticle}
+            updateArticleState={this.props.updateArticleState}
           />
           { this.renderStatus() }
           { this.state.total > ONE
@@ -165,6 +177,7 @@ const mapStateToProps = (state) => ({
   articles: getArticles(state),
   linkHeader: getLinkHeader(state),
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
+  updateArticleState: getViewState(state, UPDATE_ARTICLE_VIEW_STATE),
 });
 
-export default connect(mapStateToProps, { loadEntities })(ArticlesPage);
+export default connect(mapStateToProps, { loadEntities, updateArticle })(ArticlesPage);

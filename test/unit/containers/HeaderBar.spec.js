@@ -7,7 +7,7 @@ import sinon from 'sinon';
 import Immutable from 'immutable';
 import { HeaderBar } from './../../../src/containers/HeaderBar/HeaderBar';
 
-describe('Import page tests', () => {
+describe('HeaderBar tests', () => {
   let sandbox; //eslint-disable-line
 
   beforeEach(() => {

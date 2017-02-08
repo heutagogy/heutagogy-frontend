@@ -6,10 +6,13 @@ import { TableHeader, TableHeaderColumn, Table, TableBody, TableRow, TableRowCol
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
+import Checkbox from 'material-ui/Checkbox';
+import moment from 'moment';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
 import { ZERO, MINUS_ONE } from './../../constants/Constants';
 import { formatTimeToUser } from './../../utils/timeUtils';
+import Spinner from './../Spinner';
 
 import styles from './ArticlesTable.less';
 
@@ -32,6 +35,58 @@ export class ArticlesTable extends Component {
       PropTypes.string,
       PropTypes.array,
     ]),
+    updateArticle: PropTypes.func,
+    updateArticleState: PropTypes.instanceOf(Immutable.Map),
+  }
+
+  constructor(props) {
+    super(props);
+
+    ['getReadMenuItemText',
+    ].forEach((method) => { this[method] = this[method].bind(this); });
+  }
+
+
+  getReadMenuItemText(item) {
+    const readArticleClassName = 'read-article';
+    const fieldName = 'Read: ';
+    const handleOnRead = () => {
+      this.props.updateArticle(
+        item.get('id'),
+        { read: moment().format() }
+      );
+    };
+
+    if (item.get('read')) {
+      return (
+        <div className={readArticleClassName}>
+          {`${fieldName}${formatTimeToUser(item.get('read'))}`}
+        </div>
+      );
+    }
+
+    if (!this.props.updateArticle) {
+      return (
+        <div className={readArticleClassName}>
+          {`${fieldName}No`}
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        { this.props.updateArticleState && this.props.updateArticleState.get('isInProgress')
+          ? <div>{fieldName}<Spinner /></div> : <Checkbox
+            className={readArticleClassName}
+            iconStyle={{ marginTop: '5px' }}
+            label={fieldName}
+            labelPosition="left"
+            labelStyle={{ width: 'auto', lineHeight: '48px' }}
+            style={{ verticalAlign: 'center' }}
+            onCheck={handleOnRead}
+          />}
+      </div>
+    );
   }
 
   render() {
@@ -85,6 +140,7 @@ export class ArticlesTable extends Component {
                   >
                     <IconMenu
                       anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                      className="icon-menu"
                       iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
                       targetOrigin={{ horizontal: 'right', vertical: 'top' }}
                       useLayerForClickAway
@@ -94,9 +150,10 @@ export class ArticlesTable extends Component {
                         primaryText={`Saved: ${formatTimeToUser(item.get('timestamp'))}`}
                       />
                       <MenuItem
-                        disabled
-                        primaryText={`Read: ${item.get('read') ? formatTimeToUser(item.get('read')) : 'No'}`}
-                      />
+                        disabled={Boolean(item.get('read'))}
+                      >
+                        {this.getReadMenuItemText(item)}
+                      </MenuItem>
                     </IconMenu>
                   </div>
                 </TableRowColumn>
