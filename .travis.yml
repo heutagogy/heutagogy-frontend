@@ -10,6 +10,7 @@ install:
 script:
 - npm run lint
 - npm run test:unit
+- npm run build
 deploy:
   provider: s3
   access_key_id: AKIAJZKGISUSSVVUB7YQ
