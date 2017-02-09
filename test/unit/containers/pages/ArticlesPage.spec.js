@@ -60,12 +60,11 @@ describe('Articles page tests', () => {
 
     const wrapper = shallow(
       <ArticlesPage
-        articles={Immutable.fromJS([])}
+        articles={Immutable.fromJS(data)}
         loadEntities={mockLoadEntities}
       />
     );
 
-    wrapper.setState({ currentArticles: Immutable.fromJS(data) });
     wrapper.setState({ selectedRows: [ONE] });
 
     wrapper.instance().handleOnExport();
@@ -106,11 +105,10 @@ describe('Articles page tests', () => {
 
     const wrapper = shallow(
       <ArticlesPage
-        articles={Immutable.fromJS([])}
+        articles={Immutable.fromJS(data)}
         loadEntities={mockLoadEntities}
       />);
 
-    wrapper.setState({ currentArticles: Immutable.fromJS(data) });
     wrapper.setState({ selectedRows: 'all' });
 
     wrapper.instance().handleOnExport();
@@ -151,12 +149,11 @@ describe('Articles page tests', () => {
 
     const wrapper = shallow(
       <ArticlesPage
-        articles={Immutable.fromJS([])}
+        articles={Immutable.fromJS(data)}
         loadEntities={mockLoadEntities}
       />
     );
 
-    wrapper.setState({ currentArticles: Immutable.fromJS(data) });
     wrapper.setState({ selectedRows: [] });
 
     wrapper.instance().handleOnExport();
