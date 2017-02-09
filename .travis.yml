@@ -4,11 +4,22 @@ language: node_js
 node_js: 6
 cache:
   directories:
-    - node_modules
-
+  - node_modules
 install:
-  - npm install
-
+- npm install
 script:
-  - npm run lint
-  - npm run test:unit
+- npm run lint
+- npm run test:unit
+deploy:
+  provider: s3
+  access_key_id: AKIAJZKGISUSSVVUB7YQ
+  secret_access_key:
+    secure: NuoZMN2IGPo8VuAAjwIMXMtOzKVCZtRVShFF34X2k3hoINQBUhjIK2mxMnm3kMd6IsxVjlOFtNDaP/e0nCV3a+rvZSeJhHWfqtbmTi1Ny/wdNv0XB9rz33WKTa9hLfMZqY2xHqNZvVAerXiLbMOTfNIDI9HSonkV0TVeQghdYwZryfh1murZAr2Gt8nIothY+xtnWyDVy1bf7iAOIZUK9i/H7Gu2UwK4ss3Kkqd33ozCLTo4N+Vpl2foA3n5b7OCU1g1mZPJLLqsFv6sQD4vFiZ8A0LVOfRMIPfTktsHwS9JLAFUipJxAJtAOj6AIbzhV/dU/113ZfPCY/o98MNFq3214OuZdnLphI3cfIH7jkdQdzljzkBx0ITdOHo2lZIlbLDQIsyJJZfPvNTiKRL9UGq2ZVKV29J9+vAZZVbOeSG46iOMLGI4DesbpxhUyicQtz83Lzi6WGTJX90qgkNVW1OjkE1BYP2A7Bcort1fsfOibb6jvnVuJp4WtDrs/Ok0jOx/xCkvxebAErNN6Tw6KDUQLC0aWxKNgySRssgV3EoPliYsqa37v3IOeQsMlaWzduG9BL6pcLUQMavZDun+ZsDl0c2Q6oJcQ8DR+ge6A6n8N/5M3CNnd0Pao3bYow49In2OmDTIVg9sojQGymoM3bzjG9NdZkcJf5jGW0+gjH0=
+  bucket: app.heutagogy.io
+  region: eu-central-1
+  local_dir: dist
+  skip_cleanup: true
+  acl: public_read
+  on:
+    repo: heutagogy/heutagogy-frontend
+    branch: master
