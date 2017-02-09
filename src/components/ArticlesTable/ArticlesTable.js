@@ -150,7 +150,7 @@ export class ArticlesTable extends Component {
                         primaryText={`Saved: ${formatTimeToUser(item.get('timestamp'))}`}
                       />
                       <MenuItem
-                        disabled={Boolean(item.get('read'))}
+                        disabled={Boolean(item.get('read')) || (!item.get('read') && !this.props.updateArticle)}
                       >
                         {this.getReadMenuItemText(item)}
                       </MenuItem>
