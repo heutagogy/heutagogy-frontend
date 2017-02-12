@@ -4,6 +4,7 @@ import App from './containers/App';
 import AuthenticationPage from './containers/pages/AuthenticationPage';
 import { userIsAuthenticated } from './utils/authWrappers';
 import ArticlesPage from './containers/pages/ArticlesPage';
+import NotFound from './components/NotFound';
 
 export default (
   <Route
@@ -18,6 +19,10 @@ export default (
     <Route
       component={AuthenticationPage}
       path="/login"
+    />
+    <Route
+      component={NotFound}
+      path="*"
     />
   </Route>
 );
