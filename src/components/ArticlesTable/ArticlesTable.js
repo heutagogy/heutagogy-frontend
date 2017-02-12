@@ -109,7 +109,6 @@ export class ArticlesTable extends Component {
           {this.props.articles.map((item, i) => { // eslint-disable-line
             return (
               <TableRow
-                displayBorder={false}
                 key={i}
                 selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
                 style={{ backgroundColor: '#eee' }}
