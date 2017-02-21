@@ -10,22 +10,13 @@ import Checkbox from 'material-ui/Checkbox';
 import moment from 'moment';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
+import { ArticleTitle } from './ArticleTitle';
+
 import { ZERO, MINUS_ONE } from './../../constants/Constants';
 import { formatTimeToUser } from './../../utils/timeUtils';
 import Spinner from './../Spinner';
 
 import styles from './ArticlesTable.less';
-
-const inlineStyles = {
-  wrapWordColumn: {
-    whiteSpace: 'normal',
-    wordWrap: 'break-word',
-    width: '200px',
-    paddingLeft: '0',
-    paddingRight: '0',
-  },
-};
-
 
 export class ArticlesTable extends Component {
   static propTypes = {
@@ -113,22 +104,12 @@ export class ArticlesTable extends Component {
                 selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
                 style={{ backgroundColor: '#eee' }}
               >
-                <TableRowColumn
-                  className={styles.preventCellClick}
-                  style={inlineStyles.wrapWordColumn}
-                >
-                  <div
-                    className={item.get('read') ? styles.linkDivRead : styles.linkDivUnread}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <a
-                      href={item.get('url')}
-                      target="_blank"
-                    >
-                      {item.get('title')}
-                    </a>
-                  </div>
-                </TableRowColumn>
+                <ArticleTitle
+                  read={item.get('read')}
+                  title={item.get('title')}
+                  url={item.get('url')}
+                  onTitleChanged={(title) => { this.props.updateArticle(item.get('id'), { title }); }}
+                />
                 <TableRowColumn
                   className={styles.preventCellClick}
                   style={{ width: '5px', paddingLeft: '13px' }}
