@@ -4,7 +4,7 @@
 /* eslint-disable fp/no-mutation */
 
 import isPlainObject from 'lodash/isPlainObject';
-import { ApiError, RequestError } from 'redux-api-middleware/lib/errors' ;
+import { ApiError, RequestError } from 'redux-api-middleware/lib/errors';
 import { normalizeTypeDescriptors } from 'redux-api-middleware/lib/util';
 
 import CALL_MOCK_API from './CALL_MOCK_API';
