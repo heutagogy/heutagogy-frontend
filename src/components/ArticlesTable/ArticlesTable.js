@@ -21,6 +21,7 @@ import styles from './ArticlesTable.less';
 export class ArticlesTable extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
+    deleteArticle: PropTypes.func,
     handleOnRowSelection: PropTypes.func,
     selectedRows: PropTypes.oneOfType([
       PropTypes.string,
@@ -134,6 +135,10 @@ export class ArticlesTable extends Component {
                       >
                         {this.getReadMenuItemText(item)}
                       </MenuItem>
+                      <MenuItem
+                        primaryText="Delete"
+                        onTouchTap={() => this.props.deleteArticle(item.get('id'))}
+                      />
                     </IconMenu>
                   </div>
                 </TableRowColumn>

@@ -18,7 +18,7 @@ import { getArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
 import { loadEntities } from './../../../actions/entity';
-import { updateArticle } from './../../../actions/articles';
+import { updateArticle, deleteArticle } from './../../../actions/articles';
 
 
 const MAX_PER_PAGE = 1000;
@@ -26,6 +26,7 @@ const MAX_PER_PAGE = 1000;
 export class ArticlesPage extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
+    deleteArticle: PropTypes.func,
     linkHeader: PropTypes.instanceOf(Immutable.Map),
     loadEntities: PropTypes.func,
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
@@ -152,6 +153,7 @@ export class ArticlesPage extends Component {
         <div className={styles.table}>
           <ArticlesTable
             articles={this.getCurrentArticles()}
+            deleteArticle={this.props.deleteArticle}
             handleOnRowSelection={this.onRowSelection}
             selectedRows={this.state.selectedRows}
             updateArticle={this.props.updateArticle}
@@ -180,4 +182,4 @@ const mapStateToProps = (state) => ({
   updateArticleState: getViewState(state, UPDATE_ARTICLE_VIEW_STATE),
 });
 
-export default connect(mapStateToProps, { loadEntities, updateArticle })(ArticlesPage);
+export default connect(mapStateToProps, { loadEntities, updateArticle, deleteArticle })(ArticlesPage);
