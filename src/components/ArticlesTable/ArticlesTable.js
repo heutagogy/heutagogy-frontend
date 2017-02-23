@@ -9,6 +9,8 @@ import IconButton from 'material-ui/IconButton';
 import Checkbox from 'material-ui/Checkbox';
 import moment from 'moment';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
 
 import { ArticleTitle } from './ArticleTitle';
 
@@ -34,10 +36,18 @@ export class ArticlesTable extends Component {
   constructor(props) {
     super(props);
 
-    ['getReadMenuItemText',
+    this.state = {
+      deleteArticleId: null,
+    };
+
+    [
+      'getReadMenuItemText',
+      'getDeleteDialog',
+      'handleDelete',
+      'handleDeleteConfirmed',
+      'handleDeleteCancelled',
     ].forEach((method) => { this[method] = this[method].bind(this); });
   }
-
 
   getReadMenuItemText(item) {
     const readArticleClassName = 'read-article';
@@ -81,9 +91,55 @@ export class ArticlesTable extends Component {
     );
   }
 
+  getDeleteDialog() {
+    const actions = [
+      <FlatButton
+        key="cancel"
+        label="Cancel"
+        primary
+        onTouchTap={this.handleDeleteCancelled}
+      />,
+      <FlatButton
+        key="delete"
+        label="Delete"
+        primary
+        onTouchTap={this.handleDeleteConfirmed}
+      />,
+    ];
+
+    return (
+      <Dialog
+        actions={actions}
+        open={this.state.deleteArticleId !== null}
+        onRequestClose={this.handleDeleteCancelled}
+      >
+        {'Are you sure you want to delete?'}
+      </Dialog>);
+  }
+
+  handleDelete(id) {
+    this.setState({
+      deleteArticleId: id,
+    });
+  }
+
+  handleDeleteConfirmed() {
+    this.props.deleteArticle(this.state.deleteArticleId);
+    this.setState({
+      deleteArticleId: null,
+    });
+  }
+
+  handleDeleteCancelled() {
+    this.setState({
+      deleteArticleId: null,
+    });
+  }
+
   render() {
     return (
       <div style={{ width: 'auto', maxWidth: '700px', margin: '0 auto' }}>
+        {this.getDeleteDialog()}
         <Table
           fixedHeader={false}
           multiSelectable
@@ -137,7 +193,7 @@ export class ArticlesTable extends Component {
                       </MenuItem>
                       <MenuItem
                         primaryText="Delete"
-                        onTouchTap={() => this.props.deleteArticle(item.get('id'))}
+                        onTouchTap={() => this.handleDelete(item.get('id'))}
                       />
                     </IconMenu>
                   </div>
