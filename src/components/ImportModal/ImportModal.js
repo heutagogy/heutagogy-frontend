@@ -5,9 +5,9 @@ import Dialog from 'material-ui/Dialog';
 
 import FlatButton from './../Fields/FlatButton';
 import { ArticlesTable, getSelectedArticles } from './../ArticlesTable/ArticlesTable';
-
 import styles from './ImportModal.less';
 import Spinner from './../Spinner';
+
 
 const inlineStyles = {
   titleStyle: {

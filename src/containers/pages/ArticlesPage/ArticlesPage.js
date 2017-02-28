@@ -13,7 +13,7 @@ import articleSchema from './../../../schemas/article';
 import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE, UPDATE_ARTICLE_VIEW_STATE } from './../../../constants/ViewStates';
 import { ZERO, ONE } from './../../../constants/Constants';
-import { ArticlesTable, getSelectedArticles } from './../../../components/ArticlesTable/ArticlesTable';
+import { ArticlesTable } from './../../../components/ArticlesTable/ArticlesTable';
 import { getArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
@@ -47,7 +47,6 @@ export class ArticlesPage extends Component {
 
     [
       'handleSearchChanged',
-      'handleOnExport',
       'onRowSelection',
       'getCurrentArticles',
       'handleOnPageChange',
@@ -70,10 +69,6 @@ export class ArticlesPage extends Component {
     }).then(() => {
       this.loadAllArticlesFromServer(this.props.linkHeader.get('last'));
     });
-  }
-
-  componentDidMount() {
-    window.addEventListener('export', this.handleOnExport);
   }
 
   onRowSelection(selectedRows) {
@@ -113,28 +108,6 @@ export class ArticlesPage extends Component {
         resetState: page === ONE,
       }));
     }, Promise.resolve());
-  }
-
-  handleOnExport() {
-    const tempLink = document.createElement('a');
-    const newArticles = getSelectedArticles(this.getCurrentArticles(), this.state.selectedRows);
-    const content = encodeURIComponent(JSON.stringify(newArticles));
-
-    if (newArticles.isEmpty()) {
-      return;
-    }
-
-    tempLink.setAttribute('href', `data:text/plain;charset=utf-8,${content}`);
-    tempLink.setAttribute('download', 'heutagogy.json');
-
-    if (document.createEvent) {
-      const event = document.createEvent('MouseEvents');
-
-      event.initEvent('click', true, true);
-      tempLink.dispatchEvent(event);
-    } else {
-      tempLink.click();
-    }
   }
 
   handleOnPageChange(selectedPage) {
