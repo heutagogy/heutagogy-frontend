@@ -25,6 +25,7 @@ export class ArticlesTable extends Component {
     articles: PropTypes.instanceOf(Immutable.List),
     deleteArticle: PropTypes.func,
     handleOnRowSelection: PropTypes.func,
+    selectable: PropTypes.bool,
     selectedRows: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.array,
@@ -145,7 +146,11 @@ export class ArticlesTable extends Component {
           multiSelectable
           onRowSelection={this.props.handleOnRowSelection}
         >
-          <TableHeader style={{ backgroundColor: '#eee' }}>
+          <TableHeader
+            adjustForCheckbox={Boolean(this.props.selectable)}
+            displaySelectAll={Boolean(this.props.selectable)}
+            style={{ backgroundColor: '#eee' }}
+          >
             <TableRow>
               <TableHeaderColumn>{'Title'}</TableHeaderColumn>
               <TableHeaderColumn style={{ width: '10px' }}>{'Meta'}</TableHeaderColumn>
@@ -153,6 +158,7 @@ export class ArticlesTable extends Component {
           </TableHeader>
           <TableBody
             deselectOnClickaway={false}
+            displayRowCheckbox={Boolean(this.props.selectable)}
           >
           {this.props.articles.map((item, i) => { // eslint-disable-line
             return (

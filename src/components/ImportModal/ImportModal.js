@@ -103,6 +103,7 @@ export class ImportModal extends Component {
                 articles={this.props.articles}
                 handleOnRowSelection={this.onRowSelection}
                 id={'importing-table'}
+                selectable
                 selectedRows={this.state.selectedRows}
               />
             </div>}

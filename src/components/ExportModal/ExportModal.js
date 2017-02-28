@@ -168,6 +168,7 @@ export class ExportModal extends Component {
               articles={this.props.articles}
               handleOnRowSelection={this.onRowSelection}
               id={'exporting-table'}
+              selectable
               selectedRows={this.state.selectedRows}
             />
             { this.renderStatus() }
