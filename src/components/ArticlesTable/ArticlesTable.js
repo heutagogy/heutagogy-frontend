@@ -191,10 +191,11 @@ export class ArticlesTable extends Component {
                       >
                         {this.getReadMenuItemText(item)}
                       </MenuItem>
-                      <MenuItem
+                      { this.props.deleteArticle
+                      ? <MenuItem
                         primaryText="Delete"
                         onTouchTap={() => this.handleDelete(item.get('id'))}
-                      />
+                      /> : null }
                     </IconMenu>
                   </div>
                 </TableRowColumn>
