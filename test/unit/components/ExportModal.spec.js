@@ -1,35 +1,25 @@
+/* eslint-disable fp/no-mutation */
+
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import Immutable from 'immutable';
-import { ArticlesPage } from './../../../../src/containers/pages/ArticlesPage/ArticlesPage';
-import { ZERO, ONE } from './../../../../src/constants/Constants';
+import { ExportModal } from './../../../src/components/ExportModal/ExportModal';
+import { ZERO, ONE, TWO } from './../../../src/constants/Constants';
 
-const meta = 'data:text/plain;charset=utf-8,';
 
 const mockLoadEntities = () => ({ then: () => null });
+const meta = 'data:text/plain;charset=utf-8,';
 
-describe('Articles page tests', () => {
+describe('Export modal tests', () => {
   let sandbox; //eslint-disable-line
 
   beforeEach(() => {
-    sandbox = sinon.sandbox.create(); //eslint-disable-line
+    sandbox = sinon.sandbox.create();
   });
 
   afterEach(() => {
     sandbox.restore();
-  });
-
-  it('Table is empty by default', () => {
-    const wrapper = shallow(
-      <ArticlesPage
-        articles={Immutable.fromJS([])}
-        loadEntities={mockLoadEntities}
-        search=""
-      />
-    );
-
-    expect(wrapper.find('td')).to.have.length(ZERO);
   });
 
   it('Should save selected articles', () => {
@@ -61,20 +51,19 @@ describe('Articles page tests', () => {
     ];
 
     const wrapper = shallow(
-      <ArticlesPage
+      <ExportModal
         articles={Immutable.fromJS(data)}
         loadEntities={mockLoadEntities}
-        search=""
       />
     );
 
     wrapper.setState({ selectedRows: [ONE] });
 
-    wrapper.instance().handleOnExport();
+    wrapper.instance().handleSubmit();
 
     expect(setAttributeSpy.getCall(ZERO).args).to.deep.equal([
       'href',
-      `${meta}${encodeURIComponent(JSON.stringify([data[ONE]]))}`,
+      `${meta}${encodeURIComponent(JSON.stringify([data[ONE]], null, TWO))}`,
     ]);
     expect(clickSpy.called).to.equal(true);
   });
@@ -108,19 +97,18 @@ describe('Articles page tests', () => {
     ];
 
     const wrapper = shallow(
-      <ArticlesPage
+      <ExportModal
         articles={Immutable.fromJS(data)}
         loadEntities={mockLoadEntities}
-        search=""
       />);
 
     wrapper.setState({ selectedRows: 'all' });
 
-    wrapper.instance().handleOnExport();
+    wrapper.instance().handleSubmit();
 
     expect(setAttributeSpy.getCall(ZERO).args).to.deep.equal([
       'href',
-      `${meta}${encodeURIComponent(JSON.stringify(data))}`,
+      `${meta}${encodeURIComponent(JSON.stringify(data, null, TWO))}`,
     ]);
     expect(clickSpy.called).to.equal(true);
   });
@@ -154,16 +142,15 @@ describe('Articles page tests', () => {
     ];
 
     const wrapper = shallow(
-      <ArticlesPage
+      <ExportModal
         articles={Immutable.fromJS(data)}
         loadEntities={mockLoadEntities}
-        search=""
       />
     );
 
     wrapper.setState({ selectedRows: [] });
 
-    wrapper.instance().handleOnExport();
+    wrapper.instance().handleSubmit();
 
     expect(setAttributeSpy.called).to.equal(false);
     expect(clickSpy.called).to.equal(false);

@@ -12,6 +12,7 @@ import TextField from 'material-ui/TextField';
 import ActionSearch from 'material-ui/svg-icons/action/search';
 
 import ImportModal from './../../components/ImportModal';
+import ExportModal from './../../components/ExportModal';
 import { REMEMBER_ARTICLES_VIEW_STATE } from './../../constants/ViewStates';
 import { getAuthenticatedUser } from './../../selectors/users';
 import { logoutUser } from './../../actions/users';
@@ -38,6 +39,7 @@ export class HeaderBar extends Component {
     this.state = {
       articlesToImport: Immutable.fromJS([]),
       openImport: false,
+      openExport: false,
       openMenu: false,
       selectedRows: [],
     };
@@ -68,7 +70,7 @@ export class HeaderBar extends Component {
 
   handleExport() {
     this.close();
-    window.dispatchEvent(new CustomEvent('export'));
+    this.setState({ openExport: true });
   }
 
   handleOnImport(event) {
@@ -91,6 +93,7 @@ export class HeaderBar extends Component {
 
   unmountImport() {
     this.setState({ openImport: false });
+    this.setState({ openExport: false });
   }
 
   handleFileUploadClick(event) {
@@ -127,7 +130,7 @@ export class HeaderBar extends Component {
           width={250}
           onRequestChange={(openMenu) => this.setState({ openMenu })}
         >
-          <MenuItem onTouchTap={this.handleExport}>{'Export selected articles'}</MenuItem>
+          <MenuItem onTouchTap={this.handleExport}>{'Open export modal'}</MenuItem>
           <MenuItem>
             {'Open import modal'}
             <input
@@ -145,6 +148,13 @@ export class HeaderBar extends Component {
         <div>
           { this.state.openImport
             ? <ImportModal
+              articles={this.state.articlesToImport}
+              rememberArticles={this.props.rememberArticles}
+              rememberArticlesState={this.props.rememberArticlesState}
+              unmount={this.unmountImport}
+            /> : null }
+          { this.state.openExport
+            ? <ExportModal
               articles={this.state.articlesToImport}
               rememberArticles={this.props.rememberArticles}
               rememberArticlesState={this.props.rememberArticlesState}

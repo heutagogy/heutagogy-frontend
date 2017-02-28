@@ -9,7 +9,7 @@ const inlineStyles = {
     whiteSpace: 'normal',
     wordWrap: 'break-word',
     width: '200px',
-    paddingLeft: '0',
+    paddingLeft: '7px',
     paddingRight: '0',
   },
 };
