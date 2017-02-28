@@ -37,6 +37,10 @@ export class ArticleTitle extends Component {
   }
 
   handleClick(e) {
+    if (this.state.isEditing) {
+      return;
+    }
+
     this.setState({
       isEditing: true,
       newValue: this.props.title,
