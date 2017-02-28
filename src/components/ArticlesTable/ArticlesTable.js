@@ -81,7 +81,7 @@ export class ArticlesTable extends Component {
         { this.props.updateArticleState && this.props.updateArticleState.get('isInProgress')
           ? <div>{fieldName}<Spinner /></div> : <Checkbox
             className={readArticleClassName}
-            iconStyle={{ marginTop: '5px' }}
+            iconStyle={{ marginTop: '6px' }}
             label={fieldName}
             labelPosition="left"
             labelStyle={{ width: 'auto', lineHeight: '48px' }}
