@@ -19,7 +19,15 @@ import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
 import { loadEntities } from './../../../actions/entity';
 import { updateArticle, deleteArticle } from './../../../actions/articles';
+import HeaderBar from '../../HeaderBar';
 
+
+const inlineStyles = {
+  routerContainer: {
+    maxHeight: 'calc(100vh - 64px)',
+    overflowY: 'auto',
+  },
+};
 
 const MAX_PER_PAGE = 1000;
 
@@ -37,7 +45,9 @@ export class ArticlesPage extends Component {
   constructor(props) {
     super(props);
 
-    ['handleOnExport',
+    [
+      'handleSearchChanged',
+      'handleOnExport',
       'onRowSelection',
       'getCurrentArticles',
       'handleOnPageChange',
@@ -47,8 +57,8 @@ export class ArticlesPage extends Component {
     this.state = {
       pageSize: Math.min(MAX_PER_PAGE, 30), // eslint-disable-line
       selectedRows: [],
-      selectedPage: null,
-      total: 1,
+      selectedPage: 1,
+      search: '',
     };
   }
 
@@ -58,7 +68,6 @@ export class ArticlesPage extends Component {
       type: ARTICLES_VIEW_STATE,
       schema: arrayOf(articleSchema),
     }).then(() => {
-      this.setState({ selectedPage: ONE });
       this.loadAllArticlesFromServer(this.props.linkHeader.get('last'));
     });
   }
@@ -72,13 +81,15 @@ export class ArticlesPage extends Component {
   }
 
   getCurrentArticles() {
-    if (this.state.selectedPage === null) {
-      return this.props.articles;
-    }
+    const search = this.state.search.toLowerCase();
 
-    const lastCurrentPageIndex = this.state.selectedPage * this.state.pageSize;
+    return this.props.articles.filter((x) => x.get('title').toLowerCase().includes(search));
+  }
 
-    return this.props.articles.slice(lastCurrentPageIndex - this.state.pageSize, lastCurrentPageIndex);
+  handleSearchChanged(e, search) {
+    this.setState({
+      search,
+    });
   }
 
   loadAllArticlesFromServer(last) {
@@ -89,9 +100,6 @@ export class ArticlesPage extends Component {
     const pageLast = parseInt(last.get('page'), 10);
     const perPageLast = parseInt(last.get('per_page'), 10);
     const total = pageLast * perPageLast;
-
-    this.setState({ total });
-
     const perPage = Math.trunc(Math.min(MAX_PER_PAGE, total) / perPageLast) * perPageLast;
     const numberOfRequests = Math.ceil(total / perPage);
 
@@ -130,7 +138,7 @@ export class ArticlesPage extends Component {
   }
 
   handleOnPageChange(selectedPage) {
-    setTimeout(() => this.setState({ selectedPage }), ZERO);
+    this.setState({ selectedPage });
   }
 
   renderStatus() {
@@ -148,27 +156,37 @@ export class ArticlesPage extends Component {
   }
 
   render() {
+    // TODO(rasendubi): leverage caching
+    const allArticles = this.getCurrentArticles();
+    const totalArticles = allArticles.size;
+    const lastCurrentPageIndex = this.state.selectedPage * this.state.pageSize;
+    const articles = allArticles.slice(lastCurrentPageIndex - this.state.pageSize, lastCurrentPageIndex);
+
     return (
       <div>
-        <div className={styles.table}>
-          <ArticlesTable
-            articles={this.getCurrentArticles()}
-            deleteArticle={this.props.deleteArticle}
-            handleOnRowSelection={this.onRowSelection}
-            selectedRows={this.state.selectedRows}
-            updateArticle={this.props.updateArticle}
-            updateArticleState={this.props.updateArticleState}
-          />
-          { this.renderStatus() }
-          { this.state.total > ONE
-          ? <div className={styles.pagination}>
-            <Pagination
-              locale={en}
-              pageSize={this.state.pageSize}
-              total={this.state.total}
-              onChange={this.handleOnPageChange}
+        <HeaderBar onSearchChanged={this.handleSearchChanged} />
+        <div style={inlineStyles.routerContainer}>
+          <div className={styles.table}>
+            <ArticlesTable
+              articles={articles}
+              deleteArticle={this.props.deleteArticle}
+              handleOnRowSelection={this.onRowSelection}
+              selectedRows={this.state.selectedRows}
+              updateArticle={this.props.updateArticle}
+              updateArticleState={this.props.updateArticleState}
             />
-          </div> : null }
+            { this.renderStatus() }
+            { totalArticles > ZERO
+              ? <div className={styles.pagination}>
+                <Pagination
+                  current={this.state.selectedPage}
+                  locale={en}
+                  pageSize={this.state.pageSize}
+                  total={totalArticles}
+                  onChange={this.handleOnPageChange}
+                />
+              </div> : null }
+          </div>
         </div>
       </div>
     );

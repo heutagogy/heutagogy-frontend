@@ -8,13 +8,14 @@ import MenuIcon from 'material-ui/svg-icons/navigation/menu';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import { connect } from 'react-redux';
+import TextField from 'material-ui/TextField';
+import ActionSearch from 'material-ui/svg-icons/action/search';
 
 import ImportModal from './../../components/ImportModal';
 import { REMEMBER_ARTICLES_VIEW_STATE } from './../../constants/ViewStates';
 import { getAuthenticatedUser } from './../../selectors/users';
 import { logoutUser } from './../../actions/users';
 import styles from './HeaderBar.less';
-import userUtils from './../../utils/userUtils';
 import { rememberArticles } from './../../actions/articles';
 import { isJsonString } from './../../utils/jsonUtils';
 import { getViewState } from './../../selectors/view';
@@ -26,6 +27,7 @@ export class HeaderBar extends Component {
     rememberArticles: PropTypes.func,
     rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
     user: PropTypes.instanceOf(Immutable.Map),
+    onSearchChanged: PropTypes.func,
   }
 
   constructor(props) {
@@ -101,8 +103,7 @@ export class HeaderBar extends Component {
   render() {
     return (
       <div>
-        { userUtils.isAuthenticated(this.props.user)
-        ? <AppBar
+        <AppBar
           className={styles.headerBar}
           iconElementLeft={<MenuIcon
             color="white"
@@ -113,7 +114,13 @@ export class HeaderBar extends Component {
           iconStyleRight={{ margin: 0 }}
           title="Heutagogy"
           onLeftIconButtonTouchTap={this.handleToggle}
-        /> : null }
+        >
+          <TextField
+            hintText="Search"
+            onChange={this.props.onSearchChanged}
+          />
+          <ActionSearch />
+        </AppBar>
         <Drawer
           docked={false}
           open={this.state.openMenu}
