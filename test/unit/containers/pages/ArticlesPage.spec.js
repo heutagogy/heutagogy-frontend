@@ -25,6 +25,7 @@ describe('Articles page tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS([])}
         loadEntities={mockLoadEntities}
+        search=""
       />
     );
 
@@ -55,6 +56,7 @@ describe('Articles page tests', () => {
       },
       {
         url: 'https://www.google.com.ua',
+        title: 'Google',
       },
     ];
 
@@ -62,6 +64,7 @@ describe('Articles page tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS(data)}
         loadEntities={mockLoadEntities}
+        search=""
       />
     );
 
@@ -100,6 +103,7 @@ describe('Articles page tests', () => {
       },
       {
         url: 'https://www.google.com.ua',
+        title: 'Google',
       },
     ];
 
@@ -107,6 +111,7 @@ describe('Articles page tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS(data)}
         loadEntities={mockLoadEntities}
+        search=""
       />);
 
     wrapper.setState({ selectedRows: 'all' });
@@ -144,6 +149,7 @@ describe('Articles page tests', () => {
       },
       {
         url: 'https://www.google.com.ua',
+        title: 'Google',
       },
     ];
 
@@ -151,6 +157,7 @@ describe('Articles page tests', () => {
       <ArticlesPage
         articles={Immutable.fromJS(data)}
         loadEntities={mockLoadEntities}
+        search=""
       />
     );
 
