@@ -20,10 +20,12 @@ import styles from './HeaderBar.less';
 import { rememberArticles } from './../../actions/articles';
 import { isJsonString } from './../../utils/jsonUtils';
 import { getViewState } from './../../selectors/view';
+import { getArticles } from './../../selectors/articles';
 
 
 export class HeaderBar extends Component {
   static propTypes = {
+    articles: PropTypes.instanceOf(Immutable.List),
     logoutUser: PropTypes.func,
     rememberArticles: PropTypes.func,
     rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
@@ -149,16 +151,14 @@ export class HeaderBar extends Component {
           { this.state.openImport
             ? <ImportModal
               articles={this.state.articlesToImport}
+              handleUnmount={this.unmountImport}
               rememberArticles={this.props.rememberArticles}
               rememberArticlesState={this.props.rememberArticlesState}
-              unmount={this.unmountImport}
             /> : null }
           { this.state.openExport
             ? <ExportModal
-              articles={this.state.articlesToImport}
-              rememberArticles={this.props.rememberArticles}
-              rememberArticlesState={this.props.rememberArticlesState}
-              unmount={this.unmountImport}
+              articles={this.props.articles}
+              handleUnmount={this.unmountImport}
             /> : null }
         </div>
       </div>
@@ -167,6 +167,7 @@ export class HeaderBar extends Component {
 }
 
 const mapStateToProps = (state) => ({
+  articles: getArticles(state),
   rememberArticlesState: getViewState(state, REMEMBER_ARTICLES_VIEW_STATE),
   user: getAuthenticatedUser(state),
 });

@@ -26,9 +26,9 @@ const inlineStyles = {
 export class ImportModal extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
+    handleUnmount: PropTypes.func,
     rememberArticles: PropTypes.func,
     rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
-    unmount: PropTypes.func,
   }
 
   constructor(props) {
@@ -45,7 +45,6 @@ export class ImportModal extends Component {
 
   bind() {
     this.onRowSelection = this.onRowSelection.bind(this);
-    this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -55,10 +54,6 @@ export class ImportModal extends Component {
     if (!articlesToImport.isEmpty()) {
       this.props.rememberArticles({ articles: articlesToImport });
     }
-  }
-
-  handleClose() {
-    this.props.unmount();
   }
 
   render() {
@@ -75,7 +70,7 @@ export class ImportModal extends Component {
         label={'Cancel'}
         primary
         style={inlineStyles.close}
-        onTouchTap={this.handleClose}
+        onTouchTap={this.props.handleUnmount}
       />,
     ];
 
@@ -89,7 +84,7 @@ export class ImportModal extends Component {
           open
           title={'Import Articles'}
           titleStyle={inlineStyles.titleStyle}
-          onRequestClose={this.handleClose}
+          onRequestClose={this.props.handleUnmount}
         >
           { this.props.articles.isEmpty()
             ? <div
