@@ -7,6 +7,7 @@ import Divider from 'material-ui/Divider';
 import MenuIcon from 'material-ui/svg-icons/navigation/menu';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
 import TextField from 'material-ui/TextField';
 import ActionSearch from 'material-ui/svg-icons/action/search';
@@ -29,6 +30,7 @@ export class HeaderBar extends Component {
     logoutUser: PropTypes.func,
     rememberArticles: PropTypes.func,
     rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
+    search: PropTypes.string,
     user: PropTypes.instanceOf(Immutable.Map),
     onSearchChanged: PropTypes.func,
   }
@@ -43,22 +45,23 @@ export class HeaderBar extends Component {
       openImport: false,
       openExport: false,
       openMenu: false,
+      searchOpen: false,
       selectedRows: [],
     };
   }
 
   bind() {
-    this.close = this.close.bind(this);
-    this.handleExport = this.handleExport.bind(this);
-    this.handleFileUploadClick = this.handleFileUploadClick.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
-    this.handleOnImport = this.handleOnImport.bind(this);
-    this.handleToggle = this.handleToggle.bind(this);
-    this.unmountModals = this.unmountModals.bind(this);
+    ['close', 'handleExport', 'handleFileUploadClick', 'handleLogout',
+      'handleOnImport', 'handleToggle', 'handleToggleSearch', 'unmountModals',
+    ].forEach((method) => { this[method] = this[method].bind(this); });
   }
 
   handleToggle() {
     this.setState({ openMenu: !this.state.openMenu });
+  }
+
+  handleToggleSearch() {
+    this.setState({ searchOpen: !this.state.searchOpen });
   }
 
   close() {
@@ -120,11 +123,16 @@ export class HeaderBar extends Component {
           title="Heutagogy"
           onLeftIconButtonTouchTap={this.handleToggle}
         >
-          <TextField
+          { this.state.searchOpen
+          ? <TextField
+            defaultValue={this.props.search}
             hintText="Search"
+            ref={(input) => input && input.focus()}
             onChange={this.props.onSearchChanged}
-          />
-          <ActionSearch />
+          /> : null }
+          <IconButton onClick={this.handleToggleSearch} >
+            <ActionSearch />
+          </IconButton>
         </AppBar>
         <Drawer
           docked={false}

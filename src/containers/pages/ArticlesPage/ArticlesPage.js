@@ -137,7 +137,10 @@ export class ArticlesPage extends Component {
 
     return (
       <div>
-        <HeaderBar onSearchChanged={this.handleSearchChanged} />
+        <HeaderBar
+          search={this.state.search}
+          onSearchChanged={this.handleSearchChanged}
+        />
         <div style={inlineStyles.routerContainer}>
           <div className={styles.table}>
             <ArticlesTable
