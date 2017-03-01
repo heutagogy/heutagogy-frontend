@@ -20,10 +20,12 @@ import styles from './HeaderBar.less';
 import { rememberArticles } from './../../actions/articles';
 import { isJsonString } from './../../utils/jsonUtils';
 import { getViewState } from './../../selectors/view';
+import { getArticles } from './../../selectors/articles';
 
 
 export class HeaderBar extends Component {
   static propTypes = {
+    articles: PropTypes.instanceOf(Immutable.List),
     logoutUser: PropTypes.func,
     rememberArticles: PropTypes.func,
     rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
@@ -52,7 +54,7 @@ export class HeaderBar extends Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleOnImport = this.handleOnImport.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
-    this.unmountImport = this.unmountImport.bind(this);
+    this.unmountModals = this.unmountModals.bind(this);
   }
 
   handleToggle() {
@@ -91,7 +93,7 @@ export class HeaderBar extends Component {
     fr.readAsText(file);
   }
 
-  unmountImport() {
+  unmountModals() {
     this.setState({ openImport: false });
     this.setState({ openExport: false });
   }
@@ -149,16 +151,14 @@ export class HeaderBar extends Component {
           { this.state.openImport
             ? <ImportModal
               articles={this.state.articlesToImport}
+              handleUnmount={this.unmountModals}
               rememberArticles={this.props.rememberArticles}
               rememberArticlesState={this.props.rememberArticlesState}
-              unmount={this.unmountImport}
             /> : null }
           { this.state.openExport
             ? <ExportModal
-              articles={this.state.articlesToImport}
-              rememberArticles={this.props.rememberArticles}
-              rememberArticlesState={this.props.rememberArticlesState}
-              unmount={this.unmountImport}
+              articles={this.props.articles}
+              handleUnmount={this.unmountModals}
             /> : null }
         </div>
       </div>
@@ -167,6 +167,7 @@ export class HeaderBar extends Component {
 }
 
 const mapStateToProps = (state) => ({
+  articles: getArticles(state),
   rememberArticlesState: getViewState(state, REMEMBER_ARTICLES_VIEW_STATE),
   user: getAuthenticatedUser(state),
 });
