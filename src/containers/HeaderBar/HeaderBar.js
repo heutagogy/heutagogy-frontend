@@ -30,6 +30,7 @@ export class HeaderBar extends Component {
     logoutUser: PropTypes.func,
     rememberArticles: PropTypes.func,
     rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
+    search: PropTypes.string,
     user: PropTypes.instanceOf(Immutable.Map),
     onSearchChanged: PropTypes.func,
   }
@@ -60,10 +61,6 @@ export class HeaderBar extends Component {
   }
 
   handleToggleSearch() {
-    if (this.state.searchOpen) {
-      this.props.onSearchChanged(null, '');
-    }
-
     this.setState({ searchOpen: !this.state.searchOpen });
   }
 
@@ -128,14 +125,12 @@ export class HeaderBar extends Component {
         >
           { this.state.searchOpen
           ? <TextField
+            defaultValue={this.props.search}
             hintText="Search"
             ref={(input) => input && input.focus()}
             onChange={this.props.onSearchChanged}
           /> : null }
-          <IconButton
-            tooltip="Search"
-            onClick={this.handleToggleSearch}
-          >
+          <IconButton onClick={this.handleToggleSearch} >
             <ActionSearch />
           </IconButton>
         </AppBar>
