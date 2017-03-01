@@ -8,7 +8,6 @@ import { ExportModal } from './../../../src/components/ExportModal/ExportModal';
 import { ZERO, ONE, TWO } from './../../../src/constants/Constants';
 
 
-const mockLoadEntities = () => ({ then: () => null });
 const meta = 'data:text/plain;charset=utf-8,';
 
 describe('Export modal tests', () => {
@@ -50,12 +49,7 @@ describe('Export modal tests', () => {
       },
     ];
 
-    const wrapper = shallow(
-      <ExportModal
-        articles={Immutable.fromJS(data)}
-        loadEntities={mockLoadEntities}
-      />
-    );
+    const wrapper = shallow(<ExportModal articles={Immutable.fromJS(data)} />);
 
     wrapper.setState({ selectedRows: [ONE] });
 
@@ -96,11 +90,7 @@ describe('Export modal tests', () => {
       },
     ];
 
-    const wrapper = shallow(
-      <ExportModal
-        articles={Immutable.fromJS(data)}
-        loadEntities={mockLoadEntities}
-      />);
+    const wrapper = shallow(<ExportModal articles={Immutable.fromJS(data)} />);
 
     wrapper.setState({ selectedRows: 'all' });
 
@@ -141,12 +131,7 @@ describe('Export modal tests', () => {
       },
     ];
 
-    const wrapper = shallow(
-      <ExportModal
-        articles={Immutable.fromJS(data)}
-        loadEntities={mockLoadEntities}
-      />
-    );
+    const wrapper = shallow(<ExportModal articles={Immutable.fromJS(data)} />);
 
     wrapper.setState({ selectedRows: [] });
 
