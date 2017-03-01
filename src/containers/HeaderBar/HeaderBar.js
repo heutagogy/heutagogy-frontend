@@ -54,7 +54,7 @@ export class HeaderBar extends Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleOnImport = this.handleOnImport.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
-    this.unmountImport = this.unmountImport.bind(this);
+    this.unmountModals = this.unmountModals.bind(this);
   }
 
   handleToggle() {
@@ -93,7 +93,7 @@ export class HeaderBar extends Component {
     fr.readAsText(file);
   }
 
-  unmountImport() {
+  unmountModals() {
     this.setState({ openImport: false });
     this.setState({ openExport: false });
   }
@@ -151,14 +151,14 @@ export class HeaderBar extends Component {
           { this.state.openImport
             ? <ImportModal
               articles={this.state.articlesToImport}
-              handleUnmount={this.unmountImport}
+              handleUnmount={this.unmountModals}
               rememberArticles={this.props.rememberArticles}
               rememberArticlesState={this.props.rememberArticlesState}
             /> : null }
           { this.state.openExport
             ? <ExportModal
               articles={this.props.articles}
-              handleUnmount={this.unmountImport}
+              handleUnmount={this.unmountModals}
             /> : null }
         </div>
       </div>
