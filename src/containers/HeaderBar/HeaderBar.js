@@ -11,6 +11,8 @@ import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
 import TextField from 'material-ui/TextField';
 import ActionSearch from 'material-ui/svg-icons/action/search';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import validUrl from 'valid-url';
 
 import ImportModal from './../../components/ImportModal';
 import ExportModal from './../../components/ExportModal';
@@ -46,22 +48,21 @@ export class HeaderBar extends Component {
       openExport: false,
       openMenu: false,
       searchOpen: false,
+      saveOpen: false,
       selectedRows: [],
+      url: '',
     };
   }
 
   bind() {
     ['close', 'handleExport', 'handleFileUploadClick', 'handleLogout',
-      'handleOnImport', 'handleToggle', 'handleToggleSearch', 'unmountModals',
+      'handleOnImport', 'handleToggle', 'unmountModals',
+      'handleTextFieldKeyDown', 'handleRememberArticle',
     ].forEach((method) => { this[method] = this[method].bind(this); });
   }
 
-  handleToggle() {
-    this.setState({ openMenu: !this.state.openMenu });
-  }
-
-  handleToggleSearch() {
-    this.setState({ searchOpen: !this.state.searchOpen });
+  handleToggle(val) {
+    this.setState({ [val]: !this.state[val] });
   }
 
   close() {
@@ -108,6 +109,19 @@ export class HeaderBar extends Component {
     event.target.value = null; // eslint-disable-line
   }
 
+  handleTextFieldKeyDown(event) {
+    if (event.key === 'Enter') {
+      this.handleRememberArticle();
+    }
+  }
+
+  handleRememberArticle() {
+    if (validUrl.isUri(this.state.url)) {
+      this.props.rememberArticles({ articles: Immutable.fromJS({ url: this.state.url }) });
+      this.handleToggle('saveOpen');
+    }
+  }
+
   render() {
     return (
       <div>
@@ -121,8 +135,19 @@ export class HeaderBar extends Component {
           iconStyleLeft={styles.iconClassNameLeft}
           iconStyleRight={{ margin: 0 }}
           title="Heutagogy"
-          onLeftIconButtonTouchTap={this.handleToggle}
+          onLeftIconButtonTouchTap={() => this.handleToggle('openMenu')}
         >
+          { this.state.saveOpen
+          ? <TextField
+            hintText="Save url"
+            ref={(input) => input && input.focus()}
+            onBlur={this.handleRememberArticle}
+            onChange={(e, url) => this.setState({ url })}
+            onKeyDown={this.handleTextFieldKeyDown}
+          /> : null }
+          <IconButton onClick={() => this.handleToggle('saveOpen')} >
+            <ContentAdd />
+          </IconButton>
           { this.state.searchOpen
           ? <TextField
             defaultValue={this.props.search}
@@ -130,7 +155,7 @@ export class HeaderBar extends Component {
             ref={(input) => input && input.focus()}
             onChange={this.props.onSearchChanged}
           /> : null }
-          <IconButton onClick={this.handleToggleSearch} >
+          <IconButton onClick={() => this.handleToggle('searchOpen')} >
             <ActionSearch />
           </IconButton>
         </AppBar>
