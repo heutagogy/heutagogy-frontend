@@ -1,6 +1,6 @@
 {
   "name": "Heutagogy",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Heutagogy web part",
   "main": "src/index.js",
   "scripts": {
