@@ -1,7 +1,4 @@
-# ![Image of Yaktocat](favicon.ico) Heutagogy
-
-Heutagogy
-# Detailed Documentation [here](/docs)
+# Heutagogy ![Heutagogy](favicon.ico)
 
 # Quickstart: How to build and run Template?
 ### (a) Prerequisites
@@ -42,25 +39,6 @@ Note: development version much more slower that production version
 # How to get unit tests coverage?
     Do steps - a,b,c
     npm run test:coverage
-# How to run e2e tests(Unix based OS)?
-    Do steps - a,b,c
-    npm run test:e2e
-# How to run e2e tests(Windows)?
-    Do steps - a,b,c
-    npm run selenium - don't stop this process
-    open new tab enter next command and tests will start
-    npm run test:e2e
-### What about internalization?
-Heutagogy internalization depend on:
- - [Jed](http://git-scm.com/book/en/v2/Git-Tools-Submodules)
- - [getText](https://gist.github.com/mbillard/1647940)
-
-To get all labels in po file you require to do steps a,b,c and run
-    ```npm run createLocaleFiles```
-after that you should go to Heutagogy/lang and find their .po files for each language, open each with po editor [po-edit](https://poedit.net/) and add related labels for each language.
-After that
-    ```npm run convertPOtoJson```
-and after that ```npm run build``` your build will be in Heutagogy/dist with multilanguage support
 
 # Quickstart: Requirments for production deploy
  - Production server should return index.html file for each request
@@ -74,24 +52,8 @@ and after that ```npm run build``` your build will be in Heutagogy/dist with mul
 # Quickstart: How to change api url?
  - Fill the server address on “Login” form: e.g. http://localhost:5000
 
-or, if you don't want to rebuild project
-
-go to file ```Heutagogy/dist/config.js``` and change same constants, after that just refresh page with web-ui
-
-# Quickstart: Troubles
- - you always get 401 error or you see UNKNOWN_ERROR on ui or you can't login with right password - this is CORS problem or server is dead, to solve this you should check that you use last api server and write to server side guy or frondend side guy
- - 404 not found, 400, etc. - maybe some problems with users roles
-# Found an issue?
-[Go here](http://gitlab.cybervisiontech.com/opensource/Heutagogy/issues)
-
 # Browser support
 
 - Chrome 45 +
 - Firefox 42 +
-- Safari 9.1 +
-- IE 11 +
-- IE Edge
-- Opera 39 +
-- IOS Safari 9.1 +
-- Android Browser 4.4 +
 - Chrome for Android 45 +
