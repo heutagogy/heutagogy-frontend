@@ -15,7 +15,7 @@ const inlineStyles = {
   },
   tags: {
     lineHeight: '15px',
-    fontSize: '10px',
+    fontSize: '11px',
     marginBottom: '0',
   },
 };
