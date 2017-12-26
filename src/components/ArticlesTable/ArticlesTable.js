@@ -12,7 +12,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
-import { ArticleTitle } from './ArticleTitle';
+import { ArticleMainColumn } from './ArticleMainColumn';
 
 import { ZERO, MINUS_ONE } from './../../constants/Constants';
 import { formatTimeToUser } from './../../utils/timeUtils';
@@ -167,8 +167,9 @@ export class ArticlesTable extends Component {
                 selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
                 style={{ backgroundColor: '#eee' }}
               >
-                <ArticleTitle
+                <ArticleMainColumn
                   read={item.get('read')}
+                  tags={item.get('tags') || Immutable.fromJS([])}
                   title={item.get('title')}
                   url={item.get('url')}
                   onTitleChanged={(title) => { this.props.updateArticle(item.get('id'), { title }); }}
