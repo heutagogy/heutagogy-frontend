@@ -17,7 +17,7 @@ import { ArticlesTable } from './../../../components/ArticlesTable/ArticlesTable
 import { getArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
-import { getTags } from './../../../selectors/tags';
+import { getUniqueTags } from './../../../selectors/tags';
 import { loadEntities } from './../../../actions/entity';
 import { updateArticle, deleteArticle } from './../../../actions/articles';
 import HeaderBar from '../../HeaderBar';
@@ -176,7 +176,7 @@ export class ArticlesPage extends Component {
 }
 const mapStateToProps = (state) => ({
   articles: getArticles(state),
-  tags: getTags(state),
+  tags: getUniqueTags(state),
   linkHeader: getLinkHeader(state),
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
   updateArticleState: getViewState(state, UPDATE_ARTICLE_VIEW_STATE),
