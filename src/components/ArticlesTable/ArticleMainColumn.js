@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
 import TextField from 'material-ui/TextField';
 import { TableRowColumn } from 'material-ui/Table';
@@ -12,11 +13,17 @@ const inlineStyles = {
     paddingLeft: '7px',
     paddingRight: '0',
   },
+  tags: {
+    lineHeight: '15px',
+    fontSize: '10px',
+    marginBottom: '0',
+  },
 };
 
-export class ArticleTitle extends Component {
+export class ArticleMainColumn extends Component {
   static propTypes = {
     read: PropTypes.string,
+    tags: PropTypes.instanceOf(Immutable.List),
     title: PropTypes.string,
     url: PropTypes.string,
     onTitleChanged: PropTypes.func,
@@ -98,6 +105,7 @@ export class ArticleTitle extends Component {
              {this.props.title}
            </a>}
         </div>
+        <p style={inlineStyles.tags}>{this.props.tags.toJS().join(', ')}</p>
       </TableRowColumn>);
   }
 }
