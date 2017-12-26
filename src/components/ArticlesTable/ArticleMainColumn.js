@@ -61,7 +61,7 @@ export class ArticleMainColumn extends Component {
     this.handleChangeCancel = this.handleChangeCancel.bind(this);
   }
 
-  handleClick(e) {
+  handleClick() {
     if (this.state.isEditing === true) {
       return;
     }
@@ -71,8 +71,6 @@ export class ArticleMainColumn extends Component {
       newTitle: this.props.title,
       newTags: this.props.tags,
     });
-
-    e.stopPropagation();
   }
 
   handleTitleChange(e, newTitle) {
@@ -91,15 +89,13 @@ export class ArticleMainColumn extends Component {
     });
   }
 
-  handleChangeComplete(e) {
+  handleChangeComplete() {
     this.props.onArticleChanged({
       title: this.state.newTitle,
       tags: this.state.newTags,
     });
 
     this.setState(initialState);
-
-    e.preventDefault();
   }
 
   handleChangeCancel() {
@@ -153,6 +149,7 @@ export class ArticleMainColumn extends Component {
              <a
                href={this.props.url}
                target="_blank"
+               onClick={(e) => e.stopPropagation()} // eslint-disable-line react/jsx-no-bind
              >
                {this.props.title}
              </a><br />
