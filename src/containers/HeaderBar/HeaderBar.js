@@ -57,7 +57,7 @@ export class HeaderBar extends Component {
   }
 
   getAutoCompleteDataSource() {
-    return this.props.searchText === '@'
+    return this.props.searchText.startsWith('@')
       ? this.props.autoCompleteDataSource.toJS().map((t) => `@${t}`)
       : [];
   }

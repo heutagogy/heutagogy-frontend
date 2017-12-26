@@ -80,7 +80,7 @@ export class ArticlesPage extends Component {
   getCurrentArticles() {
     const searchText = this.state.searchText.toLowerCase();
     const predicate = searchText.startsWith('@')
-      ? (a) => (a.get('tags') || []).some((t) => t.toLowerCase() === searchText.substring(ONE))
+      ? (a) => (a.get('tags') || []).some((t) => t.toLowerCase().includes(searchText.substring(ONE)))
       : (a) => a.get('title').toLowerCase().includes(searchText);
 
     return this.props.articles.filter(predicate);
