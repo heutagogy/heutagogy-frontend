@@ -18,6 +18,7 @@ const inlineStyles = {
   tag: {
     backgroundColor: 'lightgrey',
     border: '1px solid gray',
+    borderRadius: '3px',
     padding: '0 5px',
     marginRight: '7px',
   },
@@ -83,7 +84,9 @@ export class ArticleMainColumn extends Component {
   handleTagsChange(e, newTags) {
     this.setState({
       newTags: newTags !== ''
-        ? newTags.split(',').map((s) => s.replace(/ /g, ''))
+        ? newTags.
+          split(',').
+          map((s) => s.replace(/ /g, ''))
         : [],
     });
   }
