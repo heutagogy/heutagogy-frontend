@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-bind */
+
 import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
 import { arrayOf } from 'normalizr';
@@ -5,6 +7,7 @@ import { connect } from 'react-redux';
 import LinearProgress from 'material-ui/LinearProgress';
 import Pagination from 'rc-pagination';
 import en from 'rc-pagination/lib/locale/en_US';
+import moment from 'moment';
 
 import 'rc-pagination/assets/index.css';
 import './RcPaginationOverride.css'; // should be placed after rc-pagination/assets/index.css
@@ -31,6 +34,7 @@ const inlineStyles = {
 };
 
 const MAX_PER_PAGE = 1000;
+const localStorageDateOrderingKey = 'heutagogy-date-ordering';
 
 export class ArticlesPage extends Component {
   static propTypes = {
@@ -50,12 +54,14 @@ export class ArticlesPage extends Component {
     [
       'handleUpdateInput',
       'onRowSelection',
+      'onDateOrderingChange',
       'getCurrentArticles',
       'handleOnPageChange',
       'loadAllArticlesFromServer',
     ].forEach((method) => { this[method] = this[method].bind(this); });
 
     this.state = {
+      dateOrdering: false,
       pageSize: Math.min(MAX_PER_PAGE, 30), // eslint-disable-line
       selectedRows: [],
       selectedPage: 1,
@@ -71,19 +77,38 @@ export class ArticlesPage extends Component {
     }).then(() => {
       this.loadAllArticlesFromServer(this.props.linkHeader.get('last'));
     });
+
+    this.setState({
+      dateOrdering: localStorage.getItem(localStorageDateOrderingKey) === 'true',
+    });
   }
 
   onRowSelection(selectedRows) {
     this.setState({ selectedRows });
   }
 
+  onDateOrderingChange() {
+    const newDateOrderingState = this.state.dateOrdering === false;
+
+    this.setState({
+      dateOrdering: newDateOrderingState,
+    });
+
+    localStorage.setItem(localStorageDateOrderingKey, newDateOrderingState);
+  }
+
   getCurrentArticles() {
     const searchText = this.state.searchText.toLowerCase();
     const predicate = searchText.startsWith('@')
       ? (a) => (a.get('tags') || []).some((t) => t.toLowerCase().includes(searchText.substring(ONE)))
-      : (a) => a.get('title').toLowerCase().includes(searchText);
+          : (a) => a.get('title').toLowerCase().includes(searchText);
+    const articles = this.props.articles.filter(predicate);
 
-    return this.props.articles.filter(predicate);
+    return this.state.dateOrdering === true
+      ? articles.sort((a, b) =>
+        moment(b.get('timestamp')) - moment(a.get('timestamp'))
+      )
+      : articles;
   }
 
   handleUpdateInput = (searchText) => {
@@ -151,7 +176,9 @@ export class ArticlesPage extends Component {
           <div className={styles.table}>
             <ArticlesTable
               articles={articles}
+              dateOrdering={this.state.dateOrdering}
               deleteArticle={this.props.deleteArticle}
+              handleDateOrderingChange={this.onDateOrderingChange}
               handleOnRowSelection={this.onRowSelection}
               selectedRows={this.state.selectedRows}
               updateArticle={this.props.updateArticle}

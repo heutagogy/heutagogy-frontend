@@ -11,6 +11,7 @@ import moment from 'moment';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import DateRange from 'material-ui/svg-icons/action/date-range';
 
 import { ArticleMainColumn } from './ArticleMainColumn';
 
@@ -23,7 +24,9 @@ import styles from './ArticlesTable.less';
 export class ArticlesTable extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
+    dateOrdering: PropTypes.bool,
     deleteArticle: PropTypes.func,
+    handleDateOrderingChange: PropTypes.func,
     handleOnRowSelection: PropTypes.func,
     selectable: PropTypes.bool,
     selectedRows: PropTypes.oneOfType([
@@ -152,7 +155,23 @@ export class ArticlesTable extends Component {
             style={{ backgroundColor: '#eee' }}
           >
             <TableRow>
-              <TableHeaderColumn>{'Title'}</TableHeaderColumn>
+              <TableHeaderColumn>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <h7>{'Title'}</h7>
+                  <IconButton
+                    iconStyle={{ height: '20px', width: '20px' }}
+                    onClick={this.props.handleDateOrderingChange}
+                  >
+                    <DateRange
+                      className={
+                        this.props.dateOrdering === true
+                          ? styles.dateOrderingEnabled
+                          : styles.dateOrderingDisabled
+                      }
+                    />
+                  </IconButton>
+                </div>
+              </TableHeaderColumn>
               <TableHeaderColumn style={{ width: '10px' }}>{'Meta'}</TableHeaderColumn>
             </TableRow>
           </TableHeader>
