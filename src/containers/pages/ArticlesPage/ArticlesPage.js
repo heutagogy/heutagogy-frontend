@@ -17,6 +17,7 @@ import { ArticlesTable } from './../../../components/ArticlesTable/ArticlesTable
 import { getArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
+import { getTags } from './../../../selectors/tags';
 import { loadEntities } from './../../../actions/entity';
 import { updateArticle, deleteArticle } from './../../../actions/articles';
 import HeaderBar from '../../HeaderBar';
@@ -38,6 +39,7 @@ export class ArticlesPage extends Component {
     linkHeader: PropTypes.instanceOf(Immutable.Map),
     loadEntities: PropTypes.func,
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
+    tags: PropTypes.instanceOf(Immutable.List),
     updateArticle: PropTypes.func,
     updateArticleState: PropTypes.instanceOf(Immutable.Map),
   }
@@ -46,7 +48,7 @@ export class ArticlesPage extends Component {
     super(props);
 
     [
-      'handleSearchChanged',
+      'handleUpdateInput',
       'onRowSelection',
       'getCurrentArticles',
       'handleOnPageChange',
@@ -57,7 +59,7 @@ export class ArticlesPage extends Component {
       pageSize: Math.min(MAX_PER_PAGE, 30), // eslint-disable-line
       selectedRows: [],
       selectedPage: 1,
-      search: '',
+      searchText: '',
     };
   }
 
@@ -76,16 +78,19 @@ export class ArticlesPage extends Component {
   }
 
   getCurrentArticles() {
-    const search = this.state.search.toLowerCase();
+    const searchText = this.state.searchText.toLowerCase();
+    const predicate = searchText.startsWith('@')
+      ? (a) => (a.get('tags') || []).some((t) => t.toLowerCase() === searchText.substring(ONE))
+      : (a) => a.get('title').toLowerCase().includes(searchText);
 
-    return this.props.articles.filter((x) => x.get('title').toLowerCase().includes(search));
+    return this.props.articles.filter(predicate);
   }
 
-  handleSearchChanged(e, search) {
+  handleUpdateInput = (searchText) => {
     this.setState({
-      search,
+      searchText,
     });
-  }
+  };
 
   loadAllArticlesFromServer(last) {
     if (!last) {
@@ -138,8 +143,9 @@ export class ArticlesPage extends Component {
     return (
       <div>
         <HeaderBar
-          search={this.state.search}
-          onSearchChanged={this.handleSearchChanged}
+          autoCompleteDataSource={this.props.tags}
+          searchText={this.state.searchText}
+          onUpdateInput={this.handleUpdateInput}
         />
         <div style={inlineStyles.routerContainer}>
           <div className={styles.table}>
@@ -168,9 +174,9 @@ export class ArticlesPage extends Component {
     );
   }
 }
-
 const mapStateToProps = (state) => ({
   articles: getArticles(state),
+  tags: getTags(state),
   linkHeader: getLinkHeader(state),
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
   updateArticleState: getViewState(state, UPDATE_ARTICLE_VIEW_STATE),

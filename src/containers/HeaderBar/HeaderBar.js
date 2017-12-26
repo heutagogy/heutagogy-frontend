@@ -10,6 +10,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
 import TextField from 'material-ui/TextField';
+import AutoComplete from 'material-ui/AutoComplete';
 import ActionSearch from 'material-ui/svg-icons/action/search';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import validUrl from 'valid-url';
@@ -29,12 +30,13 @@ import { getArticles } from './../../selectors/articles';
 export class HeaderBar extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
+    autoCompleteDataSource: PropTypes.instanceOf(Immutable.List),
     logoutUser: PropTypes.func,
     rememberArticles: PropTypes.func,
     rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
-    search: PropTypes.string,
+    searchText: PropTypes.string,
     user: PropTypes.instanceOf(Immutable.Map),
-    onSearchChanged: PropTypes.func,
+    onUpdateInput: PropTypes.func,
   }
 
   constructor(props) {
@@ -52,6 +54,12 @@ export class HeaderBar extends Component {
       selectedRows: [],
       url: '',
     };
+  }
+
+  getAutoCompleteDataSource() {
+    return this.props.searchText === '@'
+      ? this.props.autoCompleteDataSource.toJS().map((t) => `@${t}`)
+      : [];
   }
 
   bind() {
@@ -149,11 +157,14 @@ export class HeaderBar extends Component {
             <ContentAdd />
           </IconButton>
           { this.state.searchOpen
-          ? <TextField
-            defaultValue={this.props.search}
+          ? <AutoComplete
+            dataSource={this.getAutoCompleteDataSource()}
+            filter={AutoComplete.fuzzyFilter}
             hintText="Search"
+            maxSearchResults={7}
             ref={(input) => input && input.focus()}
-            onChange={this.props.onSearchChanged}
+            searchText={this.props.searchText}
+            onUpdateInput={this.props.onUpdateInput}
           /> : null }
           <IconButton onClick={() => this.handleToggle('searchOpen')} >
             <ActionSearch />
