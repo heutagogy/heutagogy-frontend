@@ -169,10 +169,10 @@ export class ArticlesTable extends Component {
               >
                 <ArticleMainColumn
                   read={item.get('read')}
-                  tags={item.get('tags') || Immutable.fromJS([])}
+                  tags={item.get('tags') ? item.get('tags').toJS() : []}
                   title={item.get('title')}
                   url={item.get('url')}
-                  onTitleChanged={(title) => { this.props.updateArticle(item.get('id'), { title }); }}
+                  onArticleChanged={({ title, tags }) => { this.props.updateArticle(item.get('id'), { title, tags }); }}
                 />
                 <TableRowColumn
                   className={styles.preventCellClick}

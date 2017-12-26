@@ -146,17 +146,6 @@ export class HeaderBar extends Component {
           title="Heutagogy"
           onLeftIconButtonTouchTap={() => this.handleToggle('openMenu')}
         >
-          { this.state.saveOpen
-          ? <TextField
-            hintText="Save url"
-            ref={(input) => input && input.focus()}
-            onBlur={this.handleRememberArticle}
-            onChange={(e, url) => this.setState({ url })}
-            onKeyDown={this.handleTextFieldKeyDown}
-          /> : null }
-          <IconButton onClick={() => this.handleToggle('saveOpen')} >
-            <ContentAdd />
-          </IconButton>
           { this.state.searchOpen
           ? <AutoComplete
             dataSource={this.getAutoCompleteDataSource()}
@@ -169,6 +158,17 @@ export class HeaderBar extends Component {
           /> : null }
           <IconButton onClick={() => this.handleToggle('searchOpen')} >
             <ActionSearch />
+          </IconButton>
+          { this.state.saveOpen
+          ? <TextField
+            hintText="Save url"
+            ref={(input) => input && input.focus()}
+            onBlur={this.handleRememberArticle}
+            onChange={(e, url) => this.setState({ url })}
+            onKeyDown={this.handleTextFieldKeyDown}
+          /> : null }
+          <IconButton onClick={() => this.handleToggle('saveOpen')} >
+            <ContentAdd />
           </IconButton>
         </AppBar>
         <Drawer
