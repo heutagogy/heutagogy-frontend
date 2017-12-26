@@ -36,6 +36,9 @@ const inlineStyles = {
 const MAX_PER_PAGE = 1000;
 const localStorageDateOrderingKey = 'heutagogy-date-ordering';
 
+const transformStrToTags = (str) =>
+  str.split(' ').map((s) => s.replace(/@/g, ''));
+
 export class ArticlesPage extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
@@ -99,9 +102,13 @@ export class ArticlesPage extends Component {
 
   getCurrentArticles() {
     const searchText = this.state.searchText.toLowerCase();
+    const tags = transformStrToTags(searchText);
     const predicate = searchText.startsWith('@')
-      ? (a) => (a.get('tags') || []).some((t) => t.toLowerCase().includes(searchText.substring(ONE)))
-          : (a) => a.get('title').toLowerCase().includes(searchText);
+      ? (a) => tags.every(
+        (t1) => (a.get('tags') || []).some((t2) => t2.toLowerCase().includes(t1.toLowerCase()))
+      )
+      : (a) => a.get('title').toLowerCase().includes(searchText);
+
     const articles = this.props.articles.filter(predicate);
 
     return this.state.dateOrdering === true

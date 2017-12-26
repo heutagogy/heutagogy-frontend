@@ -21,6 +21,7 @@ const inlineStyles = {
     borderRadius: '3px',
     padding: '0 5px',
     marginRight: '7px',
+    opacity: '0.50',
   },
   tagEdit: {
     fontSize: '14px',
