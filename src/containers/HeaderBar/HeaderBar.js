@@ -118,6 +118,7 @@ export class HeaderBar extends Component {
   handleRememberArticle() {
     if (validUrl.isUri(this.state.url)) {
       this.props.rememberArticles({ articles: Immutable.fromJS({ url: this.state.url }) });
+      this.setState({ url: '' });
       this.handleToggle('saveOpen');
     }
   }
