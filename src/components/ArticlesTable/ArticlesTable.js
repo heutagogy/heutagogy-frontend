@@ -201,62 +201,61 @@ export class ArticlesTable extends Component {
             displayRowCheckbox={Boolean(this.props.selectable)}
           >
       {this.props.articles.map((item, i) => { // eslint-disable-line
-        /* eslint-disable */
-            return (
-              <TableRow
-                key={i}
-                selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
-                style={{ backgroundColor: '#eee' }}
-              >
-                <ArticleMainColumn
-                  notesLength={item.get('notes') ? item.get('notes').toJS().length : 0}
-                  read={item.get('read')}
-                  tags={item.get('tags') ? item.get('tags').toJS() : []}
-                  title={item.get('title')}
-                  url={item.get('url')}
-                  onArticleChanged={({ title, tags }) => { this.props.updateArticle(item.get('id'), { title, tags }); }}
-                  onNotesClick={() =>
+        return (
+          <TableRow
+            key={i}
+            selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
+            style={{ backgroundColor: '#eee' }}
+          >
+            <ArticleMainColumn
+              notesLength={item.get('notes') ? item.get('notes').toJS().length : ZERO}
+              read={item.get('read')}
+              tags={item.get('tags') ? item.get('tags').toJS() : []}
+              title={item.get('title')}
+              url={item.get('url')}
+              onArticleChanged={({ title, tags }) => { this.props.updateArticle(item.get('id'), { title, tags }); }}
+              onNotesClick={() =>
                     this.openNotes({
                       id: item.get('id'),
                       notes: item.get('notes') ? item.get('notes').toJS() : [],
                     })
                   }
-                />
-                <TableRowColumn
-                  className={styles.preventCellClick}
-                  style={{ width: '5px', paddingLeft: '13px' }}
+            />
+            <TableRowColumn
+              className={styles.preventCellClick}
+              style={{ width: '5px', paddingLeft: '13px' }}
+            >
+              <div
+                className={styles.preventCellClickWrapper}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <IconMenu
+                  anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  className="icon-menu"
+                  iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+                  targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  useLayerForClickAway
                 >
-                  <div
-                    className={styles.preventCellClickWrapper}
-                    onClick={(e) => e.stopPropagation()}
+                  <MenuItem
+                    disabled
+                    primaryText={`Saved: ${formatTimeToUser(item.get('timestamp'))}`}
+                  />
+                  <MenuItem
+                    disabled={Boolean(item.get('read')) || !this.props.updateArticle}
                   >
-                    <IconMenu
-                      anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                      className="icon-menu"
-                      iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                      targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-                      useLayerForClickAway
-                    >
-                      <MenuItem
-                        disabled
-                        primaryText={`Saved: ${formatTimeToUser(item.get('timestamp'))}`}
-                      />
-                      <MenuItem
-                        disabled={Boolean(item.get('read')) || !this.props.updateArticle}
-                      >
-                        {this.getReadMenuItemText(item)}
-                      </MenuItem>
-                      { this.props.deleteArticle
+                    {this.getReadMenuItemText(item)}
+                  </MenuItem>
+                  { this.props.deleteArticle
                       ? <MenuItem
                         primaryText="Delete"
                         onTouchTap={() => this.handleDelete(item.get('id'))}
                       /> : null }
-                    </IconMenu>
-                  </div>
-                </TableRowColumn>
-              </TableRow>
-            );
-          })}
+                </IconMenu>
+              </div>
+            </TableRowColumn>
+          </TableRow>
+        );
+      })}
           </TableBody>
         </Table>
         {

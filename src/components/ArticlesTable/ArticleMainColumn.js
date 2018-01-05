@@ -36,7 +36,6 @@ const inlineStyles = {
     color: '#f44336',
   },
   notesIconStyle: {
-    zIndex: '100000000',
     color: '#9e9e9e',
     height: '20px',
     width: '20px',
