@@ -17,7 +17,7 @@ import { ArticleMainColumn } from './ArticleMainColumn';
 
 import { ZERO, MINUS_ONE } from './../../constants/Constants';
 import { formatTimeToUser } from './../../utils/timeUtils';
-import { NotesModal } from './NotesModal';
+import NotesModal from './NotesModal';
 import Spinner from './../Spinner';
 
 import styles from './ArticlesTable.less';
