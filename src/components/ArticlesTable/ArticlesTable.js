@@ -22,8 +22,10 @@ import Spinner from './../Spinner';
 
 import styles from './ArticlesTable.less';
 
+const impossibleArticleId = -1;
+
 const notesInitialState = {
-  notesArticleId: 0,
+  notesArticleId: impossibleArticleId,
   notesVisible: false,
   notes: [],
 };
@@ -49,7 +51,7 @@ export class ArticlesTable extends Component {
 
     this.state = {
       ...notesInitialState,
-      deleteArticleId: 0,
+      deleteArticleId: impossibleArticleId,
     };
 
     [
@@ -151,13 +153,13 @@ export class ArticlesTable extends Component {
   handleDeleteConfirmed() {
     this.props.deleteArticle(this.state.deleteArticleId);
     this.setState({
-      deleteArticleId: 0,
+      deleteArticleId: impossibleArticleId,
     });
   }
 
   handleDeleteCancelled() {
     this.setState({
-      deleteArticleId: 0,
+      deleteArticleId: impossibleArticleId,
     });
   }
 
