@@ -118,7 +118,7 @@ export class ArticlesPage extends Component {
 
       predicate = (a) => (
         a.get('notes') && a.get('notes').toJS().length > 0
-          ? a.get('notes').toJS()[0]
+          ? a.get('notes').toJS()[0].text
           : ''
       ).toLowerCase().
         includes(searchText.substring(TWO).toLowerCase());

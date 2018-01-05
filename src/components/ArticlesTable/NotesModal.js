@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable no-magic-numbers */
+import { connect } from 'react-redux';
+
 import IconButton from 'material-ui/IconButton';
 import DoneIcon from 'material-ui/svg-icons/action/done';
 import ReactMarkdown from 'react-markdown';
@@ -9,6 +11,7 @@ import Textarea from 'react-textarea-autosize';
 import { Component, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from './../Fields/FlatButton';
+import { createNote, updateNote, deleteNote } from './../../actions/notes';
 
 
 const inlineStyles = {
@@ -39,24 +42,28 @@ const inlineStyles = {
   },
 };
 
+const dummyNote = { text: '', id: '-1' };
 
-export class NotesModal extends Component {
+class NotesModal extends Component {
   static propTypes = {
     articleId: PropTypes.number,
+    createNote: PropTypes.func,
+    deleteNote: PropTypes.func,
     handleClose: PropTypes.func,
     notes: PropTypes.array,
     updateArticle: PropTypes.func,
+    updateNote: PropTypes.func,
   }
 
   constructor(props) {
     super(props);
 
     // component supports only one note.
-    const content = props.notes[0] || '';
+    const note = props.notes[0] || dummyNote;
 
     this.state = {
-      editing: content === '',
-      content,
+      editing: note.text === '',
+      note,
     };
     this.textArea = null;
 
@@ -90,18 +97,24 @@ export class NotesModal extends Component {
   }
 
   handleOk() {
-    if ((this.props.notes[0] || '') !== this.state.content) {
-      const notesCopy = [...this.props.notes];
+    if ((this.props.notes[0] || dummyNote).text === this.state.note.text) {
+      this.props.handleClose();
 
-      /* eslint-disable fp/no-mutation */
-      notesCopy[0] = this.state.content;
-      /* eslint-enable fp/no-mutation */
-
-      this.props.updateArticle(
-        this.props.articleId,
-        { notes: notesCopy }
-      );
+      return;
     }
+
+    const payload = { text: this.state.note.text };
+
+    if (dummyNote.id === this.state.note.id) {
+      this.props.createNote(this.props.articleId, payload);
+    } else if (this.state.note.text === '') {
+      this.props.deleteNote(this.state.note.id, payload);
+    } else {
+      this.props.updateNote(this.state.note.id, payload);
+    }
+
+    // HACK to update article in the table
+    this.props.updateArticle(this.props.articleId, {});
 
     this.props.handleClose();
   }
@@ -138,8 +151,13 @@ export class NotesModal extends Component {
               <Textarea
                 inputRef={(el) => { this.textArea = el; }}
                 style={inlineStyles.textArea}
-                value={this.state.content}
-                onChange={(e) => this.setState({ content: e.target.value })}
+                value={this.state.note.text}
+                onChange={(e) => this.setState({
+                  note: {
+                    id: this.state.note.id,
+                    text: e.target.value,
+                  },
+                })}
               />
               <IconButton
                 iconStyle={inlineStyles.doneIconStyle}
@@ -153,7 +171,7 @@ export class NotesModal extends Component {
               onTouchTap={this.handleMarkdownClick}
             >
               <ReactMarkdown
-                source={this.state.content}
+                source={this.state.note.text}
               />
             </div>
           }
@@ -163,4 +181,8 @@ export class NotesModal extends Component {
   }
 }
 
-export default NotesModal;
+export default connect(null, {
+  createNote,
+  updateNote,
+  deleteNote,
+})(NotesModal);
