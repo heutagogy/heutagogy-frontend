@@ -17,9 +17,16 @@ import { ArticleMainColumn } from './ArticleMainColumn';
 
 import { ZERO, MINUS_ONE } from './../../constants/Constants';
 import { formatTimeToUser } from './../../utils/timeUtils';
+import { NotesModal } from './NotesModal';
 import Spinner from './../Spinner';
 
 import styles from './ArticlesTable.less';
+
+const notesInitialState = {
+  notesArticleId: 0,
+  notesVisible: false,
+  notes: [],
+};
 
 export class ArticlesTable extends Component {
   static propTypes = {
@@ -41,15 +48,17 @@ export class ArticlesTable extends Component {
     super(props);
 
     this.state = {
-      deleteArticleId: null,
+      ...notesInitialState,
+      deleteArticleId: 0,
     };
 
     [
-      'getReadMenuItemText',
+      'closeNotes',
       'getDeleteDialog',
+      'getReadMenuItemText',
       'handleDelete',
-      'handleDeleteConfirmed',
       'handleDeleteCancelled',
+      'handleDeleteConfirmed',
     ].forEach((method) => { this[method] = this[method].bind(this); });
   }
 
@@ -114,11 +123,23 @@ export class ArticlesTable extends Component {
     return (
       <Dialog
         actions={actions}
-        open={this.state.deleteArticleId !== null}
+        open={this.state.deleteArticleId !== ZERO}
         onRequestClose={this.handleDeleteCancelled}
       >
         {'Are you sure you want to delete?'}
       </Dialog>);
+  }
+
+  openNotes({ id, notes }) {
+    this.setState({
+      notesArticleId: id,
+      notesVisible: true,
+      notes,
+    });
+  }
+
+  closeNotes() {
+    this.setState(notesInitialState);
   }
 
   handleDelete(id) {
@@ -130,13 +151,13 @@ export class ArticlesTable extends Component {
   handleDeleteConfirmed() {
     this.props.deleteArticle(this.state.deleteArticleId);
     this.setState({
-      deleteArticleId: null,
+      deleteArticleId: 0,
     });
   }
 
   handleDeleteCancelled() {
     this.setState({
-      deleteArticleId: null,
+      deleteArticleId: 0,
     });
   }
 
@@ -179,7 +200,8 @@ export class ArticlesTable extends Component {
             deselectOnClickaway={false}
             displayRowCheckbox={Boolean(this.props.selectable)}
           >
-          {this.props.articles.map((item, i) => { // eslint-disable-line
+      {this.props.articles.map((item, i) => { // eslint-disable-line
+        /* eslint-disable */
             return (
               <TableRow
                 key={i}
@@ -187,11 +209,18 @@ export class ArticlesTable extends Component {
                 style={{ backgroundColor: '#eee' }}
               >
                 <ArticleMainColumn
+                  notesLength={item.get('notes') ? item.get('notes').toJS().length : 0}
                   read={item.get('read')}
                   tags={item.get('tags') ? item.get('tags').toJS() : []}
                   title={item.get('title')}
                   url={item.get('url')}
                   onArticleChanged={({ title, tags }) => { this.props.updateArticle(item.get('id'), { title, tags }); }}
+                  onNotesClick={() =>
+                    this.openNotes({
+                      id: item.get('id'),
+                      notes: item.get('notes') ? item.get('notes').toJS() : [],
+                    })
+                  }
                 />
                 <TableRowColumn
                   className={styles.preventCellClick}
@@ -230,6 +259,16 @@ export class ArticlesTable extends Component {
           })}
           </TableBody>
         </Table>
+        {
+          this.state.notesVisible === true
+          ? <NotesModal
+            articleId={this.state.notesArticleId}
+            handleClose={this.closeNotes}
+            notes={this.state.notes}
+            updateArticle={this.props.updateArticle}
+          />
+           : null
+          }
       </div>
     );
   }

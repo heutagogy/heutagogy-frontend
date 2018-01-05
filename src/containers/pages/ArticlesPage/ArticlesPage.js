@@ -15,7 +15,7 @@ import './RcPaginationOverride.css'; // should be placed after rc-pagination/ass
 import articleSchema from './../../../schemas/article';
 import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE, UPDATE_ARTICLE_VIEW_STATE } from './../../../constants/ViewStates';
-import { ZERO, ONE } from './../../../constants/Constants';
+import { ZERO, ONE, TWO } from './../../../constants/Constants';
 import { ArticlesTable } from './../../../components/ArticlesTable/ArticlesTable';
 import { getArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
@@ -103,11 +103,29 @@ export class ArticlesPage extends Component {
   getCurrentArticles() {
     const searchText = this.state.searchText.toLowerCase();
     const tags = transformStrToTags(searchText);
-    const predicate = searchText.startsWith('@')
-      ? (a) => tags.every(
-        (t1) => (a.get('tags') || []).some((t2) => t2.toLowerCase().includes(t1.toLowerCase()))
-      )
-      : (a) => a.get('title').toLowerCase().includes(searchText);
+
+    /* eslint-disable */
+
+    let predicate = (a) => a.get('title').toLowerCase().includes(searchText);
+
+    if (searchText.startsWith('@')) {
+
+      predicate = (a) => tags.every((t1) =>
+        (a.get('tags') || []).some((t2) =>
+          t2.toLowerCase().includes(t1.toLowerCase())));
+
+    } else if (searchText.startsWith('//')) {
+
+      predicate = (a) => (
+        a.get('notes') && a.get('notes').toJS().length > 0
+          ? a.get('notes').toJS()[0]
+          : ''
+      ).toLowerCase().
+        includes(searchText.substring(TWO).toLowerCase());
+
+    }
+
+    /* eslint-enable */
 
     const articles = this.props.articles.filter(predicate);
 

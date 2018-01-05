@@ -2,8 +2,10 @@ import { Component, PropTypes } from 'react';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import DoneIcon from 'material-ui/svg-icons/action/done';
+import SpeakerNotes from 'material-ui/svg-icons/action/speaker-notes';
 import CancelIcon from 'material-ui/svg-icons/navigation/cancel';
 import { TableRowColumn } from 'material-ui/Table';
+import { ZERO } from './../../constants/Constants';
 
 import styles from './ArticlesTable.less';
 
@@ -33,21 +35,30 @@ const inlineStyles = {
   cancelIconStyle: {
     color: '#f44336',
   },
+  notesIconStyle: {
+    zIndex: '100000000',
+    color: '#9e9e9e',
+    height: '20px',
+    width: '20px',
+  },
 };
 
 const initialState = {
   isEditing: false,
   newTitle: null,
+  showNotes: false,
   newTags: [],
 };
 
 export class ArticleMainColumn extends Component {
   static propTypes = {
+    notesLength: PropTypes.number,
     read: PropTypes.string,
     tags: PropTypes.array,
     title: PropTypes.string,
     url: PropTypes.string,
     onArticleChanged: PropTypes.func,
+    onNotesClick: PropTypes.func,
   };
 
   constructor() {
@@ -60,6 +71,7 @@ export class ArticleMainColumn extends Component {
     this.handleTagsChange = this.handleTagsChange.bind(this);
     this.handleChangeComplete = this.handleChangeComplete.bind(this);
     this.handleChangeCancel = this.handleChangeCancel.bind(this);
+    this.handleNotesClick = this.handleNotesClick.bind(this);
   }
 
   handleClick() {
@@ -101,6 +113,12 @@ export class ArticleMainColumn extends Component {
 
   handleChangeCancel() {
     this.setState(initialState);
+  }
+
+  handleNotesClick(e) {
+    e.stopPropagation();
+
+    this.props.onNotesClick();
   }
 
   render() {
@@ -147,23 +165,36 @@ export class ArticleMainColumn extends Component {
              </div>
            </form>
            : <div>
-             <a
-               href={this.props.url}
-               target="_blank"
-               onClick={(e) => e.stopPropagation()} // eslint-disable-line react/jsx-no-bind
-             >
-               {this.props.title}
-             </a><br />
-             {
-               this.props.tags.map((tag, i) =>
-                 (
-                   <span
-                     key={`${tag}${i}`}
-                     style={inlineStyles.tag}
-                   >{tag}</span>
+             <div style={{ display: 'flex', alignItems: 'center', margin: '5px 0 3px 0' }}>
+               <a
+                 href={this.props.url}
+                 target="_blank"
+                 onClick={(e) => e.stopPropagation()}  // eslint-disable-line react/jsx-no-bind
+               >
+                 {this.props.title}
+               </a>
+               <IconButton
+                 iconStyle={inlineStyles.notesIconStyle}
+                 style={{ padding: '0 0 0 7px', marginRight: '5px', width: '20px', height: '20px' }}
+                 onClick={this.handleNotesClick}
+               >
+                 <SpeakerNotes className={this.props.notesLength > ZERO ? styles.notesExist : styles.noNotes} />
+               </IconButton>
+             </div>
+             <div style={{ marginBottom: '5px' }}>
+               {
+                 this.props.tags.map((tag, i) =>
+                   (
+                     <span
+                       key={`${tag}${i}`}
+                       style={inlineStyles.tag}
+                     >
+                       {tag}
+                     </span>
+                   )
                  )
-               )
-             }
+               }
+             </div>
            </div>
           }
         </div>
