@@ -17,9 +17,16 @@ import { ArticleMainColumn } from './ArticleMainColumn';
 
 import { ZERO, MINUS_ONE } from './../../constants/Constants';
 import { formatTimeToUser } from './../../utils/timeUtils';
+import { NotesModal } from './NotesModal';
 import Spinner from './../Spinner';
 
 import styles from './ArticlesTable.less';
+
+const notesInitialState = {
+  notesArticleId: 0,
+  notesVisible: false,
+  notes: [],
+};
 
 export class ArticlesTable extends Component {
   static propTypes = {
@@ -41,15 +48,17 @@ export class ArticlesTable extends Component {
     super(props);
 
     this.state = {
-      deleteArticleId: null,
+      ...notesInitialState,
+      deleteArticleId: 0,
     };
 
     [
-      'getReadMenuItemText',
+      'closeNotes',
       'getDeleteDialog',
+      'getReadMenuItemText',
       'handleDelete',
-      'handleDeleteConfirmed',
       'handleDeleteCancelled',
+      'handleDeleteConfirmed',
     ].forEach((method) => { this[method] = this[method].bind(this); });
   }
 
@@ -114,11 +123,23 @@ export class ArticlesTable extends Component {
     return (
       <Dialog
         actions={actions}
-        open={this.state.deleteArticleId !== null}
+        open={this.state.deleteArticleId !== ZERO}
         onRequestClose={this.handleDeleteCancelled}
       >
         {'Are you sure you want to delete?'}
       </Dialog>);
+  }
+
+  openNotes({ id, notes }) {
+    this.setState({
+      notesArticleId: id,
+      notesVisible: true,
+      notes,
+    });
+  }
+
+  closeNotes() {
+    this.setState(notesInitialState);
   }
 
   handleDelete(id) {
@@ -130,13 +151,13 @@ export class ArticlesTable extends Component {
   handleDeleteConfirmed() {
     this.props.deleteArticle(this.state.deleteArticleId);
     this.setState({
-      deleteArticleId: null,
+      deleteArticleId: 0,
     });
   }
 
   handleDeleteCancelled() {
     this.setState({
-      deleteArticleId: null,
+      deleteArticleId: 0,
     });
   }
 
@@ -179,57 +200,74 @@ export class ArticlesTable extends Component {
             deselectOnClickaway={false}
             displayRowCheckbox={Boolean(this.props.selectable)}
           >
-          {this.props.articles.map((item, i) => { // eslint-disable-line
-            return (
-              <TableRow
-                key={i}
-                selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
-                style={{ backgroundColor: '#eee' }}
+      {this.props.articles.map((item, i) => { // eslint-disable-line
+        return (
+          <TableRow
+            key={i}
+            selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
+            style={{ backgroundColor: '#eee' }}
+          >
+            <ArticleMainColumn
+              notesLength={item.get('notes') ? item.get('notes').toJS().length : ZERO}
+              read={item.get('read')}
+              tags={item.get('tags') ? item.get('tags').toJS() : []}
+              title={item.get('title')}
+              url={item.get('url')}
+              onArticleChanged={({ title, tags }) => { this.props.updateArticle(item.get('id'), { title, tags }); }}
+              onNotesClick={() =>
+                    this.openNotes({
+                      id: item.get('id'),
+                      notes: item.get('notes') ? item.get('notes').toJS() : [],
+                    })
+                  }
+            />
+            <TableRowColumn
+              className={styles.preventCellClick}
+              style={{ width: '5px', paddingLeft: '13px' }}
+            >
+              <div
+                className={styles.preventCellClickWrapper}
+                onClick={(e) => e.stopPropagation()}
               >
-                <ArticleMainColumn
-                  read={item.get('read')}
-                  tags={item.get('tags') ? item.get('tags').toJS() : []}
-                  title={item.get('title')}
-                  url={item.get('url')}
-                  onArticleChanged={({ title, tags }) => { this.props.updateArticle(item.get('id'), { title, tags }); }}
-                />
-                <TableRowColumn
-                  className={styles.preventCellClick}
-                  style={{ width: '5px', paddingLeft: '13px' }}
+                <IconMenu
+                  anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  className="icon-menu"
+                  iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+                  targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  useLayerForClickAway
                 >
-                  <div
-                    className={styles.preventCellClickWrapper}
-                    onClick={(e) => e.stopPropagation()}
+                  <MenuItem
+                    disabled
+                    primaryText={`Saved: ${formatTimeToUser(item.get('timestamp'))}`}
+                  />
+                  <MenuItem
+                    disabled={Boolean(item.get('read')) || !this.props.updateArticle}
                   >
-                    <IconMenu
-                      anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                      className="icon-menu"
-                      iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                      targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-                      useLayerForClickAway
-                    >
-                      <MenuItem
-                        disabled
-                        primaryText={`Saved: ${formatTimeToUser(item.get('timestamp'))}`}
-                      />
-                      <MenuItem
-                        disabled={Boolean(item.get('read')) || !this.props.updateArticle}
-                      >
-                        {this.getReadMenuItemText(item)}
-                      </MenuItem>
-                      { this.props.deleteArticle
+                    {this.getReadMenuItemText(item)}
+                  </MenuItem>
+                  { this.props.deleteArticle
                       ? <MenuItem
                         primaryText="Delete"
                         onTouchTap={() => this.handleDelete(item.get('id'))}
                       /> : null }
-                    </IconMenu>
-                  </div>
-                </TableRowColumn>
-              </TableRow>
-            );
-          })}
+                </IconMenu>
+              </div>
+            </TableRowColumn>
+          </TableRow>
+        );
+      })}
           </TableBody>
         </Table>
+        {
+          this.state.notesVisible === true
+          ? <NotesModal
+            articleId={this.state.notesArticleId}
+            handleClose={this.closeNotes}
+            notes={this.state.notes}
+            updateArticle={this.props.updateArticle}
+          />
+           : null
+          }
       </div>
     );
   }

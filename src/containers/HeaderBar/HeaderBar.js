@@ -150,7 +150,7 @@ export class HeaderBar extends Component {
           ? <AutoComplete
             dataSource={this.getAutoCompleteDataSource()}
             filter={AutoComplete.fuzzyFilter}
-            hintText="Search"
+            hintText="Search (@ : by tag, // : by notes)"
             maxSearchResults={7}
             ref={(input) => input && input.focus()}
             searchText={this.props.searchText}
