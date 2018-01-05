@@ -125,7 +125,7 @@ export class ArticlesTable extends Component {
     return (
       <Dialog
         actions={actions}
-        open={this.state.deleteArticleId !== ZERO}
+        open={this.state.deleteArticleId !== impossibleArticleId}
         onRequestClose={this.handleDeleteCancelled}
       >
         {'Are you sure you want to delete?'}
