@@ -27,7 +27,7 @@ const inlineStyles = {
     color: '#2196F3',
   },
   dialogBody: {
-    padding: 0,
+    padding: '3px',
     backgroundColor: '#eee',
     minHeight: '300px',
     maxHeight: '500px',
