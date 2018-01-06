@@ -16,13 +16,15 @@ const inlineStyles = {
   notePaper: {
     margin: '5px',
     padding: '10px',
-    opacity: '0.7',
   },
   paperContent: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  icon: {
+    opacity: '0.4',
   },
 };
 
@@ -82,11 +84,13 @@ class NotePaper extends Component {
           />
           <div>
             <IconButton
+              iconStyle={inlineStyles.icon}
               onTouchTap={this.handleUpdateNote}
             >
               <DoneIcon />
             </IconButton>
             <IconButton
+              iconStyle={inlineStyles.icon}
               onTouchTap={this.handleEditCanceled}
             >
               <CloseIcon />
@@ -102,11 +106,13 @@ class NotePaper extends Component {
           </div>
           <div>
             <IconButton
+              iconStyle={inlineStyles.icon}
               onTouchTap={this.handleEditNoteClicked}
             >
               <ModeEditIcon />
             </IconButton>
             <IconButton
+              iconStyle={inlineStyles.icon}
               onTouchTap={this.props.onDeleteNote}
             >
               <DeleteForeverIcon />

@@ -145,6 +145,12 @@ export class ArticlesTable extends Component {
     return item.get('notes') ? item.get('notes').toJS() : [];
   }
 
+  getCurrentTitle() {
+    const item = this.props.articles.get(this.state.notesArticleI);
+
+    return item.get('title');
+  }
+
   openNotes(i) {
     this.setState({
       notesArticleI: i,
@@ -273,6 +279,7 @@ export class ArticlesTable extends Component {
             articleId={this.getCurrentArticleId()}
             handleClose={this.closeNotes}
             notes={this.getCurrentNotes()}
+            title={this.getCurrentTitle()}
           />
           : null
         }
