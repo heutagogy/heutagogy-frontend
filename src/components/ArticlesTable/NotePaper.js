@@ -1,22 +1,22 @@
 /* eslint-disable react/jsx-no-bind */
 import { Component, PropTypes } from 'react';
-
+import ReactMarkdown from 'react-markdown';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
-
 import CloseIcon from 'material-ui/svg-icons/navigation/close';
 import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
 import DoneIcon from 'material-ui/svg-icons/action/done';
 import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
 
-import ReactMarkdown from 'react-markdown';
+import { CodeBlock } from './CodeBlock';
 
 
 const inlineStyles = {
   notePaper: {
     margin: '5px',
     padding: '10px',
+    opacity: '0.7',
   },
   paperContent: {
     display: 'flex',
@@ -69,44 +69,51 @@ class NotePaper extends Component {
 
   render() {
     return <Paper style={inlineStyles.notePaper}>
-      {this.state.editing
-      ? <div style={inlineStyles.paperContent}>
-        <TextField
-          autoFocus
-          multiLine
-          name="newnote"
-          style={{ flex: 1 }}
-          value={this.state.currentText}
-          onChange={(e, t) => this.setState({ currentText: t })}
-        />
-        <div>
-          <IconButton
-            onTouchTap={this.handleUpdateNote}
-          >
-            <DoneIcon />
-          </IconButton>
-          <IconButton
-            onTouchTap={this.handleEditCanceled}
-          >
-            <CloseIcon />
-          </IconButton>
+      {
+        this.state.editing === true
+        ? <div style={inlineStyles.paperContent}>
+          <TextField
+            autoFocus
+            multiLine
+            name="newnote"
+            style={{ flex: 1, overflow: 'hidden' }}
+            value={this.state.currentText}
+            onChange={(e, t) => this.setState({ currentText: t })}
+          />
+          <div>
+            <IconButton
+              onTouchTap={this.handleUpdateNote}
+            >
+              <DoneIcon />
+            </IconButton>
+            <IconButton
+              onTouchTap={this.handleEditCanceled}
+            >
+              <CloseIcon />
+            </IconButton>
+          </div>
         </div>
-      </div>
-      : <div style={inlineStyles.paperContent}>
-        <ReactMarkdown source={this.props.note.text} />
-        <div>
-          <IconButton
-            onTouchTap={this.handleEditNoteClicked}
-          >
-            <ModeEditIcon />
-          </IconButton>
-          <IconButton
-            onTouchTap={this.props.onDeleteNote}
-          >
-            <DeleteForeverIcon />
-          </IconButton>
+        : <div style={inlineStyles.paperContent}>
+          <div style={{ overflow: 'hidden' }}>
+            <ReactMarkdown
+              renderers={{ code: CodeBlock }}
+              source={this.props.note.text}
+            />
+          </div>
+          <div>
+            <IconButton
+              onTouchTap={this.handleEditNoteClicked}
+            >
+              <ModeEditIcon />
+            </IconButton>
+            <IconButton
+              onTouchTap={this.props.onDeleteNote}
+            >
+              <DeleteForeverIcon />
+            </IconButton>
+          </div>
         </div>
-      </div>}
+      }
     </Paper>;
   }
 }
