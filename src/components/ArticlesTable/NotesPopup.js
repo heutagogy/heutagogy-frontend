@@ -76,6 +76,7 @@ class NotesPopup extends Component {
     return (
       <Dialog
         autoDetectWindowHeight
+        contentStyle={{ width: '100%' }}
         open
         title={'Notes'}
         titleStyle={inlineStyles.titleStyle}
