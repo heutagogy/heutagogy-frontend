@@ -1,3 +1,5 @@
+import Immutable from 'immutable';
+
 import { DELETE_NOTE_SUCCESS, CREATE_NOTE_SUCCESS, UPDATE_NOTE_SUCCESS } from './../../actions/notes';
 import { MINUS_ONE } from './../../constants/Constants';
 
@@ -11,7 +13,8 @@ export default (state, action) => {
         return state;
       }
 
-      const newArticle = state.getIn(['article', articleIndex]).update('notes', (old) => old.push(action.payload));
+      const newArticle = state.getIn(['article', articleIndex]).update('notes', (old) =>
+        old.push(Immutable.fromJS(action.payload)));
 
       return state.setIn(['article', articleIndex], newArticle);
     }
@@ -23,7 +26,7 @@ export default (state, action) => {
       }
 
       const newArticle = state.getIn(['article', articleIndex]).update('notes', (old) =>
-        old.filterNot((note) => note.id === action.meta.noteId));
+        old.filterNot((note) => note.get('id') === action.meta.noteId));
 
       return state.setIn(['article', articleIndex], newArticle);
     }
@@ -35,7 +38,7 @@ export default (state, action) => {
       }
 
       const newArticle = state.getIn(['article', articleIndex]).update('notes', (old) =>
-        old.map((note) => (note.id === action.meta.noteId ? action.payload : note)));
+        old.map((note) => (note.id === action.meta.noteId ? Immutable.fromJS(action.payload) : note)));
 
       return state.setIn(['article', articleIndex], newArticle);
     }
