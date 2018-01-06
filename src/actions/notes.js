@@ -13,12 +13,12 @@ export const CREATE_NOTE_START = 'CREATE_NOTE_START';
 export const CREATE_NOTE_SUCCESS = 'CREATE_NOTE_SUCCESS';
 export const CREATE_NOTE_FAILURE = 'CREATE_NOTE_FAILURE';
 
-const postUpdateNote = (noteId, noteFields) => ({
+const postUpdateNote = (bookmarkId, noteId, noteFields) => ({
   [CALL_API]: {
     types: [
-        { type: UPDATE_NOTE_START },
-        { type: UPDATE_NOTE_SUCCESS },
-        { type: UPDATE_NOTE_FAILURE },
+        { type: UPDATE_NOTE_START, meta: { bookmarkId, noteId } },
+        { type: UPDATE_NOTE_SUCCESS, meta: { bookmarkId, noteId } },
+        { type: UPDATE_NOTE_FAILURE, meta: { bookmarkId, noteId } },
     ],
     method: 'POST',
     body: JSON.stringify(noteFields),
@@ -26,12 +26,12 @@ const postUpdateNote = (noteId, noteFields) => ({
   },
 });
 
-const postDeleteNote = (noteId) => ({
+const postDeleteNote = (bookmarkId, noteId) => ({
   [CALL_API]: {
     types: [
-        { type: DELETE_NOTE_START },
-        { type: DELETE_NOTE_SUCCESS },
-        { type: DELETE_NOTE_FAILURE },
+        { type: DELETE_NOTE_START, meta: { bookmarkId, noteId } },
+        { type: DELETE_NOTE_SUCCESS, meta: { bookmarkId, noteId } },
+        { type: DELETE_NOTE_FAILURE, meta: { bookmarkId, noteId } },
     ],
     method: 'DELETE',
     endpoint: `${API_VERSION}/notes/${noteId}`,
@@ -41,9 +41,9 @@ const postDeleteNote = (noteId) => ({
 const postCreateNote = (bookmarkId, noteFields) => ({
   [CALL_API]: {
     types: [
-        { type: CREATE_NOTE_START },
-        { type: CREATE_NOTE_SUCCESS },
-        { type: CREATE_NOTE_FAILURE },
+        { type: CREATE_NOTE_START, meta: { bookmarkId } },
+        { type: CREATE_NOTE_SUCCESS, meta: { bookmarkId } },
+        { type: CREATE_NOTE_FAILURE, meta: { bookmarkId } },
     ],
     method: 'POST',
     body: JSON.stringify(noteFields),
@@ -51,11 +51,11 @@ const postCreateNote = (bookmarkId, noteFields) => ({
   },
 });
 
-export const updateNote = (noteId, noteFields) => (dispatch) =>
-    dispatch(postUpdateNote(noteId, noteFields));
+export const updateNote = (bookmarkId, noteId, noteFields) => (dispatch) =>
+    dispatch(postUpdateNote(bookmarkId, noteId, noteFields));
 
 export const createNote = (bookmarkId, noteFields) => (dispatch) =>
     dispatch(postCreateNote(bookmarkId, noteFields));
 
-export const deleteNote = (noteId) => (dispatch) =>
-    dispatch(postDeleteNote(noteId));
+export const deleteNote = (bookmarkId, noteId) => (dispatch) =>
+    dispatch(postDeleteNote(bookmarkId, noteId));

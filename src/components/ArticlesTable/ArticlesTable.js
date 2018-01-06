@@ -17,7 +17,7 @@ import { ArticleMainColumn } from './ArticleMainColumn';
 
 import { ZERO, MINUS_ONE } from './../../constants/Constants';
 import { formatTimeToUser } from './../../utils/timeUtils';
-import NotesModal from './NotesModal';
+import NotesPopup from './NotesPopup';
 import Spinner from './../Spinner';
 
 import styles from './ArticlesTable.less';
@@ -27,7 +27,6 @@ const impossibleArticleId = -1;
 const notesInitialState = {
   notesArticleId: impossibleArticleId,
   notesVisible: false,
-  notes: [],
 };
 
 export class ArticlesTable extends Component {
@@ -56,6 +55,8 @@ export class ArticlesTable extends Component {
 
     [
       'closeNotes',
+      'getCurrentArticleId',
+      'getCurrentNotes',
       'getDeleteDialog',
       'getReadMenuItemText',
       'handleDelete',
@@ -132,11 +133,22 @@ export class ArticlesTable extends Component {
       </Dialog>);
   }
 
-  openNotes({ id, notes }) {
+  getCurrentArticleId() {
+    const item = this.props.articles.get(this.state.notesArticleI);
+
+    return item.get('id');
+  }
+
+  getCurrentNotes() {
+    const item = this.props.articles.get(this.state.notesArticleI);
+
+    return item.get('notes') ? item.get('notes').toJS() : [];
+  }
+
+  openNotes(i) {
     this.setState({
-      notesArticleId: id,
+      notesArticleI: i,
       notesVisible: true,
-      notes,
     });
   }
 
@@ -216,12 +228,7 @@ export class ArticlesTable extends Component {
               title={item.get('title')}
               url={item.get('url')}
               onArticleChanged={({ title, tags }) => { this.props.updateArticle(item.get('id'), { title, tags }); }}
-              onNotesClick={() =>
-                    this.openNotes({
-                      id: item.get('id'),
-                      notes: item.get('notes') ? item.get('notes').toJS() : [],
-                    })
-                  }
+              onNotesClick={() => this.openNotes(i)}
             />
             <TableRowColumn
               className={styles.preventCellClick}
@@ -262,14 +269,13 @@ export class ArticlesTable extends Component {
         </Table>
         {
           this.state.notesVisible === true
-          ? <NotesModal
-            articleId={this.state.notesArticleId}
+          ? <NotesPopup
+            articleId={this.getCurrentArticleId()}
             handleClose={this.closeNotes}
-            notes={this.state.notes}
-            updateArticle={this.props.updateArticle}
+            notes={this.getCurrentNotes()}
           />
-           : null
-          }
+          : null
+        }
       </div>
     );
   }
