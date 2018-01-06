@@ -38,7 +38,7 @@ export default (state, action) => {
       }
 
       const newArticle = state.getIn(['article', articleIndex]).update('notes', (old) =>
-        old.map((note) => (note.id === action.meta.noteId ? Immutable.fromJS(action.payload) : note)));
+        old.map((note) => (note.get('id') === action.meta.noteId ? Immutable.fromJS(action.payload) : note)));
 
       return state.setIn(['article', articleIndex], newArticle);
     }

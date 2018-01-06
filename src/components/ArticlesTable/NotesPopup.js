@@ -1,16 +1,14 @@
 /* eslint-disable react/jsx-no-bind */
 import { connect } from 'react-redux';
 
-import ReactMarkdown from 'react-markdown';
-
-import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
 import { Component, PropTypes } from 'react';
 import Dialog from 'material-ui/Dialog';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
-import IconButton from 'material-ui/IconButton';
 import RaisedButton from './../Fields/RaisedButton';
 import { createNote, updateNote, deleteNote } from './../../actions/notes';
+
+import NotePaper from './NotePaper';
 
 
 const inlineStyles = {
@@ -22,14 +20,6 @@ const inlineStyles = {
     margin: '5px',
     padding: '10px',
   },
-  notePaper: {
-    margin: '5px',
-    padding: '10px',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
 };
 
 class NotesPopup extends Component {
@@ -39,7 +29,7 @@ class NotesPopup extends Component {
     deleteNote: PropTypes.func,
     handleClose: PropTypes.func,
     notes: PropTypes.array,
-    // updateNote: PropTypes.func,
+    updateNote: PropTypes.func,
   }
 
   constructor(props) {
@@ -52,6 +42,7 @@ class NotesPopup extends Component {
     [
       'handleAddNoteClicked',
       'handleDeleteNote',
+      'handleUpdateNote',
       'renderNote',
     ].forEach((method) => { this[method] = this[method].bind(this); });
   }
@@ -64,22 +55,21 @@ class NotesPopup extends Component {
     this.setState({ currentNote: '' });
   }
 
-  handleDeleteNote(note) {
-    this.props.deleteNote(this.props.articleId, note.id);
+  handleDeleteNote(noteId) {
+    this.props.deleteNote(this.props.articleId, noteId);
+  }
+
+  handleUpdateNote(noteId, newNote) {
+    this.props.updateNote(this.props.articleId, noteId, newNote);
   }
 
   renderNote(note) {
-    return <Paper
+    return <NotePaper
       key={note.id}
-      style={inlineStyles.notePaper}
-    >
-      <ReactMarkdown source={note.text} />
-      <IconButton
-        onTouchTap={() => this.handleDeleteNote(note)}
-      >
-        <DeleteForeverIcon />
-      </IconButton>
-    </Paper>;
+      note={note}
+      onDeleteNote={() => this.handleDeleteNote(note.id)}
+      onUpdateNote={(newNote) => this.handleUpdateNote(note.id, newNote)}
+    />;
   }
 
   render() {
