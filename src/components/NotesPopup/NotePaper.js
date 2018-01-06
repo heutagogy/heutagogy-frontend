@@ -9,7 +9,7 @@ import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
 import DoneIcon from 'material-ui/svg-icons/action/done';
 import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
 
-import { CodeBlock } from './CodeBlock';
+import { CodeBlock } from '../CodeBlock/CodeBlock';
 
 
 const inlineStyles = {
