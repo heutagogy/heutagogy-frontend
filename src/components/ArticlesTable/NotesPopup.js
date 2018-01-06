@@ -29,6 +29,7 @@ class NotesPopup extends Component {
     deleteNote: PropTypes.func,
     handleClose: PropTypes.func,
     notes: PropTypes.array,
+    title: PropTypes.string,
     updateNote: PropTypes.func,
   }
 
@@ -78,7 +79,7 @@ class NotesPopup extends Component {
         autoDetectWindowHeight
         contentStyle={{ width: '100%' }}
         open
-        title={'Notes'}
+        title={this.props.title}
         titleStyle={inlineStyles.titleStyle}
         onRequestClose={this.props.handleClose}
       >
