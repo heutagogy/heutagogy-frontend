@@ -7,7 +7,6 @@ import { Component, PropTypes } from 'react';
 import List, { ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction } from 'material-ui-next/List';
 import Menu, { MenuItem } from 'material-ui-next/Menu';
 import IconButton from 'material-ui-next/IconButton';
-import TextField from 'material-ui-next/TextField';
 
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui-next/Dialog';
 import Button from 'material-ui-next/Button';
@@ -24,8 +23,10 @@ import InsertCommentIcon from 'material-ui-icons/InsertComment';
 
 import moment from 'moment';
 
-import NotesPopup from '../NotesPopup/NotesPopup';
 import { formatTimeToUser } from './../../utils/timeUtils';
+
+import NotesPopup from '../NotesPopup/NotesPopup';
+import ArticleEditDialog from './ArticleEditDialog';
 
 const Tag = ({ tag }) => <span style={{ marginRight: '5px' }}>{`@${tag}`}</span>;
 
@@ -167,103 +168,6 @@ class ArticleMenu extends Component {
   }
 }
 
-const articleToState = (article) => {
-  const tags = article.tags ? article.tags : [];
-
-  return {
-    title: article.title,
-    url: article.url,
-    tags: tags.join(' '),
-  };
-};
-
-const stateToArticle = (state) => {
-  const preTags = state.tags.trim();
-
-  return {
-    title: state.title,
-    url: state.url,
-    tags: preTags === '' ? [] : preTags.split(/[,\s]+/),
-  };
-};
-
-class EditDialog extends Component {
-  static propTypes = {
-    article: PropTypes.object,
-    open: PropTypes.bool,
-    onCancel: PropTypes.func,
-    onEditComplete: PropTypes.func,
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.state = articleToState(props.article);
-  }
-
-  handleCancel = () => {
-    this.setState(articleToState(this.props.article));
-
-    this.props.onCancel();
-  }
-
-  handleOk = () => {
-    const article = stateToArticle(this.state);
-
-    this.props.onEditComplete(article);
-  }
-
-  handleChange = (name) => (e) => {
-    this.setState({
-      [name]: e.target.value,
-    });
-  }
-
-  render() {
-    return (
-      <Dialog
-        open={this.props.open}
-      >
-        <DialogTitle>{this.props.article.title}</DialogTitle>
-        <DialogContent>
-          <form>
-            <TextField
-              fullWidth
-              label="Title"
-              margin="normal"
-              value={this.state.title}
-              onChange={this.handleChange('title')}
-            />
-            <TextField
-              fullWidth
-              label="URL"
-              margin="normal"
-              value={this.state.url}
-              onChange={this.handleChange('url')}
-            />
-            <TextField
-              fullWidth
-              label="tags"
-              margin="normal"
-              value={this.state.tags}
-              onChange={this.handleChange('tags')}
-            />
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onTouchTap={this.handleCancel}>{'Cancel'}</Button>
-          <Button
-            color="primary"
-            onTouchTap={this.handleOk}
-          >
-            {'Ok'}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  }
-}
-
 class Article extends Component {
   static propTypes = {
     article: PropTypes.object,
@@ -382,7 +286,7 @@ class Article extends Component {
             </DialogActions>
           </Dialog>
 
-          <EditDialog
+          <ArticleEditDialog
             article={article}
             open={this.state.editDialogOpen}
             onCancel={this.handleEditCancel}
