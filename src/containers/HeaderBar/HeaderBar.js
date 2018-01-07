@@ -4,15 +4,17 @@ import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
 import AppBar from 'material-ui/AppBar';
 import Divider from 'material-ui/Divider';
-import MenuIcon from 'material-ui/svg-icons/navigation/menu';
+import MenuIcon from 'material-ui-icons/Menu';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
 import TextField from 'material-ui/TextField';
 import AutoComplete from 'material-ui/AutoComplete';
-import ActionSearch from 'material-ui/svg-icons/action/search';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import ActionSearch from 'material-ui-icons/Search';
+import ContentAdd from 'material-ui-icons/Add';
+import DateRange from 'material-ui-icons/DateRange';
+
 import validUrl from 'valid-url';
 
 import ImportModal from './../../components/ImportModal';
@@ -31,6 +33,8 @@ export class HeaderBar extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
     autoCompleteDataSource: PropTypes.instanceOf(Immutable.List),
+    dateOrdering: PropTypes.bool,
+    handleDateOrderingChange: PropTypes.func,
     logoutUser: PropTypes.func,
     rememberArticles: PropTypes.func,
     rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
@@ -169,6 +173,14 @@ export class HeaderBar extends Component {
           /> : null }
           <IconButton onClick={() => this.handleToggle('saveOpen')} >
             <ContentAdd />
+          </IconButton>
+          <IconButton
+            iconStyle={{ height: '20px', width: '20px' }}
+            onClick={this.props.handleDateOrderingChange}
+          >
+            <DateRange
+              color={this.props.dateOrdering === true ? 'blue' : null}
+            />
           </IconButton>
         </AppBar>
         <Drawer

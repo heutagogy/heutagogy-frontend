@@ -8,16 +8,16 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import Checkbox from 'material-ui/Checkbox';
 import moment from 'moment';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import DateRange from 'material-ui/svg-icons/action/date-range';
+import DateRange from 'material-ui-icons/DateRange';
 
 import { ArticleMainColumn } from './ArticleMainColumn';
 
 import { ZERO, MINUS_ONE } from './../../constants/Constants';
 import { formatTimeToUser } from './../../utils/timeUtils';
-import NotesPopup from './NotesPopup';
+import NotesPopup from '../NotesPopup/NotesPopup';
 import Spinner from './../Spinner';
 
 import styles from './ArticlesTable.less';
