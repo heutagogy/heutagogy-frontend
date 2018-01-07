@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/no-multi-comp */
 import Immutable from 'immutable';
 
 import { Component, PropTypes } from 'react';
@@ -7,8 +8,6 @@ import List, { ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction } f
 import Menu, { MenuItem } from 'material-ui-next/Menu';
 import IconButton from 'material-ui-next/IconButton';
 import TextField from 'material-ui-next/TextField';
-import { withStyles } from 'material-ui-next/styles';
-import Checkbox from 'material-ui-next/Checkbox';
 
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui-next/Dialog';
 import Button from 'material-ui-next/Button';
@@ -18,12 +17,9 @@ import MoreVertIcon from 'material-ui-icons/MoreVert';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
 import InfoIcon from 'material-ui-icons/Info';
-import DoneIcon from 'material-ui-icons/Done';
 import CheckIcon from 'material-ui-icons/Check';
-import CancelIcon from 'material-ui-icons/Cancel';
 import CheckBoxOutlineBlankIcon from 'material-ui-icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from 'material-ui-icons/CheckBox';
-import DateRangeIcon from 'material-ui-icons/DateRange';
 import InsertCommentIcon from 'material-ui-icons/InsertComment';
 
 import moment from 'moment';
@@ -31,11 +27,21 @@ import moment from 'moment';
 import NotesPopup from '../NotesPopup/NotesPopup';
 import { formatTimeToUser } from './../../utils/timeUtils';
 
-function Tag({ tag }) {
-  return <span style={{ marginRight: '5px' }}>{`@${tag}`}</span>;
-}
+const Tag = ({ tag }) => <span style={{ marginRight: '5px' }}>{`@${tag}`}</span>;
+
+Tag.propTypes = {
+  tag: PropTypes.string.isRequired,
+};
 
 class ArticleMenu extends Component {
+  static propTypes = {
+    article: PropTypes.object,
+    onDeleteClicked: PropTypes.func,
+    onEditClicked: PropTypes.func,
+    onNotesClicked: PropTypes.func,
+    onReadClicked: PropTypes.func,
+  };
+
   constructor(props) {
     super(props);
 
@@ -88,16 +94,16 @@ class ArticleMenu extends Component {
 
     const readMenuItem = article.read
                        ? <MenuItem
-                           onTouchTap={this.handleReadClicked}
-                         >
+                         onTouchTap={this.handleReadClicked}
+                       >
                          <ListItemIcon>
                            <CheckBoxIcon />
                          </ListItemIcon>
-                         <ListItemText inset primary={`Read: ${formatTimeToUser(article.read)}`} />
+                         <ListItemText primary={`Read: ${formatTimeToUser(article.read)}`} />
                        </MenuItem>
                        : <MenuItem
-                           onTouchTap={this.handleReadClicked}
-                         >
+                         onTouchTap={this.handleReadClicked}
+                       >
                          <ListItemIcon>
                            <CheckBoxOutlineBlankIcon />
                          </ListItemIcon>
@@ -107,18 +113,18 @@ class ArticleMenu extends Component {
     return (
       <div>
         <IconButton
+          aria-haspopup="true"
           aria-label="More"
           aria-owns={this.state.anchorEl ? menuId : null}
-          aria-haspopup="true"
           onTouchTap={this.handleMenuClicked}
         >
           <MoreVertIcon />
         </IconButton>
         <Menu
-          id={menuId}
           anchorEl={this.state.anchorEl}
+          id={menuId}
           open={Boolean(this.state.anchorEl)}
-          onClose={this.closeMenu}
+          onClose={() => this.closeMenu()}
         >
           <MenuItem disabled>
             <ListItemIcon>
@@ -137,7 +143,7 @@ class ArticleMenu extends Component {
             <ListItemIcon>
               <InsertCommentIcon />
             </ListItemIcon>
-            <ListItemText primary={`Notes (${article.notes ? article.notes.length : 0})`} />
+            <ListItemText primary={`Notes (${(article.notes ? article.notes : []).length})`} />
           </MenuItem>
 
           <MenuItem onTouchTap={this.handleEditClicked}>
@@ -153,7 +159,7 @@ class ArticleMenu extends Component {
             <ListItemIcon>
               <DeleteForeverIcon />
             </ListItemIcon>
-            <ListItemText inset primary="Delete" />
+            <ListItemText primary="Delete" />
           </MenuItem>
         </Menu>
       </div>
@@ -182,6 +188,13 @@ const stateToArticle = (state) => {
 };
 
 class EditDialog extends Component {
+  static propTypes = {
+    article: PropTypes.object,
+    open: PropTypes.bool,
+    onCancel: PropTypes.func,
+    onEditComplete: PropTypes.func,
+  };
+
   constructor(props) {
     super(props);
 
@@ -238,8 +251,13 @@ class EditDialog extends Component {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onTouchTap={this.handleCancel}>Cancel</Button>
-          <Button onTouchTap={this.handleOk} color="primary">Ok</Button>
+          <Button onTouchTap={this.handleCancel}>{'Cancel'}</Button>
+          <Button
+            color="primary"
+            onTouchTap={this.handleOk}
+          >
+            {'Ok'}
+          </Button>
         </DialogActions>
       </Dialog>
     );
@@ -247,6 +265,13 @@ class EditDialog extends Component {
 }
 
 class Article extends Component {
+  static propTypes = {
+    article: PropTypes.object,
+    onDelete: PropTypes.func,
+    onRead: PropTypes.func,
+    onUpdate: PropTypes.func,
+  };
+
   constructor(props) {
     super(props);
 
@@ -317,8 +342,8 @@ class Article extends Component {
       <ListItem
         button
         component="a"
-        target="_blank"
         href={article.url}
+        target="_blank"
       >
         {
           article.read ? <ListItemIcon><CheckIcon /></ListItemIcon> : null
@@ -335,10 +360,10 @@ class Article extends Component {
         <ListItemSecondaryAction>
           <ArticleMenu
             article={article}
-            onEditClicked={this.handleEditClicked}
             onDeleteClicked={this.handleDeleteClicked}
-            onReadClicked={this.props.onRead}
+            onEditClicked={this.handleEditClicked}
             onNotesClicked={this.handleNotesClicked}
+            onReadClicked={this.props.onRead}
           />
 
           <Dialog
@@ -347,14 +372,19 @@ class Article extends Component {
             <DialogTitle>{`Delete ${article.title}?`}</DialogTitle>
             <DialogContent>{'Are you sure you want to delete article?'}</DialogContent>
             <DialogActions>
-              <Button onTouchTap={this.handleDeleteCancel}>Cancel</Button>
-              <Button onTouchTap={this.handleDeleteConfirmed} color="primary">Ok</Button>
+              <Button onTouchTap={this.handleDeleteCancel}>{'Cancel'}</Button>
+              <Button
+                color="primary"
+                onTouchTap={this.handleDeleteConfirmed}
+              >
+                {'Ok'}
+              </Button>
             </DialogActions>
           </Dialog>
 
           <EditDialog
-            open={this.state.editDialogOpen}
             article={article}
+            open={this.state.editDialogOpen}
             onCancel={this.handleEditCancel}
             onEditComplete={this.handleEditFinished}
           />
@@ -362,6 +392,7 @@ class Article extends Component {
           { this.state.notesDialogOpen
           ? <NotesPopup
             articleId={article.id}
+            /* eslint-disable react/jsx-handler-names */
             handleClose={this.handleNotesClose}
             notes={article.notes}
             title={article.title}
@@ -376,23 +407,21 @@ class Article extends Component {
 export class ArticlesList extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
+    onDeleteArticle: PropTypes.func,
+    onUpdateArticle: PropTypes.func,
   };
-
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return <List>
       {this.props.articles.toJS().map((article) =>
         <Article
-          key={`article-${article.id}`}
           article={article}
+          key={`article-${article.id}`}
           onDelete={() => this.props.onDeleteArticle(article.id)}
-          onUpdate={(update) => this.props.onUpdateArticle(article.id, update)}
           onRead={() => this.props.onUpdateArticle(article.id, {
-              read: article.read ? null : moment().format(),
+            read: article.read ? null : moment().format(),
           })}
+          onUpdate={(update) => this.props.onUpdateArticle(article.id, update)}
         />)}
     </List>;
   }
