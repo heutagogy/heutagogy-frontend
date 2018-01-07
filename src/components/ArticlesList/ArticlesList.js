@@ -16,7 +16,6 @@ import MoreVertIcon from 'material-ui-icons/MoreVert';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
 import InfoIcon from 'material-ui-icons/Info';
-import CheckIcon from 'material-ui-icons/Check';
 import CheckBoxOutlineBlankIcon from 'material-ui-icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from 'material-ui-icons/CheckBox';
 import InsertCommentIcon from 'material-ui-icons/InsertComment';
@@ -249,17 +248,15 @@ class Article extends Component {
         href={article.url}
         target="_blank"
       >
-        {
-          article.read ? <ListItemIcon><CheckIcon /></ListItemIcon> : null
-        }
         <ListItemText
-          inset={!article.read}
           primary={article.title}
           secondary={article.tags === null ? null : article.tags.map((tag) =>
             <Tag
               key={`tag-${tag}`}
               tag={tag}
             />)}
+          /* eslint-disable no-magic-numbers */
+          style={{ opacity: article.read ? 0.4 : 1.0 }}
         />
         <ListItemSecondaryAction>
           <ArticleMenu
