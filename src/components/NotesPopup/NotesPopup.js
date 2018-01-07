@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Component, PropTypes } from 'react';
 
-import Dialog, { DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
+import Dialog, { DialogActions, DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
 import Paper from 'material-ui-next/Paper';
 import TextField from 'material-ui-next/TextField';
 import Button from 'material-ui-next/Button';
@@ -108,6 +108,14 @@ class NotesPopup extends Component {
             </Button>
           </Paper>
         </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            onTouchTap={this.handleClose}
+          >
+            {'Ok'}
+          </Button>
+        </DialogActions>
       </Dialog>
     );
   }

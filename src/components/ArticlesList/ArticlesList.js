@@ -290,15 +290,14 @@ class Article extends Component {
             onEditComplete={this.handleEditFinished}
           />
 
-          { this.state.notesDialogOpen
-          ? <NotesPopup
+          <NotesPopup
             articleId={article.id}
             /* eslint-disable react/jsx-handler-names */
             handleClose={this.handleNotesClose}
             notes={article.notes}
+            open={this.state.notesDialogOpen}
             title={article.title}
           />
-          : null}
         </ListItemSecondaryAction>
       </ListItem>
     );
