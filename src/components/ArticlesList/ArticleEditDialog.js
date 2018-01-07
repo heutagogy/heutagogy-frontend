@@ -64,6 +64,7 @@ class ArticleEditDialog extends Component {
       <Dialog
         fullScreen={this.props.fullScreen}
         open={this.props.open}
+        onClose={this.handleCancel}
       >
         <DialogTitle>{this.props.article.title}</DialogTitle>
         <DialogContent>
