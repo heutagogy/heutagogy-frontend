@@ -14,9 +14,9 @@ import './RcPaginationOverride.css'; // should be placed after rc-pagination/ass
 
 import articleSchema from './../../../schemas/article';
 import styles from './ArticlesPage.less';
-import { ARTICLES_VIEW_STATE, UPDATE_ARTICLE_VIEW_STATE } from './../../../constants/ViewStates';
+import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { ZERO, ONE, TWO } from './../../../constants/Constants';
-import { ArticlesTable } from './../../../components/ArticlesTable/ArticlesTable';
+import { ArticlesList } from './../../../components/ArticlesList/ArticlesList';
 import { getArticles } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
@@ -48,7 +48,6 @@ export class ArticlesPage extends Component {
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
     tags: PropTypes.instanceOf(Immutable.List),
     updateArticle: PropTypes.func,
-    updateArticleState: PropTypes.instanceOf(Immutable.Map),
   }
 
   constructor(props) {
@@ -194,33 +193,28 @@ export class ArticlesPage extends Component {
       <div>
         <HeaderBar
           autoCompleteDataSource={this.props.tags}
+          dateOrdering={this.state.dateOrdering}
+          handleDateOrderingChange={this.onDateOrderingChange}
           searchText={this.state.searchText}
           onUpdateInput={this.handleUpdateInput}
         />
         <div style={inlineStyles.routerContainer}>
-          <div className={styles.table}>
-            <ArticlesTable
-              articles={articles}
-              dateOrdering={this.state.dateOrdering}
-              deleteArticle={this.props.deleteArticle}
-              handleDateOrderingChange={this.onDateOrderingChange}
-              handleOnRowSelection={this.onRowSelection}
-              selectedRows={this.state.selectedRows}
-              updateArticle={this.props.updateArticle}
-              updateArticleState={this.props.updateArticleState}
-            />
-            { this.renderStatus() }
-            { totalArticles > ZERO
-              ? <div className={styles.pagination}>
-                <Pagination
-                  current={this.state.selectedPage}
-                  locale={en}
-                  pageSize={this.state.pageSize}
-                  total={totalArticles}
-                  onChange={this.handleOnPageChange}
-                />
-              </div> : null }
-          </div>
+          <ArticlesList
+            articles={articles}
+            onDeleteArticle={(articleId) => this.props.deleteArticle(articleId)}
+            onUpdateArticle={(articleId, update) => this.props.updateArticle(articleId, update)}
+          />
+          { this.renderStatus() }
+          { totalArticles > ZERO
+            ? <div className={styles.pagination}>
+              <Pagination
+                current={this.state.selectedPage}
+                locale={en}
+                pageSize={this.state.pageSize}
+                total={totalArticles}
+                onChange={this.handleOnPageChange}
+              />
+            </div> : null }
         </div>
       </div>
     );
@@ -231,7 +225,6 @@ const mapStateToProps = (state) => ({
   tags: getUniqueTags(state),
   linkHeader: getLinkHeader(state),
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
-  updateArticleState: getViewState(state, UPDATE_ARTICLE_VIEW_STATE),
 });
 
 export default connect(mapStateToProps, { loadEntities, updateArticle, deleteArticle })(ArticlesPage);
