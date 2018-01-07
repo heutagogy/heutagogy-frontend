@@ -89,8 +89,7 @@ class ArticleMenu extends Component {
   render() {
     const article = this.props.article;
 
-    // const menuId = `more-menu-${article.id}`;
-    const menuId = 'more-menu';
+    const menuId = `more-menu-${article.id}`;
 
     const readMenuItem = article.read
                        ? <MenuItem
