@@ -4,20 +4,16 @@ import { connect } from 'react-redux';
 import { Component, PropTypes } from 'react';
 
 import Dialog, { DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
+import Paper from 'material-ui-next/Paper';
+import TextField from 'material-ui-next/TextField';
+import Button from 'material-ui-next/Button';
 
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import RaisedButton from './../Fields/RaisedButton';
 import { createNote, updateNote, deleteNote } from './../../actions/notes';
 
 import NotePaper from './NotePaper';
 
 
 const inlineStyles = {
-  titleStyle: {
-    textAlign: 'center',
-    padding: '15px',
-  },
   paperStyle: {
     margin: '5px',
     padding: '10px',
@@ -86,8 +82,6 @@ class NotesPopup extends Component {
       <Dialog
         fullScreen={this.props.fullScreen}
         open={this.props.open}
-        title={this.props.title}
-        titleStyle={inlineStyles.titleStyle}
         onClose={this.props.handleClose}
       >
         <DialogTitle>{this.props.title}</DialogTitle>
@@ -98,17 +92,20 @@ class NotesPopup extends Component {
             <TextField
               autoFocus
               fullWidth
-              multiLine
+              margin="normal"
+              multiline
               name="newnote"
               value={this.state.currentNote}
-              onChange={(e, t) => this.setState({ currentNote: t })}
+              onChange={(e) => this.setState({ currentNote: e.target.value })}
             />
-            <RaisedButton
+            <Button
+              color="primary"
               disabled={this.state.currentNote === ''}
-              label="Add note"
-              primary
+              raised
               onTouchTap={this.handleAddNoteClicked}
-            />
+            >
+              {'Add note'}
+            </Button>
           </Paper>
         </DialogContent>
       </Dialog>

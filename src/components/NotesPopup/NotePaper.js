@@ -1,9 +1,11 @@
 /* eslint-disable react/jsx-no-bind */
 import { Component, PropTypes } from 'react';
 import ReactMarkdown from 'react-markdown';
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import IconButton from 'material-ui/IconButton';
+
+import Paper from 'material-ui-next/Paper';
+import TextField from 'material-ui-next/TextField';
+import IconButton from 'material-ui-next/IconButton';
+
 import CloseIcon from 'material-ui-icons/Close';
 import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
 import DoneIcon from 'material-ui-icons/Done';
@@ -76,11 +78,11 @@ class NotePaper extends Component {
         ? <div style={inlineStyles.paperContent}>
           <TextField
             autoFocus
-            multiLine
+            multiline
             name="newnote"
             style={{ flex: 1, overflow: 'hidden' }}
             value={this.state.currentText}
-            onChange={(e, t) => this.setState({ currentText: t })}
+            onChange={(e) => this.setState({ currentText: e.target.value })}
           />
           <div>
             <IconButton
