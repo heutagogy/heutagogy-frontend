@@ -4,10 +4,10 @@ import ReactMarkdown from 'react-markdown';
 import Paper from 'material-ui/Paper';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
-import CloseIcon from 'material-ui/svg-icons/navigation/close';
-import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
-import DoneIcon from 'material-ui/svg-icons/action/done';
-import ModeEditIcon from 'material-ui/svg-icons/editor/mode-edit';
+import CloseIcon from 'material-ui-icons/Close';
+import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
+import DoneIcon from 'material-ui-icons/Done';
+import ModeEditIcon from 'material-ui-icons/ModeEdit';
 
 import { CodeBlock } from '../CodeBlock/CodeBlock';
 

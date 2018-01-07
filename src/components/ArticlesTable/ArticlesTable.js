@@ -8,10 +8,10 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import Checkbox from 'material-ui/Checkbox';
 import moment from 'moment';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import DateRange from 'material-ui/svg-icons/action/date-range';
+import DateRange from 'material-ui-icons/DateRange';
 
 import { ArticleMainColumn } from './ArticleMainColumn';
 

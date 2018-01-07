@@ -1,9 +1,9 @@
 import { Component, PropTypes } from 'react';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
-import DoneIcon from 'material-ui/svg-icons/action/done';
-import SpeakerNotes from 'material-ui/svg-icons/action/speaker-notes';
-import CancelIcon from 'material-ui/svg-icons/navigation/cancel';
+import DoneIcon from 'material-ui-icons/Done';
+import SpeakerNotes from 'material-ui-icons/SpeakerNotes';
+import CancelIcon from 'material-ui-icons/Cancel';
 import { TableRowColumn } from 'material-ui/Table';
 import { ZERO } from './../../constants/Constants';
 

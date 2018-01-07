@@ -36,6 +36,8 @@
     "lodash.capitalize": "^4.2.1",
     "material-design-icons": "^3.0.1",
     "material-ui": "^0.16.0",
+    "material-ui-icons": "^1.0.0-beta.17",
+    "material-ui-next": "^1.0.0-beta.25",
     "moment": "^2.14.1",
     "normalizr": "^2.2.1",
     "parse-link-header": "^0.4.1",

@@ -4,15 +4,15 @@ import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
 import AppBar from 'material-ui/AppBar';
 import Divider from 'material-ui/Divider';
-import MenuIcon from 'material-ui/svg-icons/navigation/menu';
+import MenuIcon from 'material-ui-icons/Menu';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import { connect } from 'react-redux';
 import TextField from 'material-ui/TextField';
 import AutoComplete from 'material-ui/AutoComplete';
-import ActionSearch from 'material-ui/svg-icons/action/search';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import ActionSearch from 'material-ui-icons/Search';
+import ContentAdd from 'material-ui-icons/Add';
 import validUrl from 'valid-url';
 
 import ImportModal from './../../components/ImportModal';
