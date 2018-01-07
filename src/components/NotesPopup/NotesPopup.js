@@ -2,20 +2,18 @@
 import { connect } from 'react-redux';
 
 import { Component, PropTypes } from 'react';
-import Dialog from 'material-ui/Dialog';
-import Paper from 'material-ui/Paper';
-import TextField from 'material-ui/TextField';
-import RaisedButton from './../Fields/RaisedButton';
+
+import Dialog, { DialogActions, DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
+import Paper from 'material-ui-next/Paper';
+import TextField from 'material-ui-next/TextField';
+import Button from 'material-ui-next/Button';
+
 import { createNote, updateNote, deleteNote } from './../../actions/notes';
 
 import NotePaper from './NotePaper';
 
 
 const inlineStyles = {
-  titleStyle: {
-    textAlign: 'center',
-    padding: '15px',
-  },
   paperStyle: {
     margin: '5px',
     padding: '10px',
@@ -27,11 +25,17 @@ class NotesPopup extends Component {
     articleId: PropTypes.number,
     createNote: PropTypes.func,
     deleteNote: PropTypes.func,
+    fullScreen: PropTypes.bool.isRequired,
     handleClose: PropTypes.func,
     notes: PropTypes.array,
+    open: PropTypes.bool,
     title: PropTypes.string,
     updateNote: PropTypes.func,
   }
+
+  static defaultProps = {
+    open: true,
+  };
 
   constructor(props) {
     super(props);
@@ -76,33 +80,42 @@ class NotesPopup extends Component {
   render() {
     return (
       <Dialog
-        autoDetectWindowHeight
-        contentStyle={{ width: '100%' }}
-        open
-        title={this.props.title}
-        titleStyle={inlineStyles.titleStyle}
-        onRequestClose={this.props.handleClose}
+        fullScreen={this.props.fullScreen}
+        open={this.props.open}
+        onClose={this.props.handleClose}
       >
-        <div style={inlineStyles.contentContainer}>
+        <DialogTitle>{this.props.title}</DialogTitle>
+        <DialogContent>
           {this.props.notes.map(this.renderNote)}
-        </div>
 
-        <Paper style={inlineStyles.paperStyle}>
-          <TextField
-            autoFocus
-            fullWidth
-            multiLine
-            name="newnote"
-            value={this.state.currentNote}
-            onChange={(e, t) => this.setState({ currentNote: t })}
-          />
-          <RaisedButton
-            disabled={this.state.currentNote === ''}
-            label="Add note"
-            primary
-            onTouchTap={this.handleAddNoteClicked}
-          />
-        </Paper>
+          <Paper style={inlineStyles.paperStyle}>
+            <TextField
+              autoFocus
+              fullWidth
+              margin="normal"
+              multiline
+              name="newnote"
+              value={this.state.currentNote}
+              onChange={(e) => this.setState({ currentNote: e.target.value })}
+            />
+            <Button
+              color="primary"
+              disabled={this.state.currentNote === ''}
+              raised
+              onTouchTap={this.handleAddNoteClicked}
+            >
+              {'Add note'}
+            </Button>
+          </Paper>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            onTouchTap={this.handleClose}
+          >
+            {'Ok'}
+          </Button>
+        </DialogActions>
       </Dialog>
     );
   }
@@ -112,4 +125,4 @@ export default connect(null, {
   createNote,
   updateNote,
   deleteNote,
-})(NotesPopup);
+})(withMobileDialog()(NotesPopup));
