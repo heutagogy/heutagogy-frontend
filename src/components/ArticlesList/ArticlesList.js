@@ -16,8 +16,7 @@ import MoreVertIcon from 'material-ui-icons/MoreVert';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
 import InfoIcon from 'material-ui-icons/Info';
-import CheckBoxOutlineBlankIcon from 'material-ui-icons/CheckBoxOutlineBlank';
-import CheckBoxIcon from 'material-ui-icons/CheckBox';
+import Toggle from 'material-ui/Toggle';
 import InsertCommentIcon from 'material-ui-icons/InsertComment';
 
 import moment from 'moment';
@@ -96,10 +95,12 @@ class ArticleMenu extends Component {
       <MenuItem
         onTouchTap={this.handleReadClicked}
       >
-        <ListItemIcon>
-          {article.read ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
-        </ListItemIcon>
-        <ListItemText primary={article.read ? 'Mark as unread' : 'Mark as read'} />
+        <Toggle
+          defaultToggled={Boolean(article.read)}
+          label={article.read ? 'Delete read mark' : 'Read article'}
+          labelPosition={'right'}
+          labelStyle={{ marginLeft: '0.7em' }}
+        />
       </MenuItem>;
 
     return (
