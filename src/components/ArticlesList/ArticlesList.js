@@ -16,7 +16,6 @@ import Divider from 'material-ui-next/Divider';
 import { withStyles } from 'material-ui-next/styles';
 
 import MoreVertIcon from 'material-ui-icons/MoreVert';
-import EditIcon from 'material-ui-icons/Edit';
 import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
 import InfoIcon from 'material-ui-icons/Info';
 import Toggle from 'material-ui/Toggle';
@@ -45,7 +44,6 @@ class ArticleMenu extends Component {
   static propTypes = {
     article: PropTypes.object,
     onDeleteClicked: PropTypes.func,
-    onEditClicked: PropTypes.func,
     onNotesClicked: PropTypes.func,
     onReadClicked: PropTypes.func,
   };
@@ -68,12 +66,6 @@ class ArticleMenu extends Component {
     this.setState({
       anchorEl: null,
     });
-  }
-
-  handleEditClicked = () => {
-    this.closeMenu();
-
-    this.props.onEditClicked();
   }
 
   handleDeleteClicked = () => {
@@ -145,13 +137,6 @@ class ArticleMenu extends Component {
         >
 
           {readMenuItem}
-
-          <MenuItem onTouchTap={this.handleEditClicked}>
-            <ListItemIcon>
-              <EditIcon />
-            </ListItemIcon>
-            <ListItemText primary="Edit" />
-          </MenuItem>
 
           <Divider />
 
@@ -269,12 +254,18 @@ class Article extends Component {
     return (
       <MyListItem
         button
-        component="a"
-        href={article.url}
-        target="_blank"
+        onTouchTap={this.handleEditClicked}
       >
         <ListItemText
-          primary={article.title}
+          primary={
+            <a
+              href={article.url}
+              target="_blank"
+              onTouchTap={(e) => e.stopPropagation()}
+            >
+              {article.title}
+            </a>
+          }
           secondary={article.tags === null ? null : article.tags.map((tag) =>
             <Tag
               key={`tag-${tag}`}
@@ -287,7 +278,6 @@ class Article extends Component {
           <ArticleMenu
             article={article}
             onDeleteClicked={this.handleDeleteClicked}
-            onEditClicked={this.handleEditClicked}
             onNotesClicked={this.handleNotesClicked}
             onReadClicked={this.props.onRead}
           />
