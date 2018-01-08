@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/no-multi-comp */
+/* eslint-disable no-magic-numbers */
 import Immutable from 'immutable';
 
 import { Component, PropTypes } from 'react';
@@ -12,8 +13,9 @@ import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui-n
 import Button from 'material-ui-next/Button';
 import Divider from 'material-ui-next/Divider';
 
+import { withStyles } from 'material-ui-next/styles';
+
 import MoreVertIcon from 'material-ui-icons/MoreVert';
-import EditIcon from 'material-ui-icons/Edit';
 import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
 import InfoIcon from 'material-ui-icons/Info';
 import Toggle from 'material-ui/Toggle';
@@ -26,6 +28,21 @@ import { formatTimeToUser } from './../../utils/timeUtils';
 import NotesPopup from '../NotesPopup/NotesPopup';
 import ArticleEditDialog from './ArticleEditDialog';
 
+const listItemStyles = (theme) => ({
+  secondaryAction: {
+    paddingRight: theme.spacing.unit * 12,
+  },
+});
+
+const articleStyles = {
+  articleLink: {
+    color: '#265c83',
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
+};
+
 const Tag = ({ tag }) => <span style={{ marginRight: '5px' }}>{`@${tag}`}</span>;
 
 Tag.propTypes = {
@@ -36,7 +53,6 @@ class ArticleMenu extends Component {
   static propTypes = {
     article: PropTypes.object,
     onDeleteClicked: PropTypes.func,
-    onEditClicked: PropTypes.func,
     onNotesClicked: PropTypes.func,
     onReadClicked: PropTypes.func,
   };
@@ -59,12 +75,6 @@ class ArticleMenu extends Component {
     this.setState({
       anchorEl: null,
     });
-  }
-
-  handleEditClicked = () => {
-    this.closeMenu();
-
-    this.props.onEditClicked();
   }
 
   handleDeleteClicked = () => {
@@ -103,8 +113,23 @@ class ArticleMenu extends Component {
         />
       </MenuItem>;
 
+    const hasNotes = (article.notes || []).length !== 0;
+
     return (
-      <div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'nowrap',
+        }}
+      >
+        <IconButton
+          onTouchTap={this.props.onNotesClicked}
+        >
+          <InsertCommentIcon
+            color={hasNotes ? null : 'silver'}
+          />
+        </IconButton>
         <IconButton
           aria-haspopup="true"
           aria-label="More"
@@ -121,20 +146,6 @@ class ArticleMenu extends Component {
         >
 
           {readMenuItem}
-
-          <MenuItem onTouchTap={this.handleNotesClicked}>
-            <ListItemIcon>
-              <InsertCommentIcon />
-            </ListItemIcon>
-            <ListItemText primary={`Notes (${(article.notes ? article.notes : []).length})`} />
-          </MenuItem>
-
-          <MenuItem onTouchTap={this.handleEditClicked}>
-            <ListItemIcon>
-              <EditIcon />
-            </ListItemIcon>
-            <ListItemText primary="Edit" />
-          </MenuItem>
 
           <Divider />
 
@@ -173,9 +184,13 @@ class ArticleMenu extends Component {
   }
 }
 
+const MyListItem = withStyles(listItemStyles)(ListItem);
+
+@withStyles(articleStyles)
 class Article extends Component {
   static propTypes = {
     article: PropTypes.object,
+    classes: PropTypes.object,
     onDelete: PropTypes.func,
     onRead: PropTypes.func,
     onUpdate: PropTypes.func,
@@ -248,14 +263,21 @@ class Article extends Component {
     const article = this.props.article;
 
     return (
-      <ListItem
+      <MyListItem
         button
-        component="a"
-        href={article.url}
-        target="_blank"
+        onTouchTap={this.handleEditClicked}
       >
         <ListItemText
-          primary={article.title}
+          primary={
+            <a
+              className={this.props.classes.articleLink}
+              href={article.url}
+              target="_blank"
+              onTouchTap={(e) => e.stopPropagation()}
+            >
+              {article.title}
+            </a>
+          }
           secondary={article.tags === null ? null : article.tags.map((tag) =>
             <Tag
               key={`tag-${tag}`}
@@ -268,7 +290,6 @@ class Article extends Component {
           <ArticleMenu
             article={article}
             onDeleteClicked={this.handleDeleteClicked}
-            onEditClicked={this.handleEditClicked}
             onNotesClicked={this.handleNotesClicked}
             onReadClicked={this.props.onRead}
           />
@@ -305,7 +326,7 @@ class Article extends Component {
             title={article.title}
           />
         </ListItemSecondaryAction>
-      </ListItem>
+      </MyListItem>
     );
   }
 }

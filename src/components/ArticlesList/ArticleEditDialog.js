@@ -59,6 +59,12 @@ class ArticleEditDialog extends Component {
     });
   }
 
+  catchEnter = (f) => (e) => {
+    if (e.key === 'Enter') {
+      f(e);
+    }
+  }
+
   render() {
     return (
       <Dialog
@@ -70,11 +76,13 @@ class ArticleEditDialog extends Component {
         <DialogContent>
           <form>
             <TextField
+              autoFocus
               fullWidth
               label="Title"
               margin="normal"
               value={this.state.title}
               onChange={this.handleChange('title')}
+              onKeyPress={this.catchEnter(this.handleOk)}
             />
             <TextField
               fullWidth
@@ -82,6 +90,7 @@ class ArticleEditDialog extends Component {
               margin="normal"
               value={this.state.url}
               onChange={this.handleChange('url')}
+              onKeyPress={this.catchEnter(this.handleOk)}
             />
             <TextField
               fullWidth
@@ -89,6 +98,7 @@ class ArticleEditDialog extends Component {
               margin="normal"
               value={this.state.tags}
               onChange={this.handleChange('tags')}
+              onKeyPress={this.catchEnter(this.handleOk)}
             />
           </form>
         </DialogContent>
