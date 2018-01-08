@@ -111,7 +111,7 @@ class NotesPopup extends Component {
         <DialogActions>
           <Button
             color="primary"
-            onTouchTap={this.handleClose}
+            onTouchTap={this.props.handleClose}
           >
             {'Ok'}
           </Button>
