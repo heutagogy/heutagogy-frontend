@@ -1,124 +1,123 @@
-/* eslint-disable */
-
 import { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
-import Immutable from 'immutable';
+
+import Dialog, { DialogActions, DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
+
 import PureRender from 'pure-render-decorator';
-import { reduxForm, Field } from 'redux-form/immutable';
-import { renderTextField } from './../renders';
-import { blue500 } from 'material-ui/styles/colors';
-import RaisedButton from './../../Fields/RaisedButton';
 
-import { getViewState } from './../../../selectors/view';
-import { LOGIN_VIEW_STATE } from './../../../constants/ViewStates';
+import Button from 'material-ui-next/Button';
+import TextField from 'material-ui-next/TextField';
+import Typography from 'material-ui-next/Typography';
 
-import { loginUser } from './../../../actions/users';
-import { setServerAddress } from './../../../actions/server';
-
-import styles from './LoginForm.less';
-
-const inlineStyles = {
-  input: {
-    backgroundColor: '#fafafa',
-  },
-  floatingLabelStyle: {
-    fontSize: '18px',
-  },
-  blue500: {
-    color: blue500,
-  },
-  title: {
-    fontFamily: 'Ubuntu, sans-serif',
-    textAlign: 'center',
-    margin: '7px 0 35px 0',
-  },
-}
+import heutagogyLogo from '../../../../heutagogy.png';
 
 @PureRender
 class LoginForm extends Component {
   static propTypes = {
-    handleSubmit: PropTypes.func, // from redux-form
-    loginUser: PropTypes.func,
-    setServerAddress: PropTypes.func,
-    viewState: PropTypes.instanceOf(Immutable.Map),
+    fullScreen: PropTypes.bool,
+    onLogin: PropTypes.func,
+  };
+
+  static defaultProps = {
+    fullScreen: false,
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      login: '',
+      password: '',
+    };
   }
 
-  static contextTypes = {
-    i18n: PropTypes.object,
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
   }
 
-  submit = (form) => {
-    this.props.setServerAddress({ address: form.get('server') });
-    this.props.loginUser({ login: form.get('login'), password: form.get('password') });
+  catchEnter = (f) => (e) => {
+    if (e.key === 'Enter') {
+      f(e);
+    }
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    this.props.onLogin({ login: this.state.login, password: this.state.password });
   }
 
   render() {
-    const { l } = this.context.i18n;
-
     return (
       <form
-        className={styles.loginForm}
-        onSubmit={this.props.handleSubmit(this.submit)}
+        id="login"
+        onSubmit={this.handleSubmit}
       >
-        <div>
-          <h2 style={inlineStyles.title}>{'Heutagogy'}</h2>
-          <Field
-            component={renderTextField}
-            floatingLabelFixed
-            floatingLabelStyle={inlineStyles.floatingLabelStyle}
-            floatingLabelFocusStyle={inlineStyles.blue500}
-            floatingLabelText={l('Login')}
-            fullWidth
-            inputStyle={inlineStyles.input}
-            underlineFocusStyle={inlineStyles.blue500}
-            name='login'
-            placeholder={l('My username')}
-          />
-          <Field
-            component={renderTextField}
-            floatingLabelFixed
-            floatingLabelStyle={inlineStyles.floatingLabelStyle}
-            floatingLabelFocusStyle={inlineStyles.blue500}
-            floatingLabelText={l('Password')}
-            fullWidth
-            inputStyle={inlineStyles.input}
-            underlineFocusStyle={inlineStyles.blue500}
-            name='password'
-            placeholder={l('My secret password')}
-            type='password'
-          />
-          <Field
-            component={renderTextField}
-            floatingLabelFixed
-            floatingLabelStyle={inlineStyles.floatingLabelStyle}
-            floatingLabelFocusStyle={inlineStyles.blue500}
-            floatingLabelText={l('Server address')}
-            fullWidth
-            inputStyle={inlineStyles.input}
-            underlineFocusStyle={inlineStyles.blue500}
-            name='server'
-          />
-          <RaisedButton
-            className={styles.login}
-            fullWidth
-            label='Login'
-            primary
-            spinButton={this.props.viewState && this.props.viewState.get('isInProgress')}
-            type='submit'
-          />
-        </div>
+        <Dialog
+          fullScreen={this.props.fullScreen}
+          open
+        >
+          <DialogTitle>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <img
+                alt=""
+                src={heutagogyLogo}
+                style={{ maxWidth: 50, margin: 10 }}
+              />
+              {'Heutagogy'}
+            </div>
+          </DialogTitle>
+          <DialogContent>
+            <TextField
+              form="login"
+              fullWidth
+              label="Login"
+              margin="dense"
+              name="login"
+              value={this.state.login}
+              onChange={this.handleChange}
+            />
+            <TextField
+              form="login"
+              fullWidth
+              label="Password"
+              margin="dense"
+              name="password"
+              type="password"
+              value={this.state.password}
+              onChange={this.handleChange}
+              onKeyPress={this.catchEnter(this.handleSubmit)}
+            />
+
+            <Typography align="center">
+              {"Don't have an account? "}
+              <a
+                href="https://heutagogy.herokuapp.com/user/register"
+                target="_blank"
+              >
+                {'Sign up'}
+              </a>
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              color="primary"
+              form="login"
+              type="submit"
+            >
+              {'Login'}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </form>
     );
   }
 }
 
-const LoginFormWrapped = reduxForm({ form: 'LoginForm' })(LoginForm);
-
-const mapStateToProps = (state) => ({
-  viewState: getViewState(state, LOGIN_VIEW_STATE),
-  initialValues: {
-    server: state.getIn(['server', 'address']) || 'https://heutagogy.herokuapp.com',
-  },
-});
-
-export default connect(mapStateToProps, { loginUser, setServerAddress })(LoginFormWrapped);
+export default withMobileDialog({ breakpoint: 'xs' })(LoginForm);
