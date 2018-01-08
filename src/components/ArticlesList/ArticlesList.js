@@ -97,7 +97,7 @@ class ArticleMenu extends Component {
       >
         <Toggle
           defaultToggled={Boolean(article.read)}
-          label={article.read ? 'Delete read mark' : 'Read article'}
+          label={article.read ? 'Delete read mark' : 'Add read mark'}
           labelPosition={'right'}
           labelStyle={{ marginLeft: '0.7em' }}
         />
