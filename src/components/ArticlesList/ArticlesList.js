@@ -16,8 +16,7 @@ import MoreVertIcon from 'material-ui-icons/MoreVert';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
 import InfoIcon from 'material-ui-icons/Info';
-import CheckBoxOutlineBlankIcon from 'material-ui-icons/CheckBoxOutlineBlank';
-import CheckBoxIcon from 'material-ui-icons/CheckBox';
+import Toggle from 'material-ui/Toggle';
 import InsertCommentIcon from 'material-ui-icons/InsertComment';
 
 import moment from 'moment';
@@ -92,23 +91,17 @@ class ArticleMenu extends Component {
     // const menuId = `more-menu-${article.id}`;
     const menuId = 'more-menu';
 
-    const readMenuItem = article.read
-                       ? <MenuItem
-                         onTouchTap={this.handleReadClicked}
-                       >
-                         <ListItemIcon>
-                           <CheckBoxIcon />
-                         </ListItemIcon>
-                         <ListItemText primary={`Read: ${formatTimeToUser(article.read)}`} />
-                       </MenuItem>
-                       : <MenuItem
-                         onTouchTap={this.handleReadClicked}
-                       >
-                         <ListItemIcon>
-                           <CheckBoxOutlineBlankIcon />
-                         </ListItemIcon>
-                         <ListItemText primary="Not read" />
-                       </MenuItem>;
+    const readMenuItem =
+      <MenuItem
+        onTouchTap={this.handleReadClicked}
+      >
+        <Toggle
+          defaultToggled={Boolean(article.read)}
+          label={article.read ? 'Mark as unread' : 'Mark as read'}
+          labelPosition={'right'}
+          labelStyle={{ marginLeft: '0.7em' }}
+        />
+      </MenuItem>;
 
     return (
       <div>
@@ -126,18 +119,8 @@ class ArticleMenu extends Component {
           open={Boolean(this.state.anchorEl)}
           onClose={() => this.closeMenu()}
         >
-          <MenuItem disabled>
-            <ListItemIcon>
-              <InfoIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary={`Saved: ${formatTimeToUser(article.timestamp)}`}
-            />
-          </MenuItem>
 
           {readMenuItem}
-
-          <Divider />
 
           <MenuItem onTouchTap={this.handleNotesClicked}>
             <ListItemIcon>
@@ -152,6 +135,29 @@ class ArticleMenu extends Component {
             </ListItemIcon>
             <ListItemText primary="Edit" />
           </MenuItem>
+
+          <Divider />
+
+          <MenuItem disabled>
+            <ListItemIcon>
+              <InfoIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={`Saved: ${formatTimeToUser(article.timestamp)}`}
+            />
+          </MenuItem>
+          {
+            article.read
+              ? <MenuItem disabled>
+                <ListItemIcon>
+                  <InfoIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={`Read: ${formatTimeToUser(article.read)}`}
+                />
+              </MenuItem>
+             : null
+          }
 
           <Divider />
 
