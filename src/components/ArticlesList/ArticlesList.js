@@ -97,7 +97,7 @@ class ArticleMenu extends Component {
       >
         <Toggle
           defaultToggled={Boolean(article.read)}
-          label={article.read ? 'Delete read mark' : 'Add read mark'}
+          label={article.read ? 'Mark as unread' : 'Mark as read'}
           labelPosition={'right'}
           labelStyle={{ marginLeft: '0.7em' }}
         />
@@ -119,6 +119,25 @@ class ArticleMenu extends Component {
           open={Boolean(this.state.anchorEl)}
           onClose={() => this.closeMenu()}
         >
+
+          {readMenuItem}
+
+          <MenuItem onTouchTap={this.handleNotesClicked}>
+            <ListItemIcon>
+              <InsertCommentIcon />
+            </ListItemIcon>
+            <ListItemText primary={`Notes (${(article.notes ? article.notes : []).length})`} />
+          </MenuItem>
+
+          <MenuItem onTouchTap={this.handleEditClicked}>
+            <ListItemIcon>
+              <EditIcon />
+            </ListItemIcon>
+            <ListItemText primary="Edit" />
+          </MenuItem>
+
+          <Divider />
+
           <MenuItem disabled>
             <ListItemIcon>
               <InfoIcon />
@@ -139,24 +158,6 @@ class ArticleMenu extends Component {
               </MenuItem>
              : null
           }
-
-          <Divider />
-
-          {readMenuItem}
-
-          <MenuItem onTouchTap={this.handleNotesClicked}>
-            <ListItemIcon>
-              <InsertCommentIcon />
-            </ListItemIcon>
-            <ListItemText primary={`Notes (${(article.notes ? article.notes : []).length})`} />
-          </MenuItem>
-
-          <MenuItem onTouchTap={this.handleEditClicked}>
-            <ListItemIcon>
-              <EditIcon />
-            </ListItemIcon>
-            <ListItemText primary="Edit" />
-          </MenuItem>
 
           <Divider />
 
