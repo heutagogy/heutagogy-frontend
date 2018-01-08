@@ -28,11 +28,20 @@ import { formatTimeToUser } from './../../utils/timeUtils';
 import NotesPopup from '../NotesPopup/NotesPopup';
 import ArticleEditDialog from './ArticleEditDialog';
 
-const styles = (theme) => ({
+const listItemStyles = (theme) => ({
   secondaryAction: {
     paddingRight: theme.spacing.unit * 12,
   },
 });
+
+const articleStyles = {
+  articleLink: {
+    color: '#265c83',
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
+};
 
 const Tag = ({ tag }) => <span style={{ marginRight: '5px' }}>{`@${tag}`}</span>;
 
@@ -175,11 +184,13 @@ class ArticleMenu extends Component {
   }
 }
 
-const MyListItem = withStyles(styles)(ListItem);
+const MyListItem = withStyles(listItemStyles)(ListItem);
 
+@withStyles(articleStyles)
 class Article extends Component {
   static propTypes = {
     article: PropTypes.object,
+    classes: PropTypes.object,
     onDelete: PropTypes.func,
     onRead: PropTypes.func,
     onUpdate: PropTypes.func,
@@ -259,6 +270,7 @@ class Article extends Component {
         <ListItemText
           primary={
             <a
+              className={this.props.classes.articleLink}
               href={article.url}
               target="_blank"
               onTouchTap={(e) => e.stopPropagation()}
