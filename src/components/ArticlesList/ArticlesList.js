@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/no-multi-comp */
+/* eslint-disable no-magic-numbers */
 import Immutable from 'immutable';
 
 import { Component, PropTypes } from 'react';
@@ -11,6 +12,8 @@ import IconButton from 'material-ui-next/IconButton';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui-next/Dialog';
 import Button from 'material-ui-next/Button';
 import Divider from 'material-ui-next/Divider';
+
+import { withStyles } from 'material-ui-next/styles';
 
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import EditIcon from 'material-ui-icons/Edit';
@@ -25,6 +28,12 @@ import { formatTimeToUser } from './../../utils/timeUtils';
 
 import NotesPopup from '../NotesPopup/NotesPopup';
 import ArticleEditDialog from './ArticleEditDialog';
+
+const styles = (theme) => ({
+  secondaryAction: {
+    paddingRight: theme.spacing.unit * 12,
+  },
+});
 
 const Tag = ({ tag }) => <span style={{ marginRight: '5px' }}>{`@${tag}`}</span>;
 
@@ -103,8 +112,23 @@ class ArticleMenu extends Component {
         />
       </MenuItem>;
 
+    const hasNotes = (article.notes || []).length !== 0;
+
     return (
-      <div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          flexWrap: 'nowrap',
+        }}
+      >
+        <IconButton
+          onTouchTap={this.props.onNotesClicked}
+        >
+          <InsertCommentIcon
+            color={hasNotes ? null : 'silver'}
+          />
+        </IconButton>
         <IconButton
           aria-haspopup="true"
           aria-label="More"
@@ -121,13 +145,6 @@ class ArticleMenu extends Component {
         >
 
           {readMenuItem}
-
-          <MenuItem onTouchTap={this.handleNotesClicked}>
-            <ListItemIcon>
-              <InsertCommentIcon />
-            </ListItemIcon>
-            <ListItemText primary={`Notes (${(article.notes ? article.notes : []).length})`} />
-          </MenuItem>
 
           <MenuItem onTouchTap={this.handleEditClicked}>
             <ListItemIcon>
@@ -172,6 +189,8 @@ class ArticleMenu extends Component {
     );
   }
 }
+
+const MyListItem = withStyles(styles)(ListItem);
 
 class Article extends Component {
   static propTypes = {
@@ -248,7 +267,7 @@ class Article extends Component {
     const article = this.props.article;
 
     return (
-      <ListItem
+      <MyListItem
         button
         component="a"
         href={article.url}
@@ -305,7 +324,7 @@ class Article extends Component {
             title={article.title}
           />
         </ListItemSecondaryAction>
-      </ListItem>
+      </MyListItem>
     );
   }
 }
