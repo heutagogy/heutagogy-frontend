@@ -22,7 +22,7 @@ const stateToArticle = (state) => {
   return {
     title: state.title,
     url: state.url,
-    tags: preTags === '' ? [] : preTags.split(/[,\s]+/),
+    tags: preTags === '' ? [] : preTags.split(/[,\s]+/).map((x) => x.replace(/^@/, '')),
   };
 };
 
