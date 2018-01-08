@@ -92,23 +92,15 @@ class ArticleMenu extends Component {
     // const menuId = `more-menu-${article.id}`;
     const menuId = 'more-menu';
 
-    const readMenuItem = article.read
-                       ? <MenuItem
-                         onTouchTap={this.handleReadClicked}
-                       >
-                         <ListItemIcon>
-                           <CheckBoxIcon />
-                         </ListItemIcon>
-                         <ListItemText primary={`Read: ${formatTimeToUser(article.read)}`} />
-                       </MenuItem>
-                       : <MenuItem
-                         onTouchTap={this.handleReadClicked}
-                       >
-                         <ListItemIcon>
-                           <CheckBoxOutlineBlankIcon />
-                         </ListItemIcon>
-                         <ListItemText primary="Not read" />
-                       </MenuItem>;
+    const readMenuItem =
+      <MenuItem
+        onTouchTap={this.handleReadClicked}
+      >
+        <ListItemIcon>
+          {article.read ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
+        </ListItemIcon>
+        <ListItemText primary={article.read ? 'Mark as unread' : 'Mark as read'} />
+      </MenuItem>;
 
     return (
       <div>
@@ -134,10 +126,22 @@ class ArticleMenu extends Component {
               primary={`Saved: ${formatTimeToUser(article.timestamp)}`}
             />
           </MenuItem>
-
-          {readMenuItem}
+          {
+            article.read
+              ? <MenuItem disabled>
+                <ListItemIcon>
+                  <InfoIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={`Read: ${formatTimeToUser(article.read)}`}
+                />
+              </MenuItem>
+             : null
+          }
 
           <Divider />
+
+          {readMenuItem}
 
           <MenuItem onTouchTap={this.handleNotesClicked}>
             <ListItemIcon>
