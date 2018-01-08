@@ -1,6 +1,6 @@
 import { Component, PropTypes } from 'react';
 
-import Dialog, { DialogActions, DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
+import Dialog, { DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
 
 import PureRender from 'pure-render-decorator';
 
@@ -73,7 +73,15 @@ class LoginForm extends Component {
               {'Heutagogy'}
             </div>
           </DialogTitle>
-          <DialogContent>
+          <DialogContent
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minWidth: 300,
+            }}
+          >
             <TextField
               form="login"
               fullWidth
@@ -104,16 +112,17 @@ class LoginForm extends Component {
                 {'Sign up'}
               </a>
             </Typography>
-          </DialogContent>
-          <DialogActions>
+
             <Button
               color="primary"
               form="login"
+              raised
+              style={{ margin: 30 }}
               type="submit"
             >
-              {'Login'}
+              {'Log in'}
             </Button>
-          </DialogActions>
+          </DialogContent>
         </Dialog>
       </form>
     );
