@@ -11,7 +11,6 @@ import Button from 'material-ui-next/Button';
 import { createNote, updateNote, deleteNote } from './../../actions/notes';
 
 import NotePaper from './NotePaper';
-import { guid } from './../../../src/utils/stringUtils';
 
 
 const inlineStyles = {
@@ -54,20 +53,21 @@ class NotesPopup extends Component {
   }
 
   handleAddNoteClicked() {
-    this.props.createNote(this.props.articleId, {
-      text: this.state.currentNote,
-      tmpId: guid(),
-    });
+    this.props.createNote(this.props.articleId, { text: this.state.currentNote });
 
     this.setState({ currentNote: '' });
   }
 
   handleDeleteNote({ noteId, text, noteIndex }) {
-    this.props.deleteNote(this.props.articleId, { noteId, text, noteIndex });
+    this.props.deleteNote(this.props.articleId, noteIndex, { id: noteId, text });
   }
 
-  handleUpdateNote({ noteId, newText, text }) {
-    this.props.updateNote(this.props.articleId, { noteId, newText, text });
+  handleUpdateNote({ noteId, newText, oldText }) {
+    this.props.updateNote(
+      this.props.articleId,
+      { id: noteId, text: newText },
+      { id: noteId, text: oldText }
+    );
   }
 
   renderNote(note, index) {
@@ -78,7 +78,7 @@ class NotesPopup extends Component {
         noteId: note.id, text: note.text, noteIndex: index,
       })}
       onUpdateNote={(newText) =>
-        this.handleUpdateNote({ noteId: note.id, newText, text: note.text })}
+        this.handleUpdateNote({ noteId: note.id, newText, oldText: note.text })}
     />;
   }
 
