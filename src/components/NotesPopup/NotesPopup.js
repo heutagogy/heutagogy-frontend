@@ -11,6 +11,7 @@ import Button from 'material-ui-next/Button';
 import { createNote, updateNote, deleteNote } from './../../actions/notes';
 
 import NotePaper from './NotePaper';
+import { guid } from './../../../src/utils/stringUtils';
 
 
 const inlineStyles = {
@@ -55,6 +56,7 @@ class NotesPopup extends Component {
   handleAddNoteClicked() {
     this.props.createNote(this.props.articleId, {
       text: this.state.currentNote,
+      tmpId: guid(),
     });
 
     this.setState({ currentNote: '' });

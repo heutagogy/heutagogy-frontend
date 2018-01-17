@@ -32,7 +32,7 @@ export default (state, action) => {
     case CREATE_NOTE_START: {
       return updateArticle(
         (old) => old.push(Immutable.fromJS({
-          id: MINUS_ONE,
+          id: action.meta.note.tmpId,
           text: action.meta.note.text,
         })),
         action.meta.bookmarkId,
@@ -43,7 +43,7 @@ export default (state, action) => {
       return updateArticle(
         (old) =>
           old.map((note) =>
-            (note.get('id') === MINUS_ONE
+            (note.get('id') === action.meta.note.tmpId
               ? Immutable.fromJS({
                 id: action.payload.id,
                 text: action.meta.note.text,
@@ -57,7 +57,7 @@ export default (state, action) => {
       return updateArticle(
         (old) =>
           old.filterNot((note) =>
-            note.get('id') === MINUS_ONE),
+            note.get('id') === action.meta.note.tmpId),
         action.meta.bookmarkId,
         state,
       );

@@ -15,8 +15,8 @@ export const CREATE_NOTE_SUCCESS = 'CREATE_NOTE_SUCCESS';
 export const CREATE_NOTE_FAILURE = 'CREATE_NOTE_FAILURE';
 
 
-const postCreateNote = (bookmarkId, { text }) => {
-  const meta = { bookmarkId, note: { text } };
+const postCreateNote = (bookmarkId, { text, tmpId }) => {
+  const meta = { bookmarkId, note: { text, tmpId } };
 
   return {
     [CALL_API]: {
