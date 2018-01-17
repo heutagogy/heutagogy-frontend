@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/no-multi-comp */
-/* eslint-disable no-magic-numbers */
 import Immutable from 'immutable';
 
 import { Component, PropTypes } from 'react';
@@ -283,7 +282,6 @@ class Article extends Component {
               key={`tag-${tag}`}
               tag={tag}
             />)}
-          /* eslint-disable no-magic-numbers */
           style={{ opacity: article.read ? 0.4 : 1.0 }}
         />
         <ListItemSecondaryAction>

@@ -62,8 +62,10 @@ class NotePaper extends Component {
     });
   }
 
-  handleUpdateNote() {
-    this.props.onUpdateNote({ text: this.state.currentText });
+  handleUpdateNote(e) {
+    e.preventDefault();
+
+    this.props.onUpdateNote(this.state.currentText);
 
     this.setState({ editing: false });
   }
