@@ -84,8 +84,8 @@ export default (state, action) => {
       return updateArticle(
         (old) =>
           old.map((note) =>
-            (note.get('id') === action.meta.note.id
-              ? Immutable.fromJS(action.meta.note)
+            (note.get('id') === action.meta.oldNote.id
+              ? Immutable.fromJS({ ...action.meta.oldNote, ...action.meta.note })
               : note)),
         action.meta.bookmarkId,
         state

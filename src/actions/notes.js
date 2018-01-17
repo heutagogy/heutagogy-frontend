@@ -50,7 +50,7 @@ const postDeleteNote = (bookmarkId, noteIndex, note) => {
 };
 
 const postUpdateNote = (bookmarkId, newNote, oldNote) => {
-  const meta = { bookmarkId, note: { ...oldNote, ...newNote }, oldNote };
+  const meta = { bookmarkId, note: newNote, oldNote };
 
   return {
     [CALL_API]: {
