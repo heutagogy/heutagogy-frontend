@@ -65,7 +65,7 @@ class NotesPopup extends Component {
   handleUpdateNote({ noteId, newText, oldText }) {
     this.props.updateNote(
       this.props.articleId,
-      { id: noteId, text: newText },
+      { text: newText },
       { id: noteId, text: oldText }
     );
   }

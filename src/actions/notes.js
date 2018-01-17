@@ -33,8 +33,8 @@ const postCreateNote = (bookmarkId, noteFields) => {
   };
 };
 
-const postDeleteNote = (bookmarkId, noteIndex, noteFields) => {
-  const meta = { bookmarkId, note: noteFields, noteIndex };
+const postDeleteNote = (bookmarkId, noteIndex, note) => {
+  const meta = { bookmarkId, noteIndex, note };
 
   return {
     [CALL_API]: {
@@ -44,13 +44,13 @@ const postDeleteNote = (bookmarkId, noteIndex, noteFields) => {
         { type: DELETE_NOTE_FAILURE, meta },
       ],
       method: 'DELETE',
-      endpoint: `${API_VERSION}/notes/${noteFields.id}`,
+      endpoint: `${API_VERSION}/notes/${note.id}`,
     },
   };
 };
 
-const postUpdateNote = (bookmarkId, newNoteFields, oldNoteFields) => {
-  const meta = { bookmarkId, note: newNoteFields, oldNote: oldNoteFields };
+const postUpdateNote = (bookmarkId, newNote, oldNote) => {
+  const meta = { bookmarkId, note: { ...oldNote, ...newNote }, oldNote };
 
   return {
     [CALL_API]: {
@@ -60,8 +60,8 @@ const postUpdateNote = (bookmarkId, newNoteFields, oldNoteFields) => {
         { type: UPDATE_NOTE_FAILURE, meta },
       ],
       method: 'POST',
-      body: JSON.stringify(newNoteFields),
-      endpoint: `${API_VERSION}/notes/${newNoteFields.id}`,
+      body: JSON.stringify(newNote),
+      endpoint: `${API_VERSION}/notes/${oldNote.id}`,
     },
   };
 };
@@ -70,8 +70,8 @@ const postUpdateNote = (bookmarkId, newNoteFields, oldNoteFields) => {
 export const createNote = (bookmarkId, noteFields) => (dispatch) =>
     dispatch(postCreateNote(bookmarkId, noteFields));
 
-export const deleteNote = (bookmarkId, noteIndex, noteFields) => (dispatch) =>
-    dispatch(postDeleteNote(bookmarkId, noteIndex, noteFields));
+export const deleteNote = (bookmarkId, noteIndex, note) => (dispatch) =>
+    dispatch(postDeleteNote(bookmarkId, noteIndex, note));
 
-export const updateNote = (bookmarkId, newNoteFields, oldNoteFields) => (dispatch) =>
-    dispatch(postUpdateNote(bookmarkId, newNoteFields, oldNoteFields));
+export const updateNote = (bookmarkId, newNote, oldNote) => (dispatch) =>
+    dispatch(postUpdateNote(bookmarkId, newNote, oldNote));
