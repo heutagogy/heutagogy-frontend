@@ -31,10 +31,7 @@ export default (state, action) => {
 
     case CREATE_NOTE_START: {
       return updateArticle(
-        (old) => old.push(Immutable.fromJS({
-          id: action.meta.note.tmpId,
-          text: action.meta.note.text,
-        })),
+        (old) => old.push(Immutable.fromJS(action.meta.note)),
         action.meta.bookmarkId,
         state,
       );
@@ -43,11 +40,8 @@ export default (state, action) => {
       return updateArticle(
         (old) =>
           old.map((note) =>
-            (note.get('id') === action.meta.note.tmpId
-              ? Immutable.fromJS({
-                id: action.payload.id,
-                text: action.meta.note.text,
-              })
+            (note.get('id') === action.meta.note.id
+              ? Immutable.fromJS(action.payload)
               : note)),
         action.meta.bookmarkId,
         state,
@@ -57,7 +51,7 @@ export default (state, action) => {
       return updateArticle(
         (old) =>
           old.filterNot((note) =>
-            note.get('id') === action.meta.note.tmpId),
+            note.get('id') === action.meta.note.id),
         action.meta.bookmarkId,
         state,
       );
@@ -76,12 +70,9 @@ export default (state, action) => {
     case DELETE_NOTE_FAILURE: {
       return updateArticle(
         (old) => old.splice(
-          action.meta.note.index,
+          action.meta.noteIndex,
           ZERO,
-          Immutable.fromJS({
-            id: action.meta.note.id,
-            text: action.meta.note.text,
-          })
+          Immutable.fromJS(action.meta.note)
         ),
         action.meta.bookmarkId,
         state
@@ -93,11 +84,8 @@ export default (state, action) => {
       return updateArticle(
         (old) =>
           old.map((note) =>
-            (note.get('id') === action.meta.note.id
-              ? Immutable.fromJS({
-                id: action.meta.note.id,
-                text: action.meta.note.newText,
-              })
+            (note.get('id') === action.meta.oldNote.id
+              ? Immutable.fromJS({ ...action.meta.oldNote, ...action.meta.note })
               : note)),
         action.meta.bookmarkId,
         state
@@ -107,11 +95,8 @@ export default (state, action) => {
       return updateArticle(
         (old) =>
           old.map((note) =>
-            (note.get('id') === action.meta.note.id
-              ? Immutable.fromJS({
-                id: action.meta.note.id,
-                text: action.meta.note.text,
-              })
+            (note.get('id') === action.meta.oldNote.id
+              ? Immutable.fromJS(action.meta.oldNote)
               : note)),
         action.meta.bookmarkId,
         state
