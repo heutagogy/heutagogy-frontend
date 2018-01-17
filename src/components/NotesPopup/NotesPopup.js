@@ -53,27 +53,30 @@ class NotesPopup extends Component {
   }
 
   handleAddNoteClicked() {
-    const payload = { text: this.state.currentNote };
-
-    this.props.createNote(this.props.articleId, payload);
+    this.props.createNote(this.props.articleId, {
+      text: this.state.currentNote,
+    });
 
     this.setState({ currentNote: '' });
   }
 
-  handleDeleteNote(noteId) {
-    this.props.deleteNote(this.props.articleId, noteId);
+  handleDeleteNote({ noteId, text, noteIndex }) {
+    this.props.deleteNote(this.props.articleId, { noteId, text, noteIndex });
   }
 
-  handleUpdateNote(noteId, newNote) {
-    this.props.updateNote(this.props.articleId, noteId, newNote);
+  handleUpdateNote({ noteId, newText, text }) {
+    this.props.updateNote(this.props.articleId, { noteId, newText, text });
   }
 
-  renderNote(note) {
+  renderNote(note, index) {
     return <NotePaper
       key={note.id}
       note={note}
-      onDeleteNote={() => this.handleDeleteNote(note.id)}
-      onUpdateNote={(newNote) => this.handleUpdateNote(note.id, newNote)}
+      onDeleteNote={() => this.handleDeleteNote({
+        noteId: note.id, text: note.text, noteIndex: index,
+      })}
+      onUpdateNote={(newText) =>
+        this.handleUpdateNote({ noteId: note.id, newText, text: note.text })}
     />;
   }
 
@@ -86,7 +89,7 @@ class NotesPopup extends Component {
       >
         <DialogTitle>{this.props.title}</DialogTitle>
         <DialogContent>
-          {this.props.notes.map(this.renderNote)}
+          {this.props.notes.map((note, index) => this.renderNote(note, index))}
 
           <Paper style={inlineStyles.paperStyle}>
             <TextField
