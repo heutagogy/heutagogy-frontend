@@ -89,7 +89,7 @@ class NotesPopup extends Component {
       >
         <DialogTitle>{this.props.title}</DialogTitle>
         <DialogContent>
-          {this.props.notes.map((note, index) => this.renderNote(note, index))}
+          {this.props.notes.map(this.renderNote)}
 
           <Paper style={inlineStyles.paperStyle}>
             <TextField
