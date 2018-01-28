@@ -1,4 +1,5 @@
-/* eslint-disable */
+import Immutable from 'immutable';
+
 import { Component, PropTypes } from 'react';
 
 import TextField from 'material-ui-next/TextField';
@@ -10,7 +11,7 @@ import Autosuggest from 'react-autosuggest';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 
-const styles = theme => ({
+const styles = (_theme) => ({
   container: {
     flexGrow: 1,
     position: 'relative',
@@ -23,9 +24,12 @@ const styles = theme => ({
   },
 });
 
-
-const renderSuggestionsContainer = ({ containerProps, children, query }) => (
-  <Paper {...containerProps} square children={children} />
+// eslint-disable-next-line react/prop-types
+const renderSuggestionsContainer = ({ containerProps, children, _query }) => (
+  <Paper
+    {...containerProps}
+    children={children}
+  />
 );
 
 const renderSuggestion = (article, { query, isHighlighted }) => {
@@ -33,15 +37,21 @@ const renderSuggestion = (article, { query, isHighlighted }) => {
   const parts = parse(article.title, matches);
 
   return (
-    <MenuItem selected={isHighlighted} component="div">
+    <MenuItem
+      component="div"
+      selected={isHighlighted}
+    >
       <div>
         {parts.map((part, index) => (
           part.highlight
           ? (
-            <span key={String(index)} style={{ textDecoration: 'underline' }}>
+            <span
+              key={String(index)}
+              style={{ textDecoration: 'underline' }}
+            >
               {part.text}
             </span>
-          ): (
+          ) : (
             <span key={String(index)}>
               {part.text}
             </span>
@@ -52,22 +62,31 @@ const renderSuggestion = (article, { query, isHighlighted }) => {
   );
 };
 
-const renderInputComponent = ({ classes, autoFocus, label, value, fullWidth, margin, ref, ...other }) => (
+// eslint-disable-next-line react/prop-types
+const renderInputComponent = ({ autoFocus, label, value, fullWidth, margin, ref, ...other }) => (
   <TextField
-    autoFocus={autoFocus}
-    fullWidth={fullWidth}
-    label={label}
-    value={value}
-    inputRef={ref}
     InputProps={{
       ...other,
     }}
+    autoFocus={autoFocus}
+    fullWidth={fullWidth}
+    inputRef={ref}
+    label={label}
     margin={margin}
+    value={value}
   />
 );
 
 @withStyles(styles)
 export default class ArticleSelect extends Component {
+  static propTypes = {
+    articles: PropTypes.instanceOf(Immutable.List).isRequired,
+    classes: PropTypes.object,
+    initialValue: PropTypes.string.isRequired,
+    inputProps: PropTypes.object,
+    onArticleSelected: PropTypes.function,
+  };
+
   constructor(props) {
     super(props);
 
@@ -77,9 +96,11 @@ export default class ArticleSelect extends Component {
     };
   }
 
-  getSuggestions = (value) => {
-    return this.props.articles.filter((article) => article.get('title').toLowerCase().includes(value.toLowerCase())).toJS();
-  };
+  getSuggestions = (value) => (
+    this.props.articles.filter((article) => article.get('title').toLowerCase().includes(value.toLowerCase())).toJS()
+  );
+
+  getSuggestionValue = (suggestion) => suggestion.title;
 
   handleSuggestionsFetchRequested = ({ value }) => {
     this.setState({
@@ -93,7 +114,7 @@ export default class ArticleSelect extends Component {
     });
   };
 
-  handleSuggestionSelected = (event, { suggestion, suggestionValue }) => {
+  handleSuggestionSelected = (event, { suggestion }) => {
     this.props.onArticleSelected(suggestion.id);
   };
 
@@ -117,19 +138,19 @@ export default class ArticleSelect extends Component {
 
     return (
       <Autosuggest
-        theme={{
-          container: classes.container,
-          suggestionsList: classes.suggestionsList,
-        }}
-        getSuggestionValue={(suggestion) => suggestion.title}
+        getSuggestionValue={this.getSuggestionValue}
         inputProps={inputProps}
         renderInputComponent={renderInputComponent}
         renderSuggestion={renderSuggestion}
         renderSuggestionsContainer={renderSuggestionsContainer}
         suggestions={this.state.suggestions}
-        onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
-        onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
+        theme={{
+          container: classes.container,
+          suggestionsList: classes.suggestionsList,
+        }}
         onSuggestionSelected={this.handleSuggestionSelected}
+        onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
+        onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
       />
     );
   }
