@@ -12,6 +12,8 @@ import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui-n
 import Button from 'material-ui-next/Button';
 import Divider from 'material-ui-next/Divider';
 
+import Collapse from 'material-ui-next/transitions/Collapse';
+
 import { withStyles } from 'material-ui-next/styles';
 
 import MoreVertIcon from 'material-ui-icons/MoreVert';
@@ -26,6 +28,12 @@ import { formatTimeToUser } from './../../utils/timeUtils';
 
 import NotesPopup from '../NotesPopup/NotesPopup';
 import ArticleEditDialog from './ArticleEditDialog';
+
+const articleListStyles = (theme) => ({
+  nested: {
+    paddingLeft: theme.spacing.unit * 2,
+  },
+});
 
 const listItemStyles = (theme) => ({
   secondaryAction: {
@@ -189,6 +197,7 @@ const MyListItem = withStyles(listItemStyles)(ListItem);
 class Article extends Component {
   static propTypes = {
     article: PropTypes.object,
+    articles: PropTypes.instanceOf(Immutable.List).isRequired,
     classes: PropTypes.object,
     onDelete: PropTypes.func,
     onRead: PropTypes.func,
@@ -264,6 +273,7 @@ class Article extends Component {
     return (
       <MyListItem
         button
+        key={String(article.id)}
         onTouchTap={this.handleEditClicked}
       >
         <ListItemText
@@ -310,6 +320,7 @@ class Article extends Component {
 
           <ArticleEditDialog
             article={article}
+            articles={this.props.articles}
             open={this.state.editDialogOpen}
             onCancel={this.handleEditCancel}
             onEditComplete={this.handleEditFinished}
@@ -329,25 +340,62 @@ class Article extends Component {
   }
 }
 
+@withStyles(articleListStyles)
 export class ArticlesList extends Component {
   static propTypes = {
+    allArticles: PropTypes.instanceOf(Immutable.List),
     articles: PropTypes.instanceOf(Immutable.List),
+    classes: PropTypes.object,
     onDeleteArticle: PropTypes.func,
     onUpdateArticle: PropTypes.func,
   };
 
+  renderArticle = (article) => (
+    <Article
+      article={article}
+      articles={this.props.allArticles}
+      key={`article-${article.id}`}
+      onDelete={() => this.props.onDeleteArticle(article.id)}
+      onRead={() => this.props.onUpdateArticle(article.id, {
+        read: article.read ? null : moment().format(),
+      })}
+      onUpdate={(update) => this.props.onUpdateArticle(article.id, update)}
+    />
+  );
+
+  renderChildren = (article) => {
+    if (!article.children) {
+      return null;
+    }
+
+    return (
+      <Collapse
+        className={this.props.classes.nested}
+        in
+        key={`children-${article.id}`}
+      >
+        <List disablePadding>
+          {article.children.map((child) => [
+            this.renderArticle(child),
+            this.renderChildren(child),
+          ])}
+        </List>
+      </Collapse>
+    );
+  };
+
   render() {
     return <List>
-      {this.props.articles.toJS().map((article) =>
-        <Article
-          article={article}
-          key={`article-${article.id}`}
-          onDelete={() => this.props.onDeleteArticle(article.id)}
-          onRead={() => this.props.onUpdateArticle(article.id, {
-            read: article.read ? null : moment().format(),
-          })}
-          onUpdate={(update) => this.props.onUpdateArticle(article.id, update)}
-        />)}
+      {this.props.articles.toJS().map((article) => {
+        if (article.parent) {
+          return null;
+        }
+
+        return [
+          this.renderArticle(article),
+          this.renderChildren(article),
+        ];
+      })}
     </List>;
   }
 }

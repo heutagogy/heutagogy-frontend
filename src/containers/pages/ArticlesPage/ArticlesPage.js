@@ -200,6 +200,7 @@ export class ArticlesPage extends Component {
         />
         <div style={inlineStyles.routerContainer}>
           <ArticlesList
+            allArticles={allArticles}
             articles={articles}
             onDeleteArticle={(articleId) => this.props.deleteArticle(articleId)}
             onUpdateArticle={(articleId, update) => this.props.updateArticle(articleId, update)}
