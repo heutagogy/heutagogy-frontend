@@ -189,6 +189,7 @@ const MyListItem = withStyles(listItemStyles)(ListItem);
 class Article extends Component {
   static propTypes = {
     article: PropTypes.object,
+    articles: PropTypes.instanceOf(Immutable.List).isRequired,
     classes: PropTypes.object,
     onDelete: PropTypes.func,
     onRead: PropTypes.func,
@@ -310,6 +311,7 @@ class Article extends Component {
 
           <ArticleEditDialog
             article={article}
+            articles={this.props.articles}
             open={this.state.editDialogOpen}
             onCancel={this.handleEditCancel}
             onEditComplete={this.handleEditFinished}
@@ -331,6 +333,7 @@ class Article extends Component {
 
 export class ArticlesList extends Component {
   static propTypes = {
+    allArticles: PropTypes.instanceOf(Immutable.List),
     articles: PropTypes.instanceOf(Immutable.List),
     onDeleteArticle: PropTypes.func,
     onUpdateArticle: PropTypes.func,
@@ -341,6 +344,7 @@ export class ArticlesList extends Component {
       {this.props.articles.toJS().map((article) =>
         <Article
           article={article}
+          articles={this.props.allArticles}
           key={`article-${article.id}`}
           onDelete={() => this.props.onDeleteArticle(article.id)}
           onRead={() => this.props.onUpdateArticle(article.id, {

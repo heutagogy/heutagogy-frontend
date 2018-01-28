@@ -1,9 +1,13 @@
+import Immutable from 'immutable';
+
 import { Component, PropTypes } from 'react';
 
 import Dialog, { DialogActions, DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
 import Button from 'material-ui-next/Button';
 
 import TextField from 'material-ui-next/TextField';
+
+import ArticleSelect from './ArticleSelect';
 
 
 const articleToState = (article) => {
@@ -13,6 +17,7 @@ const articleToState = (article) => {
     title: article.title,
     url: article.url,
     tags: tags.join(' '),
+    parentId: article.parent,
   };
 };
 
@@ -23,12 +28,14 @@ const stateToArticle = (state) => {
     title: state.title,
     url: state.url,
     tags: preTags === '' ? [] : preTags.split(/[,\s]+/).map((x) => x.replace(/^@/, '')),
+    parent: state.parentId,
   };
 };
 
 class ArticleEditDialog extends Component {
   static propTypes = {
     article: PropTypes.object,
+    articles: PropTypes.instanceOf(Immutable.List).isRequired,
     fullScreen: PropTypes.bool.isRequired,
     open: PropTypes.bool,
     onCancel: PropTypes.func,
@@ -59,6 +66,12 @@ class ArticleEditDialog extends Component {
     });
   }
 
+  handleParentSelected = (parentId) => {
+    this.setState({
+      parentId,
+    });
+  };
+
   catchEnter = (f) => (e) => {
     if (e.key === 'Enter') {
       f(e);
@@ -66,6 +79,10 @@ class ArticleEditDialog extends Component {
   }
 
   render() {
+    const parentInputLabel = this.state.parentId ? `Parent id: ${this.state.parentId}` : null;
+    const initialParent = this.props.articles.find((a) => a.get('id') === this.props.article.parent);
+    const initialParentValue = initialParent ? initialParent.get('title') : '';
+
     return (
       <Dialog
         fullScreen={this.props.fullScreen}
@@ -99,6 +116,16 @@ class ArticleEditDialog extends Component {
               value={this.state.tags}
               onChange={this.handleChange('tags')}
               onKeyPress={this.catchEnter(this.handleOk)}
+            />
+            <ArticleSelect
+              articles={this.props.articles}
+              initialValue={initialParentValue}
+              inputProps={{
+                fullWidth: true,
+                label: parentInputLabel,
+                margin: 'normal',
+              }}
+              onArticleSelected={this.handleParentSelected}
             />
           </form>
         </DialogContent>
