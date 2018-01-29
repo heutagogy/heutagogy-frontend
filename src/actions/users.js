@@ -61,7 +61,13 @@ export const googleSignIn = (param) => (dispatch) => dispatch(doGoogleSignIn(par
 export const USER_LOGOUT = 'USER_LOGOUT';
 
 export const logoutUser = () => (dispatch) => {
-  // eslint-disable-next-line no-undef
-  gapi.auth2.getAuthInstance().signOut().then(() =>
-    dispatch({ type: USER_LOGOUT }));
+  /* eslint-disable no-undef */
+  if (!gapi.auth2) {
+    gapi.load('client:auth2', () =>
+      gapi.auth2.init().then(() => logoutUser()(dispatch)));
+  } else {
+    gapi.auth2.getAuthInstance().signOut().then(() =>
+      dispatch({ type: USER_LOGOUT }));
+  }
+  /* eslint-enable no-undef */
 };
