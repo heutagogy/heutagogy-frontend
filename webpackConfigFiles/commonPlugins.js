@@ -4,6 +4,8 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const CompressionPlugin = require('compression-webpack-plugin');
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
 module.exports = [
   new webpack.ProvidePlugin({
@@ -17,7 +19,9 @@ module.exports = [
     title: 'Heutagogy',
     favicon: './favicon.ico',
     inject: 'body',
+    inlineSource: '.css$',
   }),
+  new HtmlWebpackInlineSourcePlugin(),
   new webpack.LoaderOptionsPlugin({
     test: /\.less$/,
     options: {
@@ -31,6 +35,10 @@ module.exports = [
       ],
     },
   }),
+  new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   new webpack.optimize.OccurrenceOrderPlugin(),
   new webpack.NoErrorsPlugin(),
+  new CompressionPlugin({
+    test: [/\.js/, /\.css/, /\.html/],
+  }),
 ];

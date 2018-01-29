@@ -2,9 +2,6 @@
 /* eslint-disable import/imports-first */
 /* eslint-disable global-require */
 
-import 'jquery';
-import './../vendorModules/flot/jquery.flot.min.js';
-
 import Immutable from 'immutable';
 import { render } from 'react-dom';
 import { browserHistory } from 'react-router';

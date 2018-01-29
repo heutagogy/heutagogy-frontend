@@ -167,6 +167,7 @@ export class ArticleMainColumn extends Component {
              <div style={{ display: 'flex', alignItems: 'center', margin: '5px 0 3px 0' }}>
                <a
                  href={this.props.url}
+                 rel="noopener"
                  target="_blank"
                  onClick={(e) => e.stopPropagation()}  // eslint-disable-line react/jsx-no-bind
                >

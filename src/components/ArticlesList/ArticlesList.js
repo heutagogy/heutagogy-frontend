@@ -281,6 +281,7 @@ class Article extends Component {
             <a
               className={this.props.classes.articleLink}
               href={article.url}
+              rel="noopener"
               target="_blank"
               onTouchTap={(e) => e.stopPropagation()}
             >
