@@ -79,7 +79,7 @@ class ArticleEditDialog extends Component {
   }
 
   render() {
-    const parentInputLabel = this.state.parentId ? `Parent id: ${this.state.parentId}` : null;
+    const parentInputLabel = this.state.parentId ? `Parent article: #${this.state.parentId}` : 'Parent article: not selected';
     const initialParent = this.props.articles.find((a) => a.get('id') === this.props.article.parent);
     const initialParentValue = initialParent ? initialParent.get('title') : '';
 
@@ -111,7 +111,7 @@ class ArticleEditDialog extends Component {
             />
             <TextField
               fullWidth
-              label="tags"
+              label="Tags"
               margin="normal"
               value={this.state.tags}
               onChange={this.handleChange('tags')}
