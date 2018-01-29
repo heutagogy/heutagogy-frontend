@@ -7,13 +7,14 @@ import { replace } from 'react-router-redux';
 
 import { getAuthenticatedUser } from './../../../selectors/users';
 import userUtils from './../../../utils/userUtils';
-import { loginUser } from './../../../actions/users';
+import { loginUser, googleSignIn } from './../../../actions/users';
 
 import LoginForm from './../../../components/Forms/LoginForm';
 
 @pureRender
 class AuthenticationPage extends Component {
   static propTypes = {
+    googleSignIn: PropTypes.func,
     loginUser: PropTypes.func,
     replace: PropTypes.func,
     user: PropTypes.instanceOf(Immutable.Map),
@@ -48,7 +49,9 @@ class AuthenticationPage extends Component {
     return (
       <div>
         <LoginForm
-          /* eslint-disable react/jsx-handler-names */
+          // eslint-disable-next-line react/jsx-handler-names
+          onGoogleSignIn={this.props.googleSignIn}
+          // eslint-disable-next-line react/jsx-handler-names
           onLogin={this.props.loginUser}
         />
       </div>
@@ -60,4 +63,4 @@ const mapStateToProps = (state) => ({
   user: getAuthenticatedUser(state),
 });
 
-export default connect(mapStateToProps, { loginUser, replace })(AuthenticationPage);
+export default connect(mapStateToProps, { googleSignIn, loginUser, replace })(AuthenticationPage);

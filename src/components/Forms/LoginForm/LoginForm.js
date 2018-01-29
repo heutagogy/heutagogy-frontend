@@ -14,6 +14,7 @@ import heutagogyLogo from '../../../../heutagogy.png';
 class LoginForm extends Component {
   static propTypes = {
     fullScreen: PropTypes.bool,
+    onGoogleSignIn: PropTypes.func,
     onLogin: PropTypes.func,
   };
 
@@ -29,6 +30,19 @@ class LoginForm extends Component {
       password: '',
     };
   }
+
+  componentDidMount = () => {
+    if (this.props.onGoogleSignIn) {
+      // eslint-disable-next-line no-undef
+      gapi.signin2.render('my-signin2', {
+        scope: 'profile email',
+        longtitle: true,
+        theme: 'dark',
+        onsuccess: this.handleGoogleSuccess,
+        onfailure: this.handleGoogleFailure,
+      });
+    }
+  };
 
   handleChange = (e) => {
     this.setState({
@@ -47,6 +61,14 @@ class LoginForm extends Component {
 
     this.props.onLogin({ login: this.state.login, password: this.state.password });
   }
+
+  handleGoogleSuccess = (googleUser) => {
+    this.props.onGoogleSignIn({ googleUser });
+  };
+
+  handleGoogleFailure = (response) => {
+    console.log('Gooogle SignIn Failure:', response);
+  };
 
   render() {
     return (
@@ -122,6 +144,7 @@ class LoginForm extends Component {
             >
               {'Log in'}
             </Button>
+            <div id="my-signin2" />
           </DialogContent>
         </Dialog>
       </form>
