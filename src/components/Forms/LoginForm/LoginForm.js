@@ -67,6 +67,7 @@ class LoginForm extends Component {
   };
 
   handleGoogleFailure = (response) => {
+    // eslint-disable-next-line no-console
     console.log('Gooogle SignIn Failure:', response);
   };
 
@@ -107,6 +108,9 @@ class LoginForm extends Component {
             <TextField
               form="login"
               fullWidth
+              inputProps={{
+                label: 'Login',
+              }}
               label="Login"
               margin="dense"
               name="login"
@@ -116,6 +120,9 @@ class LoginForm extends Component {
             <TextField
               form="login"
               fullWidth
+              inputProps={{
+                label: 'Password',
+              }}
               label="Password"
               margin="dense"
               name="password"
@@ -129,6 +136,7 @@ class LoginForm extends Component {
               {"Don't have an account? "}
               <a
                 href="https://heutagogy.herokuapp.com/user/register"
+                rel="noopener"
                 target="_blank"
               >
                 {'Sign up'}
