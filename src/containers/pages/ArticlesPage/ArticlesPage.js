@@ -1,5 +1,8 @@
 /* eslint-disable react/jsx-no-bind */
 
+// due to lazy cache
+/* eslint-disable react/no-unused-prop-types */
+
 import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
 import { schema, denormalize } from 'normalizr';
@@ -8,6 +11,7 @@ import LinearProgress from 'material-ui/LinearProgress';
 import Pagination from 'rc-pagination';
 import en from 'rc-pagination/lib/locale/en_US';
 import moment from 'moment';
+import lazyCache from 'react-lazy-cache';
 
 import 'rc-pagination/assets/index.css';
 import './RcPaginationOverride.css'; // should be placed after rc-pagination/assets/index.css
@@ -20,7 +24,6 @@ import { ArticlesList } from './../../../components/ArticlesList/ArticlesList';
 import { getArticles, getArticlesOrder, getNotes } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
-import { getUniqueTags } from './../../../selectors/tags';
 import { loadEntities } from './../../../actions/entity';
 import { updateArticle, deleteArticle } from './../../../actions/articles';
 import HeaderBar from '../../HeaderBar';
@@ -48,7 +51,6 @@ export class ArticlesPage extends Component {
     loadEntities: PropTypes.func,
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
     notes: PropTypes.instanceOf(Immutable.Map),
-    tags: PropTypes.instanceOf(Immutable.List),
     updateArticle: PropTypes.func,
   }
 
@@ -85,6 +87,35 @@ export class ArticlesPage extends Component {
     this.setState({
       dateOrdering: localStorage.getItem(localStorageDateOrderingKey) === 'true',
     });
+
+    this.cache = lazyCache(this, {
+      denormalizedArticles: {
+        params: ['articlesOrder', 'articles', 'notes'],
+        fn: (articlesOrder, articles, notes) => (denormalize(
+          { articles: articlesOrder },
+          { articles: [articleSchema] },
+          new Immutable.Map({
+            articles,
+            notes,
+          })).articles),
+      },
+
+      tags: {
+        params: ['articles'],
+        fn: (articles) => (
+          articles.
+            toList().
+            flatMap((a) => a.get('tags')).
+            toSet().
+            delete(null).
+            toList()
+        ),
+      },
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.cache.componentWillReceiveProps(nextProps);
   }
 
   onRowSelection(selectedRows) {
@@ -102,12 +133,7 @@ export class ArticlesPage extends Component {
   }
 
   getCurrentArticles() {
-    const articles = denormalize({ articles: this.props.articlesOrder },
-                                 { articles: [articleSchema] },
-                                 new Immutable.Map({
-                                   articles: this.props.articles,
-                                   notes: this.props.notes,
-                                 })).articles;
+    const articles = this.cache.denormalizedArticles;
 
     const searchText = this.state.searchText.toLowerCase();
     const tags = transformStrToTags(searchText);
@@ -192,7 +218,6 @@ export class ArticlesPage extends Component {
   }
 
   render() {
-    // TODO(rasendubi): leverage caching
     const matchingArticles = this.getCurrentArticles();
     const totalArticles = matchingArticles.size;
     const lastCurrentPageIndex = this.state.selectedPage * this.state.pageSize;
@@ -201,7 +226,7 @@ export class ArticlesPage extends Component {
     return (
       <div>
         <HeaderBar
-          autoCompleteDataSource={this.props.tags}
+          autoCompleteDataSource={this.cache.tags}
           dateOrdering={this.state.dateOrdering}
           handleDateOrderingChange={this.onDateOrderingChange}
           searchText={this.state.searchText}
@@ -234,7 +259,6 @@ const mapStateToProps = (state) => ({
   articles: getArticles(state),
   notes: getNotes(state),
   articlesOrder: getArticlesOrder(state),
-  tags: getUniqueTags(state),
   linkHeader: getLinkHeader(state),
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
 });

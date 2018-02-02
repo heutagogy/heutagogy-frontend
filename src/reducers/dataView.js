@@ -8,6 +8,9 @@ const getErrorMessage = (action) => {
   const { payload } = action;
 
   if (payload) {
+    if (payload.response && payload.response.description) {
+      return payload.response.description;
+    }
     if (payload.response && payload.response.errorMessage) {
       return payload.response.errorMessage;
     }
