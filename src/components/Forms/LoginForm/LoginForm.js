@@ -1,4 +1,5 @@
 import { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 import Dialog, { DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
 
@@ -8,12 +9,17 @@ import Button from 'material-ui-next/Button';
 import TextField from 'material-ui-next/TextField';
 import Typography from 'material-ui-next/Typography';
 
+import Spinner from './../../Spinner';
+
+import { LOGIN_VIEW_STATE } from './../../../constants/ViewStates';
+import { getViewState } from './../../../selectors/view';
 import heutagogyLogo from '../../../../heutagogy.png';
 
 @PureRender
 class LoginForm extends Component {
   static propTypes = {
     fullScreen: PropTypes.bool,
+    loginState: PropTypes.object,
     onGoogleSignIn: PropTypes.func,
     onLogin: PropTypes.func,
   };
@@ -105,6 +111,14 @@ class LoginForm extends Component {
               minWidth: 300,
             }}
           >
+            { this.props.loginState && this.props.loginState.get('isInProgress')
+              ? <div><Spinner /></div>
+              : null
+            }
+            { this.props.loginState && this.props.loginState.get('isFailed')
+              ? <div>{this.props.loginState.get('message')}</div>
+              : null
+            }
             <TextField
               form="login"
               fullWidth
@@ -160,4 +174,8 @@ class LoginForm extends Component {
   }
 }
 
-export default withMobileDialog({ breakpoint: 'xs' })(LoginForm);
+const mapStateToProps = (state) => ({
+  loginState: getViewState(state, LOGIN_VIEW_STATE),
+});
+
+export default connect(mapStateToProps)(withMobileDialog({ breakpoint: 'xs' })(LoginForm));

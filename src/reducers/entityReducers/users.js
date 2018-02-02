@@ -4,7 +4,7 @@ import localStorageUtils from './../../utils/localStorageUtils';
 
 const users = (state, action) => {
   // See https://github.com/agraboso/redux-api-middleware/issues/44
-  const type = !action.error ? action.type : action.type.replace(/_START$/, '_FAILURE');
+  const type = !action.error ? action.type : action.type.replace(/_STARTED$/, '_FAILURE');
 
   switch (type) {
     case USER_LOGOUT:

@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 
 const isSuccessAction = (action) => !action.error && action.type.endsWith('_SUCCESS');
 
-const isStartAction = (action) => !action.error && action.type.endsWith('_START');
+const isStartAction = (action) => !action.error && (action.type.endsWith('_START') || action.type.endsWith('_STARTED'));
 
 const getErrorMessage = (action) => {
   const { payload } = action;

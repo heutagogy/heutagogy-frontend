@@ -64,7 +64,9 @@ export const logoutUser = () => (dispatch) => {
   /* eslint-disable no-undef */
   if (!gapi.auth2) {
     gapi.load('client:auth2', () =>
-      gapi.auth2.init().then(() => logoutUser()(dispatch)));
+      gapi.auth2.init().
+           then(() => logoutUser()(dispatch)).
+           catch(() => dispatch({ type: USER_LOGOUT })));
   } else {
     gapi.auth2.getAuthInstance().signOut().then(() =>
       dispatch({ type: USER_LOGOUT }));
