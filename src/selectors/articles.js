@@ -14,3 +14,10 @@ export const getArticlesOrder = createSelector(
   [getArticleOrderList],
   (order) => order || Immutable.fromJS([])
 );
+
+const getNotesList = (state) => state.getIn(['entities', 'notes']);
+
+export const getNotes = createSelector(
+  [getNotesList],
+  (notes) => notes || Immutable.fromJS({})
+);

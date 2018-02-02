@@ -2,7 +2,7 @@
 
 import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
-import { arrayOf } from 'normalizr';
+import { schema, denormalize } from 'normalizr';
 import { connect } from 'react-redux';
 import LinearProgress from 'material-ui/LinearProgress';
 import Pagination from 'rc-pagination';
@@ -17,7 +17,7 @@ import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { ZERO, ONE, TWO } from './../../../constants/Constants';
 import { ArticlesList } from './../../../components/ArticlesList/ArticlesList';
-import { getArticles, getArticlesOrder } from './../../../selectors/articles';
+import { getArticles, getArticlesOrder, getNotes } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
 import { getUniqueTags } from './../../../selectors/tags';
@@ -47,6 +47,7 @@ export class ArticlesPage extends Component {
     linkHeader: PropTypes.instanceOf(Immutable.Map),
     loadEntities: PropTypes.func,
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
+    notes: PropTypes.instanceOf(Immutable.Map),
     tags: PropTypes.instanceOf(Immutable.List),
     updateArticle: PropTypes.func,
   }
@@ -76,7 +77,7 @@ export class ArticlesPage extends Component {
     this.props.loadEntities({
       href: `/bookmarks?per_page=${this.state.pageSize}`,
       type: ARTICLES_VIEW_STATE,
-      schema: arrayOf(articleSchema),
+      schema: new schema.Array(articleSchema),
     }).then(() => {
       this.loadAllArticlesFromServer(this.props.linkHeader.get('last'));
     });
@@ -101,6 +102,13 @@ export class ArticlesPage extends Component {
   }
 
   getCurrentArticles() {
+    const articles = denormalize({ articles: this.props.articlesOrder },
+                                 { articles: [articleSchema] },
+                                 new Immutable.Map({
+                                   articles: this.props.articles,
+                                   notes: this.props.notes,
+                                 })).articles;
+
     const searchText = this.state.searchText.toLowerCase();
     const tags = transformStrToTags(searchText);
 
@@ -127,13 +135,13 @@ export class ArticlesPage extends Component {
 
     /* eslint-enable */
 
-    const articles = this.props.articlesOrder.map((id) => this.props.articles.get(String(id))).filter(predicate);
+    const filtered = articles.filter(predicate);
 
     return this.state.dateOrdering === true
-      ? articles.sort((a, b) =>
+      ? filtered.sort((a, b) =>
         moment(b.get('timestamp')) - moment(a.get('timestamp'))
       )
-      : articles;
+      : filtered;
   }
 
   handleUpdateInput = (searchText) => {
@@ -159,7 +167,7 @@ export class ArticlesPage extends Component {
       return seq.then(() => this.props.loadEntities({
         href: `/bookmarks?per_page=${perPage}&page=${page}`,
         type: ARTICLES_VIEW_STATE,
-        schema: arrayOf(articleSchema),
+        schema: new schema.Array(articleSchema),
         resetState: page === ONE,
       }));
     }, Promise.resolve());
@@ -224,6 +232,7 @@ export class ArticlesPage extends Component {
 }
 const mapStateToProps = (state) => ({
   articles: getArticles(state),
+  notes: getNotes(state),
   articlesOrder: getArticlesOrder(state),
   tags: getUniqueTags(state),
   linkHeader: getLinkHeader(state),

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable fp/no-mutation */
 
-import { Schema } from 'normalizr';
+import { schema } from 'normalizr';
 import moment from 'moment';
 import { decodeUnicode } from './../utils/base64';
 
@@ -19,6 +19,6 @@ const options = {
   },
 };
 
-const user = new Schema('authUser', options);
+const user = new schema.Entity('authUser', {}, options);
 
 export default user;

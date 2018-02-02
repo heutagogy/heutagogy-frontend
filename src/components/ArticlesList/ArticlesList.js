@@ -288,7 +288,7 @@ class Article extends Component {
               {article.title}
             </a>
           }
-          secondary={article.tags === null ? null : article.tags.map((tag) =>
+          secondary={!article.tags ? null : article.tags.map((tag) =>
             <Tag
               key={`tag-${tag}`}
               tag={tag}

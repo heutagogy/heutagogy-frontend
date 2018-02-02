@@ -14,13 +14,16 @@ export default (state, action) => {
       const stateWithHeaders = state.setIn(['headers'], action.payload.getIn(['headers']) || Immutable.fromJS({}));
 
       const oldArticles = resetState ? Immutable.fromJS({}) : state.getIn(['articles']);
+      const oldNotes = resetState ? Immutable.fromJS({}) : state.getIn(['notes']);
       const oldServerOrderIds = resetState ? Immutable.fromJS([]) : state.getIn(['articlesServerOrder']);
 
-      const payloadArticles = action.payload.getIn(['entities', 'article']);
+      const payloadArticles = action.payload.getIn(['entities', 'articles']);
+      const payloadNotes = action.payload.getIn(['entities', 'notes']);
       const serverOrderIds = action.payload.getIn(['result']);
 
       return stateWithHeaders .
-        setIn(['articles'], oldArticles.merge(payloadArticles)) .
+        setIn(['articles'], oldArticles.merge(payloadArticles)).
+        setIn(['notes'], oldNotes.merge(payloadNotes)).
         setIn(['articlesServerOrder'], oldServerOrderIds.concat(serverOrderIds));
     }
     default: {
