@@ -1,8 +1,8 @@
 import Immutable from 'immutable';
 
-const isSuccessAction = (action) => !action.error && (action.payload || action.meta.success);
+const isSuccessAction = (action) => !action.error && action.type.endsWith('_SUCCESS');
 
-const isStartAction = (action) => !action.error && !action.payload;
+const isStartAction = (action) => !action.error && action.type.endsWith('_START');
 
 const getErrorMessage = (action) => {
   const { payload } = action;
@@ -13,6 +13,9 @@ const getErrorMessage = (action) => {
     }
     if (payload.statusText) {
       return `${payload.status} - ${payload.statusText}`;
+    }
+    if (payload.name && payload.message) {
+      return `${payload.name}: ${payload.message}`;
     }
   }
 

@@ -7,6 +7,7 @@ import {
   DELETE_NOTE_FAILURE,
   CREATE_NOTE_FAILURE,
   UPDATE_NOTE_FAILURE,
+  DELETE_NOTE_SUCCESS,
   CREATE_NOTE_SUCCESS,
 } from './../../actions/notes';
 import { ZERO } from './../../constants/Constants';
@@ -17,9 +18,10 @@ const updateArticle = (notesAction, bookmarkId, state) => (
 );
 
 export default (state, action) => {
-  switch (action.type) {
+  // See https://github.com/agraboso/redux-api-middleware/issues/44
+  const type = !action.error ? action.type : action.type.replace(/_START$/, '_FAILURE');
 
-
+  switch (type) {
     case CREATE_NOTE_START: {
       return updateArticle(
         (old) => old.push(Immutable.fromJS(action.meta.note.id)),
@@ -68,6 +70,9 @@ export default (state, action) => {
         action.meta.bookmarkId,
         state
       );
+    }
+    case DELETE_NOTE_SUCCESS: {
+      return state.deleteIn(['notes', String(action.meta.note.id)]);
     }
 
 

@@ -1,4 +1,4 @@
-import { CALL_API } from 'redux-api-middleware';
+import { RSAA } from 'redux-api-middleware';
 import { API_VERSION } from './../constants/Api';
 import { guid } from './../../src/utils/stringUtils';
 
@@ -20,7 +20,7 @@ const postCreateNote = (bookmarkId, noteFields) => {
   const meta = { bookmarkId, note: { id: guid(), ...noteFields } };
 
   return {
-    [CALL_API]: {
+    [RSAA]: {
       types: [
         { type: CREATE_NOTE_START, meta },
         { type: CREATE_NOTE_SUCCESS, meta },
@@ -37,7 +37,7 @@ const postDeleteNote = (bookmarkId, noteIndex, note) => {
   const meta = { bookmarkId, noteIndex, note };
 
   return {
-    [CALL_API]: {
+    [RSAA]: {
       types: [
         { type: DELETE_NOTE_START, meta },
         { type: DELETE_NOTE_SUCCESS, meta },
@@ -53,7 +53,7 @@ const postUpdateNote = (bookmarkId, newNote, oldNote) => {
   const meta = { bookmarkId, note: newNote, oldNote };
 
   return {
-    [CALL_API]: {
+    [RSAA]: {
       types: [
         { type: UPDATE_NOTE_START, meta },
         { type: UPDATE_NOTE_SUCCESS, meta },

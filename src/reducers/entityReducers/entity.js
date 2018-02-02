@@ -6,7 +6,10 @@ import { LOAD_ENTITIES_SUCCESS } from './../../actions/entity';
 
 
 export default (state, action) => {
-  switch (action.type) {
+  // See https://github.com/agraboso/redux-api-middleware/issues/44
+  const type = !action.error ? action.type : action.type.replace(/_START$/, '_FAILURE');
+
+  switch (type) {
     case LOAD_ENTITIES_SUCCESS: {
       const resetState = action.meta.resetState;
 
