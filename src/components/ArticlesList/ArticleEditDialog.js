@@ -35,7 +35,7 @@ const stateToArticle = (state) => {
 class ArticleEditDialog extends Component {
   static propTypes = {
     article: PropTypes.object,
-    articles: PropTypes.instanceOf(Immutable.List).isRequired,
+    articles: PropTypes.instanceOf(Immutable.Map).isRequired,
     fullScreen: PropTypes.bool.isRequired,
     open: PropTypes.bool,
     onCancel: PropTypes.func,
@@ -80,7 +80,7 @@ class ArticleEditDialog extends Component {
 
   render() {
     const parentInputLabel = this.state.parentId ? `Parent article: #${this.state.parentId}` : 'Parent article: not selected';
-    const initialParent = this.props.articles.find((a) => a.get('id') === this.props.article.parent);
+    const initialParent = this.props.articles.get(this.props.article.parent);
     const initialParentValue = initialParent ? initialParent.get('title') : '';
 
     return (
@@ -126,6 +126,7 @@ class ArticleEditDialog extends Component {
                 margin: 'normal',
               }}
               onArticleSelected={this.handleParentSelected}
+              onKeyPress={this.catchEnter(this.handleOk)}
             />
           </form>
         </DialogContent>

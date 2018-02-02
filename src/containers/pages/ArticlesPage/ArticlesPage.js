@@ -17,7 +17,7 @@ import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { ZERO, ONE, TWO } from './../../../constants/Constants';
 import { ArticlesList } from './../../../components/ArticlesList/ArticlesList';
-import { getArticles } from './../../../selectors/articles';
+import { getArticles, getArticlesOrder } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
 import { getUniqueTags } from './../../../selectors/tags';
@@ -41,7 +41,8 @@ const transformStrToTags = (str) =>
 
 export class ArticlesPage extends Component {
   static propTypes = {
-    articles: PropTypes.instanceOf(Immutable.List),
+    articles: PropTypes.instanceOf(Immutable.Map),
+    articlesOrder: PropTypes.instanceOf(Immutable.List),
     deleteArticle: PropTypes.func,
     linkHeader: PropTypes.instanceOf(Immutable.Map),
     loadEntities: PropTypes.func,
@@ -126,7 +127,7 @@ export class ArticlesPage extends Component {
 
     /* eslint-enable */
 
-    const articles = this.props.articles.filter(predicate);
+    const articles = this.props.articlesOrder.map((id) => this.props.articles.get(String(id))).filter(predicate);
 
     return this.state.dateOrdering === true
       ? articles.sort((a, b) =>
@@ -184,10 +185,10 @@ export class ArticlesPage extends Component {
 
   render() {
     // TODO(rasendubi): leverage caching
-    const allArticles = this.getCurrentArticles();
-    const totalArticles = allArticles.size;
+    const matchingArticles = this.getCurrentArticles();
+    const totalArticles = matchingArticles.size;
     const lastCurrentPageIndex = this.state.selectedPage * this.state.pageSize;
-    const articles = allArticles.slice(lastCurrentPageIndex - this.state.pageSize, lastCurrentPageIndex);
+    const articles = matchingArticles.slice(lastCurrentPageIndex - this.state.pageSize, lastCurrentPageIndex);
 
     return (
       <div>
@@ -200,7 +201,7 @@ export class ArticlesPage extends Component {
         />
         <div style={inlineStyles.routerContainer}>
           <ArticlesList
-            allArticles={allArticles}
+            allArticles={this.props.articles}
             articles={articles}
             onDeleteArticle={(articleId) => this.props.deleteArticle(articleId)}
             onUpdateArticle={(articleId, update) => this.props.updateArticle(articleId, update)}
@@ -223,6 +224,7 @@ export class ArticlesPage extends Component {
 }
 const mapStateToProps = (state) => ({
   articles: getArticles(state),
+  articlesOrder: getArticlesOrder(state),
   tags: getUniqueTags(state),
   linkHeader: getLinkHeader(state),
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),

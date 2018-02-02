@@ -197,7 +197,7 @@ const MyListItem = withStyles(listItemStyles)(ListItem);
 class Article extends Component {
   static propTypes = {
     article: PropTypes.object,
-    articles: PropTypes.instanceOf(Immutable.List).isRequired,
+    articles: PropTypes.instanceOf(Immutable.Map).isRequired,
     classes: PropTypes.object,
     onDelete: PropTypes.func,
     onRead: PropTypes.func,
@@ -344,7 +344,7 @@ class Article extends Component {
 @withStyles(articleListStyles)
 export class ArticlesList extends Component {
   static propTypes = {
-    allArticles: PropTypes.instanceOf(Immutable.List),
+    allArticles: PropTypes.instanceOf(Immutable.Map),
     articles: PropTypes.instanceOf(Immutable.List),
     classes: PropTypes.object,
     onDeleteArticle: PropTypes.func,

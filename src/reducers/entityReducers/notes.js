@@ -9,21 +9,12 @@ import {
   UPDATE_NOTE_FAILURE,
   CREATE_NOTE_SUCCESS,
 } from './../../actions/notes';
-import { MINUS_ONE, ZERO } from './../../constants/Constants';
+import { ZERO } from './../../constants/Constants';
 
 
-const updateArticle = (notesAction, bookmarkId, state) => {
-  const articleIndex = state.get('article').findIndex((el) =>
-    el.get('id') === bookmarkId);
-
-  if (articleIndex === MINUS_ONE) {
-    return state;
-  }
-
-  const newArticle = state.getIn(['article', articleIndex]).update('notes', notesAction);
-
-  return state.setIn(['article', articleIndex], newArticle);
-};
+const updateArticle = (notesAction, bookmarkId, state) => (
+  state.updateIn(['articles', String(bookmarkId), 'notes'], (old) => notesAction(old || Immutable.fromJS([])))
+);
 
 export default (state, action) => {
   switch (action.type) {
