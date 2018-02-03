@@ -165,12 +165,19 @@ export class ArticlesPage extends Component {
     /* eslint-enable */
 
     const filtered = articles.filter(predicate);
-
-    return this.state.dateOrdering === true
+    const sortedByDate = this.state.dateOrdering === true
       ? filtered.sort((a, b) =>
         moment(b.get('timestamp')) - moment(a.get('timestamp'))
       )
       : filtered;
+    const groupByUnreadPinned = sortedByDate.groupBy((item) =>
+      item.get('read') === null &&
+      item.getIn(['meta', 'pinned']) === true).toJS();
+
+    return Immutable.fromJS((
+      groupByUnreadPinned.true || []).concat(
+      groupByUnreadPinned.false || []
+    ));
   }
 
   handleUpdateInput = (searchText) => {
