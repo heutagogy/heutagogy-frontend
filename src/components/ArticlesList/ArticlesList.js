@@ -56,11 +56,16 @@ Tag.propTypes = {
   tag: PropTypes.string.isRequired,
 };
 
+const isArticlePinned = (article) =>
+  article.meta && article.meta.pinned !== null;
+
+
 class ArticleMenu extends Component {
   static propTypes = {
     article: PropTypes.object,
     onDeleteClicked: PropTypes.func,
     onNotesClicked: PropTypes.func,
+    onPinClicked: PropTypes.func,
     onReadCached: PropTypes.func,
     onReadClicked: PropTypes.func,
   };
@@ -97,6 +102,12 @@ class ArticleMenu extends Component {
     this.props.onReadClicked();
   }
 
+  handlePinClicked = () => {
+    this.closeMenu();
+
+    this.props.onPinClicked();
+  }
+
   handleNotesClicked = () => {
     this.closeMenu();
 
@@ -121,7 +132,19 @@ class ArticleMenu extends Component {
       >
         <Toggle
           defaultToggled={Boolean(article.read)}
-          label={article.read ? 'Mark as unread' : 'Mark as read'}
+          label={article.read ? 'Mark as Unread' : 'Mark as Read'}
+          labelPosition={'right'}
+          labelStyle={{ marginLeft: '0.7em' }}
+        />
+      </MenuItem>;
+
+    const pinMenuItem =
+      <MenuItem
+        onTouchTap={this.handlePinClicked}
+      >
+        <Toggle
+          defaultToggled={isArticlePinned(article)}
+          label={isArticlePinned(article) === true ? 'Mark as Unpinned' : 'Mark as Pinned'}
           labelPosition={'right'}
           labelStyle={{ marginLeft: '0.7em' }}
         />
@@ -161,6 +184,8 @@ class ArticleMenu extends Component {
 
           {readMenuItem}
 
+          {pinMenuItem}
+
           <Divider />
 
           <MenuItem disabled>
@@ -171,6 +196,7 @@ class ArticleMenu extends Component {
               primary={`Saved: ${formatTimeToUser(article.timestamp)}`}
             />
           </MenuItem>
+
           {
             article.read
               ? <MenuItem disabled>
@@ -183,14 +209,27 @@ class ArticleMenu extends Component {
               </MenuItem>
              : null
           }
+          {
+            isArticlePinned(article)
+              ? <MenuItem disabled>
+                <ListItemIcon>
+                  <InfoIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={`Pinned: ${formatTimeToUser(article.meta.pinned)}`}
+                />
+              </MenuItem>
+             : null
+          }
+
+          <Divider />
+
           <MenuItem onTouchTap={this.handleReadCached}>
             <ListItemText
               inset
               primary={'Read cached'}
             />
           </MenuItem>
-
-          <Divider />
 
           <MenuItem onTouchTap={this.handleDeleteClicked}>
             <ListItemIcon>
@@ -213,6 +252,7 @@ class Article extends Component {
     articles: PropTypes.instanceOf(Immutable.Map).isRequired,
     classes: PropTypes.object,
     onDelete: PropTypes.func,
+    onPin: PropTypes.func,
     onRead: PropTypes.func,
     onReadCached: PropTypes.func,
     onUpdate: PropTypes.func,
@@ -314,6 +354,7 @@ class Article extends Component {
             article={article}
             onDeleteClicked={this.handleDeleteClicked}
             onNotesClicked={this.handleNotesClicked}
+            onPinClicked={this.props.onPin}
             onReadCached={this.props.onReadCached}
             onReadClicked={this.props.onRead}
           />
@@ -373,6 +414,9 @@ export class ArticlesList extends Component {
       articles={this.props.allArticles}
       key={`article-${article.id}`}
       onDelete={() => this.props.onDeleteArticle(article.id)}
+      onPin={() => this.props.onUpdateArticle(article.id, {
+        meta: { pinned: isArticlePinned(article) ? null : moment().format() },
+      })}
       onRead={() => this.props.onUpdateArticle(article.id, {
         read: article.read ? null : moment().format(),
       })}
