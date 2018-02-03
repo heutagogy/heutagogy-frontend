@@ -135,7 +135,7 @@ class ArticleMenu extends Component {
       >
         <Toggle
           defaultToggled={Boolean(article.read)}
-          label={article.read ? 'Unread' : 'Read'}
+          label={article.read ? 'Mark as Unread' : 'Mark as Read'}
           labelPosition={'right'}
           labelStyle={{ marginLeft: '0.7em' }}
         />
@@ -147,7 +147,7 @@ class ArticleMenu extends Component {
       >
         <Toggle
           defaultToggled={isArticlePinned(article)}
-          label={isArticlePinned(article) === true ? 'Unpin' : 'Pin'}
+          label={isArticlePinned(article) === true ? 'Mark as Unpinned' : 'Mark as Pinned'}
           labelPosition={'right'}
           labelStyle={{ marginLeft: '0.7em' }}
         />
