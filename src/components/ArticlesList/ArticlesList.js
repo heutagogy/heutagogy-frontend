@@ -56,11 +56,8 @@ Tag.propTypes = {
   tag: PropTypes.string.isRequired,
 };
 
-const isArticlePinned = (article) => (
-  article.meta && article.meta.pinned
-    ? Boolean(article.meta.pinned)
-    : false
-);
+const isArticlePinned = (article) =>
+  article.meta && article.meta.pinned !== null;
 
 
 class ArticleMenu extends Component {
@@ -199,6 +196,7 @@ class ArticleMenu extends Component {
               primary={`Saved: ${formatTimeToUser(article.timestamp)}`}
             />
           </MenuItem>
+
           {
             article.read
               ? <MenuItem disabled>
@@ -211,14 +209,27 @@ class ArticleMenu extends Component {
               </MenuItem>
              : null
           }
+          {
+            isArticlePinned(article)
+              ? <MenuItem disabled>
+                <ListItemIcon>
+                  <InfoIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={`Pinned: ${formatTimeToUser(article.meta.pinned)}`}
+                />
+              </MenuItem>
+             : null
+          }
+
+          <Divider />
+
           <MenuItem onTouchTap={this.handleReadCached}>
             <ListItemText
               inset
               primary={'Read cached'}
             />
           </MenuItem>
-
-          <Divider />
 
           <MenuItem onTouchTap={this.handleDeleteClicked}>
             <ListItemIcon>
@@ -404,7 +415,7 @@ export class ArticlesList extends Component {
       key={`article-${article.id}`}
       onDelete={() => this.props.onDeleteArticle(article.id)}
       onPin={() => this.props.onUpdateArticle(article.id, {
-        meta: { pinned: isArticlePinned(article) === false },
+        meta: { pinned: isArticlePinned(article) ? null : moment().format() },
       })}
       onRead={() => this.props.onUpdateArticle(article.id, {
         read: article.read ? null : moment().format(),
