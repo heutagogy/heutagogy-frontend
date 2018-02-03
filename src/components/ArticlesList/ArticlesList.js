@@ -61,6 +61,7 @@ class ArticleMenu extends Component {
     article: PropTypes.object,
     onDeleteClicked: PropTypes.func,
     onNotesClicked: PropTypes.func,
+    onReadCached: PropTypes.func,
     onReadClicked: PropTypes.func,
   };
 
@@ -100,6 +101,12 @@ class ArticleMenu extends Component {
     this.closeMenu();
 
     this.props.onNotesClicked();
+  }
+
+  handleReadCached = () => {
+    this.closeMenu();
+
+    this.props.onReadCached();
   }
 
   render() {
@@ -176,6 +183,12 @@ class ArticleMenu extends Component {
               </MenuItem>
              : null
           }
+          <MenuItem onTouchTap={this.handleReadCached}>
+            <ListItemText
+              inset
+              primary={'Read cached'}
+            />
+          </MenuItem>
 
           <Divider />
 
@@ -201,6 +214,7 @@ class Article extends Component {
     classes: PropTypes.object,
     onDelete: PropTypes.func,
     onRead: PropTypes.func,
+    onReadCached: PropTypes.func,
     onUpdate: PropTypes.func,
   };
 
@@ -300,6 +314,7 @@ class Article extends Component {
             article={article}
             onDeleteClicked={this.handleDeleteClicked}
             onNotesClicked={this.handleNotesClicked}
+            onReadCached={this.props.onReadCached}
             onReadClicked={this.props.onRead}
           />
 
@@ -348,6 +363,7 @@ export class ArticlesList extends Component {
     articles: PropTypes.instanceOf(Immutable.List),
     classes: PropTypes.object,
     onDeleteArticle: PropTypes.func,
+    onReadCached: PropTypes.func,
     onUpdateArticle: PropTypes.func,
   };
 
@@ -360,6 +376,7 @@ export class ArticlesList extends Component {
       onRead={() => this.props.onUpdateArticle(article.id, {
         read: article.read ? null : moment().format(),
       })}
+      onReadCached={() => this.props.onReadCached(article.id)}
       onUpdate={(update) => this.props.onUpdateArticle(article.id, update)}
     />
   );

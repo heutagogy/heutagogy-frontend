@@ -13,6 +13,8 @@ import en from 'rc-pagination/lib/locale/en_US';
 import moment from 'moment';
 import lazyCache from 'react-lazy-cache';
 
+import { replace } from 'react-router-redux';
+
 import 'rc-pagination/assets/index.css';
 import './RcPaginationOverride.css'; // should be placed after rc-pagination/assets/index.css
 
@@ -51,6 +53,7 @@ export class ArticlesPage extends Component {
     loadEntities: PropTypes.func,
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
     notes: PropTypes.instanceOf(Immutable.Map),
+    replace: PropTypes.func,
     updateArticle: PropTypes.func,
   }
 
@@ -237,6 +240,7 @@ export class ArticlesPage extends Component {
             allArticles={this.props.articles}
             articles={articles}
             onDeleteArticle={(articleId) => this.props.deleteArticle(articleId)}
+            onReadCached={(articleId) => this.props.replace(`/articles/${articleId}`)}
             onUpdateArticle={(articleId, update) => this.props.updateArticle(articleId, update)}
           />
           { this.renderStatus() }
@@ -263,4 +267,4 @@ const mapStateToProps = (state) => ({
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
 });
 
-export default connect(mapStateToProps, { loadEntities, updateArticle, deleteArticle })(ArticlesPage);
+export default connect(mapStateToProps, { loadEntities, updateArticle, deleteArticle, replace })(ArticlesPage);

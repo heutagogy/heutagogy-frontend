@@ -2,7 +2,7 @@
 /* eslint-disable fp/no-mutation */
 
 import Immutable from 'immutable';
-import { LOAD_ENTITIES_SUCCESS } from './../../actions/entity';
+import { LOAD_ENTITIES_SUCCESS, LOAD_CONTENT_SUCCESS } from './../../actions/entity';
 
 
 export default (state, action) => {
@@ -29,6 +29,11 @@ export default (state, action) => {
         setIn(['notes'], oldNotes.merge(payloadNotes)).
         setIn(['articlesServerOrder'], oldServerOrderIds.concat(serverOrderIds));
     }
+
+    case LOAD_CONTENT_SUCCESS: {
+      return state.setIn(['articles', String(action.meta.articleId), 'content'], Immutable.fromJS(action.payload));
+    }
+
     default: {
       return state;
     }
