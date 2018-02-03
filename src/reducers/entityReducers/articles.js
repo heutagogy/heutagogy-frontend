@@ -1,37 +1,28 @@
 import Immutable from 'immutable';
 
 import { UPDATE_ARTICLE_SUCCESS, DELETE_ARTICLE_SUCCESS, REMEMBER_ARTICLES_SUCCESS } from './../../actions/articles';
-import { MINUS_ONE } from './../../constants/Constants';
 
 
 export default (state, action) => {
-  switch (action.type) {
+  // See https://github.com/agraboso/redux-api-middleware/issues/44
+  const type = !action.error ? action.type : action.type.replace(/_START$/, '_FAILURE');
+
+  switch (type) {
+    case REMEMBER_ARTICLES_SUCCESS:
     case UPDATE_ARTICLE_SUCCESS: {
-      const articlePayload = action.payload.getIn(['entities', 'article']).first();
-      const articleIndex = state.get('article').findIndex((el) => el.get('id') === action.meta.articleId);
+      const oldArticles = state.getIn(['articles']) || Immutable.fromJS({});
+      const articles = action.payload.getIn(['entities', 'articles']);
 
-      if (articleIndex === MINUS_ONE) {
-        return state;
-      }
+      const withUpdatedArticles = state.setIn(['articles'], oldArticles.merge(articles));
 
-      const newArticles = state.get('article').set(articleIndex, articlePayload);
-
-      return state.set('article', newArticles);
+      return action.type === REMEMBER_ARTICLES_SUCCESS
+           ? withUpdatedArticles.updateIn(['articlesServerOrder'], (old) => old.unshift(action.payload.getIn(['result'])))
+           : withUpdatedArticles;
     }
     case DELETE_ARTICLE_SUCCESS: {
-      const articleIndex = state.get('article').findIndex((el) => el.get('id') === action.meta.articleId);
+      const articleId = String(action.meta.articleId);
 
-      if (articleIndex === MINUS_ONE) {
-        return state;
-      }
-
-      return state.deleteIn(['article', articleIndex]);
-    }
-    case REMEMBER_ARTICLES_SUCCESS: {
-      const articles = Immutable.fromJS(action.payload.getIn(['entities', 'article'])).toList();
-      const newArticles = articles.concat(state.get('article'));
-
-      return state.set('article', newArticles);
+      return state.deleteIn(['articles', articleId]);
     }
     default: {
       return state;

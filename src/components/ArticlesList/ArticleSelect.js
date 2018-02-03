@@ -80,11 +80,12 @@ const renderInputComponent = ({ autoFocus, label, value, fullWidth, margin, ref,
 @withStyles(styles)
 export default class ArticleSelect extends Component {
   static propTypes = {
-    articles: PropTypes.instanceOf(Immutable.List).isRequired,
+    articles: PropTypes.instanceOf(Immutable.Map).isRequired,
     classes: PropTypes.object,
     initialValue: PropTypes.string.isRequired,
     inputProps: PropTypes.object,
-    onArticleSelected: PropTypes.function,
+    onArticleSelected: PropTypes.func,
+    onKeyPress: PropTypes.func,
   };
 
   constructor(props) {
@@ -97,7 +98,7 @@ export default class ArticleSelect extends Component {
   }
 
   getSuggestions = (value) => (
-    this.props.articles.filter((article) => article.get('title').toLowerCase().includes(value.toLowerCase())).toJS()
+    this.props.articles.filter((article) => article.get('title').toLowerCase().includes(value.toLowerCase())).toList().toJS()
   );
 
   getSuggestionValue = (suggestion) => suggestion.title;
@@ -127,12 +128,13 @@ export default class ArticleSelect extends Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes: { container, suggestionsList, ...inputClasses } } = this.props;
 
     const inputProps = {
-      classes,
+      classes: inputClasses,
       value: this.state.value,
       onChange: this.handleChange,
+      onKeyPress: this.props.onKeyPress,
       ...this.props.inputProps,
     };
 
@@ -145,8 +147,8 @@ export default class ArticleSelect extends Component {
         renderSuggestionsContainer={renderSuggestionsContainer}
         suggestions={this.state.suggestions}
         theme={{
-          container: classes.container,
-          suggestionsList: classes.suggestionsList,
+          container,
+          suggestionsList,
         }}
         onSuggestionSelected={this.handleSuggestionSelected}
         onSuggestionsClearRequested={this.handleSuggestionsClearRequested}

@@ -1,13 +1,19 @@
 /* eslint-disable react/jsx-no-bind */
 
+// due to lazy cache
+/* eslint-disable react/no-unused-prop-types */
+
 import Immutable from 'immutable';
 import { Component, PropTypes } from 'react';
-import { arrayOf } from 'normalizr';
+import { schema, denormalize } from 'normalizr';
 import { connect } from 'react-redux';
 import LinearProgress from 'material-ui/LinearProgress';
 import Pagination from 'rc-pagination';
 import en from 'rc-pagination/lib/locale/en_US';
 import moment from 'moment';
+import lazyCache from 'react-lazy-cache';
+
+import { replace } from 'react-router-redux';
 
 import 'rc-pagination/assets/index.css';
 import './RcPaginationOverride.css'; // should be placed after rc-pagination/assets/index.css
@@ -17,10 +23,9 @@ import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
 import { ZERO, ONE, TWO } from './../../../constants/Constants';
 import { ArticlesList } from './../../../components/ArticlesList/ArticlesList';
-import { getArticles } from './../../../selectors/articles';
+import { getArticles, getArticlesOrder, getNotes } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
-import { getUniqueTags } from './../../../selectors/tags';
 import { loadEntities } from './../../../actions/entity';
 import { updateArticle, deleteArticle } from './../../../actions/articles';
 import HeaderBar from '../../HeaderBar';
@@ -41,12 +46,14 @@ const transformStrToTags = (str) =>
 
 export class ArticlesPage extends Component {
   static propTypes = {
-    articles: PropTypes.instanceOf(Immutable.List),
+    articles: PropTypes.instanceOf(Immutable.Map),
+    articlesOrder: PropTypes.instanceOf(Immutable.List),
     deleteArticle: PropTypes.func,
     linkHeader: PropTypes.instanceOf(Immutable.Map),
     loadEntities: PropTypes.func,
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
-    tags: PropTypes.instanceOf(Immutable.List),
+    notes: PropTypes.instanceOf(Immutable.Map),
+    replace: PropTypes.func,
     updateArticle: PropTypes.func,
   }
 
@@ -75,7 +82,7 @@ export class ArticlesPage extends Component {
     this.props.loadEntities({
       href: `/bookmarks?per_page=${this.state.pageSize}`,
       type: ARTICLES_VIEW_STATE,
-      schema: arrayOf(articleSchema),
+      schema: new schema.Array(articleSchema),
     }).then(() => {
       this.loadAllArticlesFromServer(this.props.linkHeader.get('last'));
     });
@@ -83,6 +90,35 @@ export class ArticlesPage extends Component {
     this.setState({
       dateOrdering: localStorage.getItem(localStorageDateOrderingKey) === 'true',
     });
+
+    this.cache = lazyCache(this, {
+      denormalizedArticles: {
+        params: ['articlesOrder', 'articles', 'notes'],
+        fn: (articlesOrder, articles, notes) => (denormalize(
+          { articles: articlesOrder },
+          { articles: [articleSchema] },
+          new Immutable.Map({
+            articles,
+            notes,
+          })).articles),
+      },
+
+      tags: {
+        params: ['articles'],
+        fn: (articles) => (
+          articles.
+            toList().
+            flatMap((a) => a.get('tags')).
+            toSet().
+            delete(null).
+            toList()
+        ),
+      },
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.cache.componentWillReceiveProps(nextProps);
   }
 
   onRowSelection(selectedRows) {
@@ -100,6 +136,8 @@ export class ArticlesPage extends Component {
   }
 
   getCurrentArticles() {
+    const articles = this.cache.denormalizedArticles;
+
     const searchText = this.state.searchText.toLowerCase();
     const tags = transformStrToTags(searchText);
 
@@ -126,13 +164,13 @@ export class ArticlesPage extends Component {
 
     /* eslint-enable */
 
-    const articles = this.props.articles.filter(predicate);
+    const filtered = articles.filter(predicate);
 
     return this.state.dateOrdering === true
-      ? articles.sort((a, b) =>
+      ? filtered.sort((a, b) =>
         moment(b.get('timestamp')) - moment(a.get('timestamp'))
       )
-      : articles;
+      : filtered;
   }
 
   handleUpdateInput = (searchText) => {
@@ -158,7 +196,7 @@ export class ArticlesPage extends Component {
       return seq.then(() => this.props.loadEntities({
         href: `/bookmarks?per_page=${perPage}&page=${page}`,
         type: ARTICLES_VIEW_STATE,
-        schema: arrayOf(articleSchema),
+        schema: new schema.Array(articleSchema),
         resetState: page === ONE,
       }));
     }, Promise.resolve());
@@ -183,16 +221,15 @@ export class ArticlesPage extends Component {
   }
 
   render() {
-    // TODO(rasendubi): leverage caching
-    const allArticles = this.getCurrentArticles();
-    const totalArticles = allArticles.size;
+    const matchingArticles = this.getCurrentArticles();
+    const totalArticles = matchingArticles.size;
     const lastCurrentPageIndex = this.state.selectedPage * this.state.pageSize;
-    const articles = allArticles.slice(lastCurrentPageIndex - this.state.pageSize, lastCurrentPageIndex);
+    const articles = matchingArticles.slice(lastCurrentPageIndex - this.state.pageSize, lastCurrentPageIndex);
 
     return (
       <div>
         <HeaderBar
-          autoCompleteDataSource={this.props.tags}
+          autoCompleteDataSource={this.cache.tags}
           dateOrdering={this.state.dateOrdering}
           handleDateOrderingChange={this.onDateOrderingChange}
           searchText={this.state.searchText}
@@ -200,9 +237,10 @@ export class ArticlesPage extends Component {
         />
         <div style={inlineStyles.routerContainer}>
           <ArticlesList
-            allArticles={allArticles}
+            allArticles={this.props.articles}
             articles={articles}
             onDeleteArticle={(articleId) => this.props.deleteArticle(articleId)}
+            onReadCached={(articleId) => this.props.replace(`/articles/${articleId}`)}
             onUpdateArticle={(articleId, update) => this.props.updateArticle(articleId, update)}
           />
           { this.renderStatus() }
@@ -223,9 +261,10 @@ export class ArticlesPage extends Component {
 }
 const mapStateToProps = (state) => ({
   articles: getArticles(state),
-  tags: getUniqueTags(state),
+  notes: getNotes(state),
+  articlesOrder: getArticlesOrder(state),
   linkHeader: getLinkHeader(state),
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
 });
 
-export default connect(mapStateToProps, { loadEntities, updateArticle, deleteArticle })(ArticlesPage);
+export default connect(mapStateToProps, { loadEntities, updateArticle, deleteArticle, replace })(ArticlesPage);

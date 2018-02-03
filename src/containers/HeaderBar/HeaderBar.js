@@ -31,7 +31,7 @@ import { getArticles } from './../../selectors/articles';
 
 export class HeaderBar extends Component {
   static propTypes = {
-    articles: PropTypes.instanceOf(Immutable.List),
+    articles: PropTypes.instanceOf(Immutable.Map),
     autoCompleteDataSource: PropTypes.instanceOf(Immutable.List),
     dateOrdering: PropTypes.bool,
     handleDateOrderingChange: PropTypes.func,
