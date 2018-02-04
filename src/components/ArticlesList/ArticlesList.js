@@ -48,6 +48,12 @@ const articleStyles = {
       textDecoration: 'none',
     },
   },
+  pinnedArticleLink: {
+    color: '#834726',
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
 };
 
 const Tag = ({ tag }) => <span style={{ marginRight: '5px' }}>{`@${tag}`}</span>;
@@ -333,7 +339,7 @@ class Article extends Component {
         <ListItemText
           primary={
             <a
-              className={this.props.classes.articleLink}
+              className={isArticlePinned(article) ? this.props.classes.pinnedArticleLink : this.props.classes.articleLink}
               href={article.url}
               rel="noopener"
               target="_blank"
