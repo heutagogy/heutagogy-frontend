@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-no-bind */
-/* eslint-disable no-undefined */
 
 // due to lazy cache
 /* eslint-disable react/no-unused-prop-types */
@@ -173,7 +172,7 @@ export class ArticlesPage extends Component {
       : filtered;
     const groupByUnreadPinned = sortedByDate.groupBy((item) =>
       item.get('read') === null &&
-      item.getIn(['meta', 'pinned']) !== undefined
+      Boolean(item.getIn(['meta', 'pinned']))
     ).toJS();
 
     return Immutable.fromJS((

@@ -57,7 +57,7 @@ Tag.propTypes = {
 };
 
 const isArticlePinned = (article) =>
-  article.meta && article.meta.pinned !== null;
+  article.meta && Boolean(article.meta.pinned);
 
 
 class ArticleMenu extends Component {
