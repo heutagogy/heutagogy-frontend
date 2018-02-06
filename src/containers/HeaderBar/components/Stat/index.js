@@ -10,10 +10,6 @@ import { getStat } from 'src/selectors/statistic'
 import { getStatistic } from 'src/actions/statistic'
 import type { Props, State } from './types'
 
-import { getStat } from 'src/selectors/statistic'
-import { getStatistic } from 'src/actions/statistic'
-import type { Props, State } from './types'
-
 const Stat = (props: Props): React$Element<*> => {
   const readToday = props.stat.user_read_today || 0
   const readYear = props.stat.user_read_year || 0
