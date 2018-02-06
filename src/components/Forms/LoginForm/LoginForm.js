@@ -163,22 +163,24 @@ class LoginForm extends Component {
               color="primary"
               form="login"
               raised
-              style={{ margin: 30 }}
+              style={{ marginTop: 10 }}
               type="submit"
             >
               {'Log in'}
             </Button>
-            <div id="my-signin2" />
-            <br />
+            <div
+              id="my-signin2"
+              style={{ marginTop: 10 }}
+            />
             <Typography
               align="center"
+              style={{ marginTop: 10 }}
             >
-              {`Total articles read: ${this.props.totalRead}`}
-            </Typography>
-            <Typography
-              align="center"
-            >
-              {`Total articles read in the last 7 days: ${this.props.totalRead7days}`}
+              {'Articles read with Heutagogy: '}
+              <b>{this.props.totalRead}</b>
+              <br />
+              {'In the last 7 days: '}
+              <b>{this.props.totalRead7days}</b>
             </Typography>
           </DialogContent>
         </Dialog>
