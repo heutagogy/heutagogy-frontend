@@ -1,0 +1,33 @@
+[ignore]
+; We fork some components by platform
+.*/*[.]android.js
+
+; Ignore "BUCK" generated dirs
+<PROJECT_ROOT>/\.buckd/
+
+.*/node_modules/jsonlint-mod/.*
+.*/node_modules/json-lint/.*
+.*/node_modules/npmconf/.*
+.*/node_modules/config-chain/.*
+.*/node_modules/immutable/dist/immutable.js.flow
+
+
+[include]
+
+[libs]
+node_modules/react-native/flow
+flow/
+
+[options]
+emoji=true
+
+module.system=haste
+
+munge_underscores=true
+
+suppress_type=$FlowFixMe
+
+unsafe.enable_getters_and_setters=true
+
+[version]
+^0.60.1

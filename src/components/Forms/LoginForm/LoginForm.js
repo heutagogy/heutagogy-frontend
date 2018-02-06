@@ -20,6 +20,8 @@ class LoginForm extends Component {
   static propTypes = {
     fullScreen: PropTypes.bool,
     loginState: PropTypes.object,
+    totalRead: PropTypes.number,
+    totalRead7days: PropTypes.number,
     onGoogleSignIn: PropTypes.func,
     onLogin: PropTypes.func,
   };
@@ -167,6 +169,17 @@ class LoginForm extends Component {
               {'Log in'}
             </Button>
             <div id="my-signin2" />
+            <br />
+            <Typography
+              align="center"
+            >
+              {`Total articles read: ${this.props.totalRead}`}
+            </Typography>
+            <Typography
+              align="center"
+            >
+              {`Total articles read in the last 7 days: ${this.props.totalRead7days}`}
+            </Typography>
           </DialogContent>
         </Dialog>
       </form>

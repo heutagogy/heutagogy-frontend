@@ -27,6 +27,7 @@ import { getArticles, getArticlesOrder, getNotes } from './../../../selectors/ar
 import { getViewState } from './../../../selectors/view';
 import { getLinkHeader } from './../../../selectors/linkHeader';
 import { loadEntities } from './../../../actions/entity';
+import { getStatistic } from './../../../actions/statistic';
 import { updateArticle, deleteArticle } from './../../../actions/articles';
 import HeaderBar from '../../HeaderBar';
 
@@ -49,6 +50,7 @@ export class ArticlesPage extends Component {
     articles: PropTypes.instanceOf(Immutable.Map),
     articlesOrder: PropTypes.instanceOf(Immutable.List),
     deleteArticle: PropTypes.func,
+    getStatistic: PropTypes.func,
     linkHeader: PropTypes.instanceOf(Immutable.Map),
     loadEntities: PropTypes.func,
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
@@ -86,6 +88,8 @@ export class ArticlesPage extends Component {
     }).then(() => {
       this.loadAllArticlesFromServer(this.props.linkHeader.get('last'));
     });
+
+    this.props.getStatistic();
 
     this.setState({
       dateOrdering: localStorage.getItem(localStorageDateOrderingKey) === 'true',
@@ -275,4 +279,8 @@ const mapStateToProps = (state) => ({
   loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
 });
 
-export default connect(mapStateToProps, { loadEntities, updateArticle, deleteArticle, replace })(ArticlesPage);
+const mapDispatchToProps = ({
+  loadEntities, updateArticle, deleteArticle, replace, getStatistic,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ArticlesPage);
