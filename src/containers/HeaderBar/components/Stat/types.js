@@ -1,5 +1,5 @@
 // @flow
-import type { Stat } from '../../../../actions/statisticTypes';
+import type { Stat } from 'src/actions/statisticTypes';
 
 export type Props = {
   stat: Stat,
