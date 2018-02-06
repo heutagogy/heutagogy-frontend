@@ -16,7 +16,7 @@ const requestMiddleware = (_store) => (next) => (action) => {
 
       action[CALL_API].endpoint = `${SERVER_URL}/${action[CALL_API].endpoint}`;
 
-      if (user) {
+      if (user && user.get('access_token')) {
         headers.Authorization = headers.Authorization || `JWT ${user.get('access_token')}`;
       }
 
