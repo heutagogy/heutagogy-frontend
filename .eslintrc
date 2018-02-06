@@ -24,5 +24,10 @@
     "ga": true,
     "it": true,
     "path": true
+  },
+  "settings": {
+    "import/resolver": {
+      "babel-module": {}
+    }
   }
 }

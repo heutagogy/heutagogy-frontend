@@ -1,6 +1,13 @@
 {
   "presets": [["es2015", { "modules": false }], "react", "stage-0"],
   "plugins": [
+     ["module-resolver", {
+      "root": ["./src"],
+      "extensions": [".js"],
+      "alias": {
+        "src": "./src"
+      }
+     }],
     "transform-decorators-legacy",
     "transform-es2015-modules-commonjs",
     "transform-runtime"

@@ -2,7 +2,8 @@
 import type { Stat } from '../../../../actions/statisticTypes';
 
 export type Props = {
-  stat: Stat
+  stat: Stat,
+  getStatistic: () => void,
 }
 
 export type State = {
