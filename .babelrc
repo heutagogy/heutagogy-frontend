@@ -8,6 +8,13 @@
   "env": {
     "development": {
       "plugins": [
+        ["module-resolver", {
+         "root": ["./src"],
+         "extensions": [".js"],
+         "alias": {
+           "src": "./src"
+         }
+        }],
         "transform-react-jsx-source",
         "react-hot-loader/babel",
       ]

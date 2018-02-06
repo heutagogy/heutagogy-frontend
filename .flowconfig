@@ -25,6 +25,8 @@ module.system=haste
 
 munge_underscores=true
 
+module.name_mapper='^src\/\(.*\)$' -> '<PROJECT_ROOT>/src/\1'
+
 suppress_type=$FlowFixMe
 
 unsafe.enable_getters_and_setters=true

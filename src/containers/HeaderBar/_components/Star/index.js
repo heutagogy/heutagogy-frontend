@@ -6,7 +6,8 @@ import IconButton from 'material-ui-next/IconButton';
 import Tooltip from 'material-ui-next/Tooltip';
 import Star from 'material-ui-icons/Star';
 
-import { getStat } from '../../../../selectors/statistic';
+import { getStat } from 'src/selectors/statistic';
+import { getStatistic } from 'src/actions/statistic';
 import type { Props, State } from './types';
 
 
@@ -19,12 +20,14 @@ const StarStat = (props: Props): React$Element<*> => {
     <span>{`Total read (last 7 days): ${props.stat.total_read_7days || 0}`}</span><br />
   </p>;
 
+  const handeStarClick = props.getStatistic;
+
   return (
     <Tooltip
       id="tooltip-bottom-start"
       title={title}
     >
-      <IconButton>
+      <IconButton onClick={handeStarClick} >
         <Star
           color={(props.stat.user_read_today || 0) > 0 ? 'blue' : null}
         />
@@ -37,4 +40,4 @@ const mapStateToProps = (state: State) => ({
   stat: getStat(state),
 });
 
-export default connect(mapStateToProps)(StarStat);
+export default connect(mapStateToProps, { getStatistic })(StarStat);
