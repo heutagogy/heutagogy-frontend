@@ -27,7 +27,7 @@ import { rememberArticles } from './../../actions/articles';
 import { isJsonString } from './../../utils/jsonUtils';
 import { getViewState } from './../../selectors/view';
 import { getArticles } from './../../selectors/articles';
-
+import Star from './_components/Star/index';
 
 export class HeaderBar extends Component {
   static propTypes = {
@@ -150,38 +150,61 @@ export class HeaderBar extends Component {
           title="Heutagogy"
           onLeftIconButtonTouchTap={() => this.handleToggle('openMenu')}
         >
-          { this.state.searchOpen
-          ? <AutoComplete
-            dataSource={this.getAutoCompleteDataSource()}
-            filter={AutoComplete.fuzzyFilter}
-            hintText="Search (@ : by tag, // : by notes)"
-            maxSearchResults={7}
-            ref={(input) => input && input.focus()}
-            searchText={this.props.searchText}
-            onUpdateInput={this.props.onUpdateInput}
-          /> : null }
-          <IconButton onClick={() => this.handleToggle('searchOpen')} >
-            <ActionSearch />
-          </IconButton>
-          { this.state.saveOpen
-          ? <TextField
-            hintText="Save url"
-            ref={(input) => input && input.focus()}
-            onBlur={this.handleRememberArticle}
-            onChange={(e, url) => this.setState({ url })}
-            onKeyDown={this.handleTextFieldKeyDown}
-          /> : null }
-          <IconButton onClick={() => this.handleToggle('saveOpen')} >
-            <ContentAdd />
-          </IconButton>
-          <IconButton
-            iconStyle={{ height: '20px', width: '20px' }}
-            onClick={this.props.handleDateOrderingChange}
-          >
-            <DateRange
-              color={this.props.dateOrdering === true ? 'blue' : null}
+          {
+            this.state.searchOpen && !this.state.saveOpen
+            ? <AutoComplete
+              dataSource={this.getAutoCompleteDataSource()}
+              filter={AutoComplete.fuzzyFilter}
+              hintText="Search"
+              maxSearchResults={10}
+              ref={(input) => input && input.focus()}
+              searchText={this.props.searchText}
+              onUpdateInput={this.props.onUpdateInput}
             />
-          </IconButton>
+            : null
+          }
+          {
+            !this.state.saveOpen
+            ? <IconButton onClick={() => this.handleToggle('searchOpen')} >
+              <ActionSearch />
+            </IconButton>
+            : null
+          }
+          {
+            this.state.saveOpen && !this.state.searchOpen
+            ? <TextField
+              hintText="Save url"
+              ref={(input) => input && input.focus()}
+              onBlur={this.handleRememberArticle}
+              onChange={(e, url) => this.setState({ url })}
+              onKeyDown={this.handleTextFieldKeyDown}
+            />
+            : null
+          }
+          {
+            !this.state.searchOpen
+            ? <IconButton onClick={() => this.handleToggle('saveOpen')} >
+              <ContentAdd />
+            </IconButton>
+            : null
+          }
+          {
+            !this.state.searchOpen && !this.state.saveOpen
+            ? <IconButton
+              iconStyle={{ height: '20px', width: '20px' }}
+              onClick={this.props.handleDateOrderingChange}
+            >
+              <DateRange
+                color={this.props.dateOrdering === true ? 'blue' : null}
+              />
+            </IconButton>
+            : null
+          }
+          {
+            !this.state.searchOpen && !this.state.saveOpen
+            ? <Star />
+            : null
+          }
         </AppBar>
         <Drawer
           docked={false}

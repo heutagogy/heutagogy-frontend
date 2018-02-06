@@ -1,7 +1,11 @@
 {
-  "extends": "hardcore-react",
+  "extends": [
+    "hardcore-react",
+    "plugin:flowtype/recommended"
+  ],
   "plugins": [
-    "fp"
+    "fp",
+    "flowtype"
   ],
   "parser": "babel-eslint",
   "rules": {
