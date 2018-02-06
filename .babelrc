@@ -1,5 +1,5 @@
 {
-  "presets": [["es2015", { "modules": false }], "react", "stage-0"],
+  "presets": ["react", "stage-0"],
   "plugins": [
     "transform-decorators-legacy",
     "transform-es2015-modules-commonjs",
@@ -17,6 +17,17 @@
         }],
         "transform-react-jsx-source",
         "react-hot-loader/babel",
+      ]
+    },
+    "test": {
+      "plugins": [
+        ["module-resolver", {
+         "root": ["./src"],
+         "extensions": [".js"],
+         "alias": {
+           "src": "./src"
+         }
+        }]
       ]
     }
   }
