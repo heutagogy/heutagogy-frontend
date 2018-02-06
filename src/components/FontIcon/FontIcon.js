@@ -1,7 +1,7 @@
-import { Component, PropTypes } from 'react';
-import PureRender from 'pure-render-decorator';
+import { Component, PropTypes } from 'react'
+import PureRender from 'pure-render-decorator'
 
-import styles from './FontIcon.less';
+import styles from './FontIcon.less'
 
 @PureRender
 class FontIcon extends Component {
@@ -9,12 +9,12 @@ class FontIcon extends Component {
     className: PropTypes.string,
     color: PropTypes.string,
     type: PropTypes.string.isRequired,
-    onTouchTap: PropTypes.func,
+    onTouchTap: PropTypes.func
   }
 
   static defaultProps = {
     className: '',
-    color: '',
+    color: ''
   }
 
   render() {
@@ -30,8 +30,8 @@ class FontIcon extends Component {
           {this.props.type}
         </i>
       </div>
-    );
+    )
   }
 }
 
-export default FontIcon;
+export default FontIcon

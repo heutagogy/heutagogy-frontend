@@ -1,74 +1,79 @@
-import { Component, PropTypes } from 'react';
-import PureRender from 'pure-render-decorator';
-import { UNDEFINED_VALUE } from './../../constants/Constants';
+import { Component, PropTypes } from 'react'
+import PureRender from 'pure-render-decorator'
+import { UNDEFINED_VALUE } from './../../constants/Constants'
 
-import styles from './Message.less';
+import styles from './Message.less'
 
 const inlineStyles = {
   error: {
-    backgroundColor: 'rgb(255, 64, 129)',
-  },
-};
+    backgroundColor: 'rgb(255, 64, 129)'
+  }
+}
 
 @PureRender
 export default class Message extends Component {
-
-  static MESSAGE_TYPES = ['info', 'ok', 'warning', 'error'];
+  static MESSAGE_TYPES = ['info', 'ok', 'warning', 'error']
 
   static defaultProps = {
-    messageType: 'info',
-  };
+    messageType: 'info'
+  }
 
   static propTypes = {
     children: PropTypes.node,
     dismissed: PropTypes.bool,
     message: PropTypes.string,
     messageType: PropTypes.string,
-    onDismiss: PropTypes.func,
-  };
+    onDismiss: PropTypes.func
+  }
 
   state = {
-    dismissed: false,
+    dismissed: false
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.message !== this.props.message || nextProps.messageType !== this.props.messageType) {
-      this.setState({ dismissed: false });
+    if (
+      nextProps.message !== this.props.message ||
+      nextProps.messageType !== this.props.messageType
+    ) {
+      this.setState({ dismissed: false })
     }
   }
 
   handleDismiss = () => {
-    this.setState({ dismissed: true });
+    this.setState({ dismissed: true })
     if (this.props.onDismiss) {
-      this.props.onDismiss();
+      this.props.onDismiss()
     }
   }
 
   handleMouseUp(e) {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
   }
 
   renderIcon(messageType) {
     switch (messageType) {
       case 'error':
-        return <span />;
+        return <span />
       case 'warning':
-        return <span />;
+        return <span />
       case 'info':
-        return <span />;
+        return <span />
       case 'ok':
-        return <span />;
+        return <span />
       default:
-        return null;
+        return null
     }
   }
 
   render() {
-    const { message, messageType } = this.props;
+    const { message, messageType } = this.props
 
-    if (this.props.dismissed || this.props.dismissed === UNDEFINED_VALUE && this.state.dismissed) {
-      return null;
+    if (
+      this.props.dismissed ||
+      (this.props.dismissed === UNDEFINED_VALUE && this.state.dismissed)
+    ) {
+      return null
     }
 
     return (
@@ -82,12 +87,9 @@ export default class Message extends Component {
         </div>
         {this.props.children}
         <div className={styles.close}>
-          <span
-            className={styles.dismissBtn}
-            onClick={this.handleDismiss}
-          />
+          <span className={styles.dismissBtn} onClick={this.handleDismiss} />
         </div>
       </div>
-    );
+    )
   }
 }

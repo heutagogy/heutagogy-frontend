@@ -1,6 +1,3 @@
-/* eslint-disable import/no-commonjs*/
-/* eslint-disable import/no-nodejs-modules*/
-/* eslint-disable fp/no-mutation*/
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');

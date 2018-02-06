@@ -1,5 +1,3 @@
-/* eslint-disable fp/no-mutation */
-
 import moment from 'moment';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
@@ -9,7 +7,7 @@ import { ArticlesTable } from './../../../src/components/ArticlesTable/ArticlesT
 import { ZERO } from './../../../src/constants/Constants';
 
 describe('Articles table tests', () => {
-  let sandbox; //eslint-disable-line
+  let sandbox;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();

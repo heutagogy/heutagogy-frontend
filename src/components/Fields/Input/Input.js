@@ -1,6 +1,6 @@
-import { Component, PropTypes } from 'react';
-import PureRender from 'pure-render-decorator';
-import TextField from 'material-ui/TextField';
+import { Component, PropTypes } from 'react'
+import PureRender from 'pure-render-decorator'
+import TextField from 'material-ui/TextField'
 
 @PureRender
 class Input extends Component {
@@ -8,58 +8,51 @@ class Input extends Component {
     className: PropTypes.string,
     placeholder: PropTypes.string.isRequired,
     style: PropTypes.object,
-    onTouchTap: PropTypes.func,
+    onTouchTap: PropTypes.func
   }
 
   static defaultProps = {
     className: '',
-    placeholder: '',
+    placeholder: ''
   }
 
   static contextTypes = {
-    muiTheme: PropTypes.object,
+    muiTheme: PropTypes.object
   }
 
   getThematicStyles = () => ({
     underlineStyle: {
-      borderColor: this.context.muiTheme.placeholderColor,
+      borderColor: this.context.muiTheme.placeholderColor
     },
     underlineFocusStyle: {
       borderColor: this.context.muiTheme.orange,
-      borderWidth: 2,
+      borderWidth: 2
     },
     floatingLabelStyle: {
-      color: this.context.muiTheme.white,
+      color: this.context.muiTheme.white
     },
     floatingLabelFocusStyle: {
-      color: this.context.muiTheme.orange,
+      color: this.context.muiTheme.orange
     },
     inputStyle: {
       color: this.context.muiTheme.white,
       fontSize: 14,
-      minWidth: 235,
+      minWidth: 235
     },
     hintStyle: {
       color: this.context.muiTheme.hintColor,
-      fontSize: 14,
+      fontSize: 14
     },
     style: {
-      minWidth: 235,
-    },
+      minWidth: 235
+    }
   })
 
   render() {
-    const inlineStyle = this.getThematicStyles();
-    const {
-      className,
-      placeholder,
-      onTouchTap,
-      style,
-      ...rest
-    } = this.props;
+    const inlineStyle = this.getThematicStyles()
+    const { className, placeholder, onTouchTap, style, ...rest } = this.props
 
-    delete rest.meta; //eslint-disable-line
-
+    delete rest.meta
 
     return (
       <div>
@@ -77,8 +70,8 @@ class Input extends Component {
           {...rest}
         />
       </div>
-    );
+    )
   }
 }
 
-export default Input;
+export default Input

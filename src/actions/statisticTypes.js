@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable no-use-before-define */
 
 export type Stat = {
   total_read: number,
@@ -14,8 +13,8 @@ export type Action = {
   payload: Stat
 }
 
-type ThunkAction = (dispatch: Dispatch) => any;
+type ThunkAction = (dispatch: Dispatch) => any
 
-type PromiseAction = Promise<Action>;
+type PromiseAction = Promise<Action>
 
-export type Dispatch = (action: Action | ThunkAction | PromiseAction) => any;
+export type Dispatch = (action: Action | ThunkAction | PromiseAction) => any

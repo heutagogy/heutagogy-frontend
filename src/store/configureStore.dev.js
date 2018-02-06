@@ -1,14 +1,14 @@
-import { applyMiddleware, compose, createStore } from 'redux';
-import createLogger from 'redux-logger';
-import createSagaMiddleware from 'redux-saga';
-import Immutable from 'immutable';
+import { applyMiddleware, compose, createStore } from 'redux'
+import createLogger from 'redux-logger'
+import createSagaMiddleware from 'redux-saga'
+import Immutable from 'immutable'
 
-import { basicMiddleware, middlewaresToApply } from './commonMiddlewares';
+import { basicMiddleware, middlewaresToApply } from './commonMiddlewares'
 
-import DevTools from '../containers/DevTools';
-import rootSaga from '../sagas/sagas';
+import DevTools from '../containers/DevTools'
+import rootSaga from '../sagas/sagas'
 
-const sagaMiddleware = createSagaMiddleware();
+const sagaMiddleware = createSagaMiddleware()
 
 export default function configureStore(preloadedState) {
   const store = createStore(
@@ -19,15 +19,16 @@ export default function configureStore(preloadedState) {
         ...middlewaresToApply,
         sagaMiddleware,
         createLogger({
-          stateTransformer: (state) => state.toJS(),
+          stateTransformer: state => state.toJS(),
           // because toJS() is deep
-          actionTransformer: (action) => Immutable.fromJS(action).toJS(),
-        })),
+          actionTransformer: action => Immutable.fromJS(action).toJS()
+        })
+      ),
       DevTools.instrument()
     )
-  );
+  )
 
-  sagaMiddleware.run(rootSaga);
+  sagaMiddleware.run(rootSaga)
 
-  return store;
+  return store
 }

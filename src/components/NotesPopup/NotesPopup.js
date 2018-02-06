@@ -1,24 +1,27 @@
-/* eslint-disable react/jsx-no-bind */
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 
-import { Component, PropTypes } from 'react';
+import { Component, PropTypes } from 'react'
 
-import Dialog, { DialogActions, DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
-import Paper from 'material-ui-next/Paper';
-import TextField from 'material-ui-next/TextField';
-import Button from 'material-ui-next/Button';
+import Dialog, {
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  withMobileDialog
+} from 'material-ui-next/Dialog'
+import Paper from 'material-ui-next/Paper'
+import TextField from 'material-ui-next/TextField'
+import Button from 'material-ui-next/Button'
 
-import { createNote, updateNote, deleteNote } from './../../actions/notes';
+import { createNote, updateNote, deleteNote } from './../../actions/notes'
 
-import NotePaper from './NotePaper';
-
+import NotePaper from './NotePaper'
 
 const inlineStyles = {
   paperStyle: {
     margin: '5px',
-    padding: '10px',
-  },
-};
+    padding: '10px'
+  }
+}
 
 class NotesPopup extends Component {
   static propTypes = {
@@ -30,36 +33,39 @@ class NotesPopup extends Component {
     notes: PropTypes.array,
     open: PropTypes.bool,
     title: PropTypes.string,
-    updateNote: PropTypes.func,
+    updateNote: PropTypes.func
   }
 
   static defaultProps = {
-    open: true,
-  };
+    open: true
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-      currentNote: '',
-    };
-
-    [
+      currentNote: ''
+    }
+    ;[
       'handleAddNoteClicked',
       'handleDeleteNote',
       'handleUpdateNote',
-      'renderNote',
-    ].forEach((method) => { this[method] = this[method].bind(this); });
+      'renderNote'
+    ].forEach(method => {
+      this[method] = this[method].bind(this)
+    })
   }
 
   handleAddNoteClicked() {
-    this.props.createNote(this.props.articleId, { text: this.state.currentNote });
+    this.props.createNote(this.props.articleId, {
+      text: this.state.currentNote
+    })
 
-    this.setState({ currentNote: '' });
+    this.setState({ currentNote: '' })
   }
 
   handleDeleteNote({ noteId, text, noteIndex }) {
-    this.props.deleteNote(this.props.articleId, noteIndex, { id: noteId, text });
+    this.props.deleteNote(this.props.articleId, noteIndex, { id: noteId, text })
   }
 
   handleUpdateNote({ noteId, newText, oldText }) {
@@ -67,19 +73,30 @@ class NotesPopup extends Component {
       this.props.articleId,
       { text: newText },
       { id: noteId, text: oldText }
-    );
+    )
   }
 
   renderNote(note, index) {
-    return <NotePaper
-      key={note.id}
-      note={note}
-      onDeleteNote={() => this.handleDeleteNote({
-        noteId: note.id, text: note.text, noteIndex: index,
-      })}
-      onUpdateNote={(newText) =>
-        this.handleUpdateNote({ noteId: note.id, newText, oldText: note.text })}
-    />;
+    return (
+      <NotePaper
+        key={note.id}
+        note={note}
+        onDeleteNote={() =>
+          this.handleDeleteNote({
+            noteId: note.id,
+            text: note.text,
+            noteIndex: index
+          })
+        }
+        onUpdateNote={newText =>
+          this.handleUpdateNote({
+            noteId: note.id,
+            newText,
+            oldText: note.text
+          })
+        }
+      />
+    )
   }
 
   render() {
@@ -101,7 +118,7 @@ class NotesPopup extends Component {
               multiline
               name="newnote"
               value={this.state.currentNote}
-              onChange={(e) => this.setState({ currentNote: e.target.value })}
+              onChange={e => this.setState({ currentNote: e.target.value })}
             />
             <Button
               color="primary"
@@ -114,20 +131,17 @@ class NotesPopup extends Component {
           </Paper>
         </DialogContent>
         <DialogActions>
-          <Button
-            color="primary"
-            onTouchTap={this.props.handleClose}
-          >
+          <Button color="primary" onTouchTap={this.props.handleClose}>
             {'Ok'}
           </Button>
         </DialogActions>
       </Dialog>
-    );
+    )
   }
 }
 
 export default connect(null, {
   createNote,
   updateNote,
-  deleteNote,
-})(withMobileDialog()(NotesPopup));
+  deleteNote
+})(withMobileDialog()(NotesPopup))

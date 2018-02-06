@@ -1,9 +1,9 @@
-import { createSelector } from 'reselect';
-import Immutable from 'immutable';
+import { createSelector } from 'reselect'
+import Immutable from 'immutable'
 
-const getAuthenticatedUserData = (state) => state.getIn(['entities', 'authUser']);
+const getAuthenticatedUserData = state => state.getIn(['entities', 'authUser'])
 
 export const getAuthenticatedUser = createSelector(
   [getAuthenticatedUserData],
-  (app) => app || new Immutable.Map()
-);
+  app => app || new Immutable.Map()
+)

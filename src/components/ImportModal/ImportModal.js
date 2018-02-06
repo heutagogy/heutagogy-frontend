@@ -1,58 +1,62 @@
-/* eslint-disable react/jsx-key */
-import { Component, PropTypes } from 'react';
-import Immutable from 'immutable';
-import Dialog from 'material-ui/Dialog';
+import { Component, PropTypes } from 'react'
+import Immutable from 'immutable'
+import Dialog from 'material-ui/Dialog'
 
-import FlatButton from './../Fields/FlatButton';
-import { ArticlesTable, getSelectedArticles } from './../ArticlesTable/ArticlesTable';
-import styles from './ImportModal.less';
-import Spinner from './../Spinner';
-
+import FlatButton from './../Fields/FlatButton'
+import {
+  ArticlesTable,
+  getSelectedArticles
+} from './../ArticlesTable/ArticlesTable'
+import styles from './ImportModal.less'
+import Spinner from './../Spinner'
 
 const inlineStyles = {
   titleStyle: {
     textAlign: 'center',
-    padding: '15px',
+    padding: '15px'
   },
   submit: {
     float: 'left',
-    margin: '0 10px',
+    margin: '0 10px'
   },
   close: {
-    margin: '0 10px',
-  },
-};
+    margin: '0 10px'
+  }
+}
 
 export class ImportModal extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
     handleUnmount: PropTypes.func,
     rememberArticles: PropTypes.func,
-    rememberArticlesState: PropTypes.instanceOf(Immutable.Map),
+    rememberArticlesState: PropTypes.instanceOf(Immutable.Map)
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.bind();
+    this.bind()
 
-    this.state = { selectedRows: [] };
+    this.state = { selectedRows: [] }
   }
 
   onRowSelection(selectedRows) {
-    this.setState({ selectedRows });
+    this.setState({ selectedRows })
   }
 
   bind() {
-    this.onRowSelection = this.onRowSelection.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onRowSelection = this.onRowSelection.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleSubmit() {
-    const articlesToImport = getSelectedArticles(this.props.articles, this.state.selectedRows);
+    const articlesToImport = getSelectedArticles(
+      this.props.articles,
+      this.state.selectedRows
+    )
 
     if (!articlesToImport.isEmpty()) {
-      this.props.rememberArticles({ articles: articlesToImport });
+      this.props.rememberArticles({ articles: articlesToImport })
     }
   }
 
@@ -60,8 +64,14 @@ export class ImportModal extends Component {
     const actions = [
       <FlatButton
         disabled={this.props.articles.isEmpty()}
-        label={this.props.rememberArticlesState && this.props.rememberArticlesState.get('isInProgress')
-          ? <Spinner size={25} /> : 'Submit'}
+        label={
+          this.props.rememberArticlesState &&
+          this.props.rememberArticlesState.get('isInProgress') ? (
+            <Spinner size={25} />
+          ) : (
+            'Submit'
+          )
+        }
         primary
         style={inlineStyles.submit}
         onTouchTap={this.handleSubmit}
@@ -71,8 +81,8 @@ export class ImportModal extends Component {
         primary
         style={inlineStyles.close}
         onTouchTap={this.props.handleUnmount}
-      />,
-    ];
+      />
+    ]
 
     return (
       <div>
@@ -86,14 +96,14 @@ export class ImportModal extends Component {
           titleStyle={inlineStyles.titleStyle}
           onRequestClose={this.props.handleUnmount}
         >
-          { this.props.articles.isEmpty()
-            ? <div
-              className={styles.error}
-              id={'message'}
-            >
-              {'Please, choose the file containing a valid json array with articles.'}
+          {this.props.articles.isEmpty() ? (
+            <div className={styles.error} id={'message'}>
+              {
+                'Please, choose the file containing a valid json array with articles.'
+              }
             </div>
-            : <div className={styles.table}>
+          ) : (
+            <div className={styles.table}>
               <ArticlesTable
                 articles={this.props.articles}
                 handleOnRowSelection={this.onRowSelection}
@@ -101,11 +111,12 @@ export class ImportModal extends Component {
                 selectable
                 selectedRows={this.state.selectedRows}
               />
-            </div>}
+            </div>
+          )}
         </Dialog>
       </div>
-    );
+    )
   }
 }
 
-export default ImportModal;
+export default ImportModal

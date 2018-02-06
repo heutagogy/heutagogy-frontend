@@ -1,12 +1,12 @@
-import { PropTypes, Component } from 'react';
-import Radium from 'radium';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import { PropTypes, Component } from 'react'
+import Radium from 'radium'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 @Radium
 class App extends Component {
   static propTypes = {
-    children: PropTypes.node,
+    children: PropTypes.node
   }
 
   render() {
@@ -16,8 +16,8 @@ class App extends Component {
           {this.props.children}
         </MuiThemeProvider>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App

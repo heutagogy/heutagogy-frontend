@@ -1,7 +1,7 @@
-import Provider from './Provider.js';
-import Tools from './Tools';
+import Provider from './Provider.js'
+import Tools from './Tools'
 
 export default {
   Provider,
-  Tools,
-};
+  Tools
+}

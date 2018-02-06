@@ -1,11 +1,11 @@
-import { Component, PropTypes } from 'react';
-import { Link } from 'react-router';
-import PureRender from 'pure-render-decorator';
-import MaterialRaisedButton from 'material-ui/RaisedButton';
+import { Component, PropTypes } from 'react'
+import { Link } from 'react-router'
+import PureRender from 'pure-render-decorator'
+import MaterialRaisedButton from 'material-ui/RaisedButton'
 
-import Spinner from './../../Spinner';
+import Spinner from './../../Spinner'
 
-const SPINNER_SIZE = 25;
+const SPINNER_SIZE = 25
 
 @PureRender
 class RaisedButton extends Component {
@@ -22,16 +22,16 @@ class RaisedButton extends Component {
     spinButton: PropTypes.bool,
     style: PropTypes.object,
     type: PropTypes.string,
-    onTouchTap: PropTypes.func,
+    onTouchTap: PropTypes.func
   }
 
   static defaultProps = {
-    className: '',
+    className: ''
   }
 
   render() {
-    const { href } = this.props;
-    const makeHrefButton = href ? { containerElement: <Link to={href} /> } : {};
+    const { href } = this.props
+    const makeHrefButton = href ? { containerElement: <Link to={href} /> } : {}
 
     return (
       <div>
@@ -41,7 +41,13 @@ class RaisedButton extends Component {
           {...makeHrefButton}
           disabled={this.props.disabled}
           fullWidth={this.props.fullWidth}
-          label={this.props.spinButton ? <Spinner size={SPINNER_SIZE} /> : this.props.label}
+          label={
+            this.props.spinButton ? (
+              <Spinner size={SPINNER_SIZE} />
+            ) : (
+              this.props.label
+            )
+          }
           labelStyle={this.props.labelStyle}
           primary={this.props.primary}
           secondary={this.props.secondary}
@@ -50,8 +56,8 @@ class RaisedButton extends Component {
           onTouchTap={this.props.onTouchTap}
         />
       </div>
-    );
+    )
   }
 }
 
-export default RaisedButton;
+export default RaisedButton

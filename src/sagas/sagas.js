@@ -1,7 +1,5 @@
-import entitie from './entitie';
+import entitie from './entitie'
 
-export default function *rootSaga() {
-  yield [
-    entitie(),
-  ];
+export default function* rootSaga() {
+  yield [entitie()]
 }

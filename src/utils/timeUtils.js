@@ -1,3 +1,7 @@
-import moment from 'moment';
+import moment from 'moment'
 
-export const formatTimeToUser = (timeStr) => moment.utc(timeStr).local().format('lll');
+export const formatTimeToUser = timeStr =>
+  moment
+    .utc(timeStr)
+    .local()
+    .format('lll')

@@ -1,19 +1,23 @@
-import { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 
-import Dialog, { DialogContent, DialogTitle, withMobileDialog } from 'material-ui-next/Dialog';
+import Dialog, {
+  DialogContent,
+  DialogTitle,
+  withMobileDialog
+} from 'material-ui-next/Dialog'
 
-import PureRender from 'pure-render-decorator';
+import PureRender from 'pure-render-decorator'
 
-import Button from 'material-ui-next/Button';
-import TextField from 'material-ui-next/TextField';
-import Typography from 'material-ui-next/Typography';
+import Button from 'material-ui-next/Button'
+import TextField from 'material-ui-next/TextField'
+import Typography from 'material-ui-next/Typography'
 
-import Spinner from './../../Spinner';
+import Spinner from './../../Spinner'
 
-import { LOGIN_VIEW_STATE } from './../../../constants/ViewStates';
-import { getViewState } from './../../../selectors/view';
-import heutagogyLogo from '../../../../heutagogy.png';
+import { LOGIN_VIEW_STATE } from './../../../constants/ViewStates'
+import { getViewState } from './../../../selectors/view'
+import heutagogyLogo from '../../../../heutagogy.png'
 
 @PureRender
 class LoginForm extends Component {
@@ -23,77 +27,72 @@ class LoginForm extends Component {
     totalRead: PropTypes.number,
     totalRead7days: PropTypes.number,
     onGoogleSignIn: PropTypes.func,
-    onLogin: PropTypes.func,
-  };
+    onLogin: PropTypes.func
+  }
 
   static defaultProps = {
-    fullScreen: false,
-  };
+    fullScreen: false
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       login: '',
-      password: '',
-    };
+      password: ''
+    }
   }
 
   componentDidMount = () => {
     if (this.props.onGoogleSignIn) {
-      // eslint-disable-next-line no-undef
       gapi.signin2.render('my-signin2', {
         scope: 'profile email',
         longtitle: true,
         theme: 'dark',
         onsuccess: this.handleGoogleSuccess,
-        onfailure: this.handleGoogleFailure,
-      });
+        onfailure: this.handleGoogleFailure
+      })
     }
-  };
+  }
 
-  handleChange = (e) => {
+  handleChange = e => {
     this.setState({
-      [e.target.name]: e.target.value,
-    });
+      [e.target.name]: e.target.value
+    })
   }
 
-  catchEnter = (f) => (e) => {
+  catchEnter = f => e => {
     if (e.key === 'Enter') {
-      f(e);
+      f(e)
     }
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
+  handleSubmit = e => {
+    e.preventDefault()
 
-    this.props.onLogin({ login: this.state.login, password: this.state.password });
+    this.props.onLogin({
+      login: this.state.login,
+      password: this.state.password
+    })
   }
 
-  handleGoogleSuccess = (googleUser) => {
-    this.props.onGoogleSignIn({ googleUser });
-  };
+  handleGoogleSuccess = googleUser => {
+    this.props.onGoogleSignIn({ googleUser })
+  }
 
-  handleGoogleFailure = (response) => {
-    // eslint-disable-next-line no-console
-    console.log('Gooogle SignIn Failure:', response);
-  };
+  handleGoogleFailure = response => {
+    console.log('Gooogle SignIn Failure:', response)
+  }
 
   render() {
     return (
-      <form
-        id="login"
-        onSubmit={this.handleSubmit}
-      >
-        <Dialog
-          fullScreen={this.props.fullScreen}
-          open
-        >
+      <form id="login" onSubmit={this.handleSubmit}>
+        <Dialog fullScreen={this.props.fullScreen} open>
           <DialogTitle>
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'center'
               }}
             >
               <img
@@ -110,22 +109,23 @@ class LoginForm extends Component {
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              minWidth: 300,
+              minWidth: 300
             }}
           >
-            { this.props.loginState && this.props.loginState.get('isInProgress')
-              ? <div><Spinner /></div>
-              : null
-            }
-            { this.props.loginState && this.props.loginState.get('isFailed')
-              ? <div>{this.props.loginState.get('message')}</div>
-              : null
-            }
+            {this.props.loginState &&
+            this.props.loginState.get('isInProgress') ? (
+              <div>
+                <Spinner />
+              </div>
+            ) : null}
+            {this.props.loginState && this.props.loginState.get('isFailed') ? (
+              <div>{this.props.loginState.get('message')}</div>
+            ) : null}
             <TextField
               form="login"
               fullWidth
               inputProps={{
-                label: 'Login',
+                label: 'Login'
               }}
               label="Login"
               margin="dense"
@@ -137,7 +137,7 @@ class LoginForm extends Component {
               form="login"
               fullWidth
               inputProps={{
-                label: 'Password',
+                label: 'Password'
               }}
               label="Password"
               margin="dense"
@@ -168,14 +168,8 @@ class LoginForm extends Component {
             >
               {'Log in'}
             </Button>
-            <div
-              id="my-signin2"
-              style={{ marginTop: 10 }}
-            />
-            <Typography
-              align="center"
-              style={{ marginTop: 10 }}
-            >
+            <div id="my-signin2" style={{ marginTop: 10 }} />
+            <Typography align="center" style={{ marginTop: 10 }}>
               {'Articles read with Heutagogy: '}
               <b>{this.props.totalRead}</b>
               <br />
@@ -185,12 +179,14 @@ class LoginForm extends Component {
           </DialogContent>
         </Dialog>
       </form>
-    );
+    )
   }
 }
 
-const mapStateToProps = (state) => ({
-  loginState: getViewState(state, LOGIN_VIEW_STATE),
-});
+const mapStateToProps = state => ({
+  loginState: getViewState(state, LOGIN_VIEW_STATE)
+})
 
-export default connect(mapStateToProps)(withMobileDialog({ breakpoint: 'xs' })(LoginForm));
+export default connect(mapStateToProps)(
+  withMobileDialog({ breakpoint: 'xs' })(LoginForm)
+)

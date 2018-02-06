@@ -1,5 +1,3 @@
-/* eslint-disable fp/no-mutation */
-
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -12,7 +10,7 @@ const messageSelector = '#message';
 
 
 describe('Import modal tests', () => {
-  let sandbox; //eslint-disable-line
+  let sandbox;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();

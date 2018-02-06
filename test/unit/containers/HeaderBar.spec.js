@@ -1,6 +1,3 @@
-/* eslint-disable fp/no-mutation */
-/* eslint-disable react/jsx-max-props-per-line */
-
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -8,7 +5,7 @@ import Immutable from 'immutable';
 import { HeaderBar } from './../../../src/containers/HeaderBar/HeaderBar';
 
 describe('HeaderBar tests', () => {
-  let sandbox; //eslint-disable-line
+  let sandbox;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();

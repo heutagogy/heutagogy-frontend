@@ -1,70 +1,75 @@
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable react/no-multi-comp */
-import Immutable from 'immutable';
+import Immutable from 'immutable'
 
-import { Component, PropTypes } from 'react';
+import { Component, PropTypes } from 'react'
 
-import List, { ListItem, ListItemIcon, ListItemText, ListItemSecondaryAction } from 'material-ui-next/List';
-import Menu, { MenuItem } from 'material-ui-next/Menu';
-import IconButton from 'material-ui-next/IconButton';
+import List, {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListItemSecondaryAction
+} from 'material-ui-next/List'
+import Menu, { MenuItem } from 'material-ui-next/Menu'
+import IconButton from 'material-ui-next/IconButton'
 
-import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui-next/Dialog';
-import Button from 'material-ui-next/Button';
-import Divider from 'material-ui-next/Divider';
+import Dialog, {
+  DialogActions,
+  DialogContent,
+  DialogTitle
+} from 'material-ui-next/Dialog'
+import Button from 'material-ui-next/Button'
+import Divider from 'material-ui-next/Divider'
 
-import Collapse from 'material-ui-next/transitions/Collapse';
+import Collapse from 'material-ui-next/transitions/Collapse'
 
-import { withStyles } from 'material-ui-next/styles';
+import { withStyles } from 'material-ui-next/styles'
 
-import MoreVertIcon from 'material-ui-icons/MoreVert';
-import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
-import InfoIcon from 'material-ui-icons/Info';
-import Toggle from 'material-ui/Toggle';
-import InsertCommentIcon from 'material-ui-icons/InsertComment';
+import MoreVertIcon from 'material-ui-icons/MoreVert'
+import DeleteForeverIcon from 'material-ui-icons/DeleteForever'
+import InfoIcon from 'material-ui-icons/Info'
+import Toggle from 'material-ui/Toggle'
+import InsertCommentIcon from 'material-ui-icons/InsertComment'
 
-import moment from 'moment';
+import moment from 'moment'
 
-import { formatTimeToUser } from './../../utils/timeUtils';
+import { formatTimeToUser } from './../../utils/timeUtils'
 
-import NotesPopup from '../NotesPopup/NotesPopup';
-import ArticleEditDialog from './ArticleEditDialog';
+import NotesPopup from '../NotesPopup/NotesPopup'
+import ArticleEditDialog from './ArticleEditDialog'
 
-const articleListStyles = (theme) => ({
+const articleListStyles = theme => ({
   nested: {
-    paddingLeft: theme.spacing.unit * 2,
-  },
-});
+    paddingLeft: theme.spacing.unit * 2
+  }
+})
 
-const listItemStyles = (theme) => ({
+const listItemStyles = theme => ({
   secondaryAction: {
-    paddingRight: theme.spacing.unit * 12,
-  },
-});
+    paddingRight: theme.spacing.unit * 12
+  }
+})
 
 const articleStyles = {
   articleLink: {
     color: '#265c83',
     '&:hover': {
-      textDecoration: 'none',
-    },
+      textDecoration: 'none'
+    }
   },
   pinnedArticleLink: {
     color: '#834726',
     '&:hover': {
-      textDecoration: 'none',
-    },
-  },
-};
+      textDecoration: 'none'
+    }
+  }
+}
 
-const Tag = ({ tag }) => <span style={{ marginRight: '5px' }}>{`@${tag}`}</span>;
+const Tag = ({ tag }) => <span style={{ marginRight: '5px' }}>{`@${tag}`}</span>
 
 Tag.propTypes = {
-  tag: PropTypes.string.isRequired,
-};
+  tag: PropTypes.string.isRequired
+}
 
-const isArticlePinned = (article) =>
-  article.meta && Boolean(article.meta.pinned);
-
+const isArticlePinned = article => article.meta && Boolean(article.meta.pinned)
 
 class ArticleMenu extends Component {
   static propTypes = {
@@ -73,105 +78,103 @@ class ArticleMenu extends Component {
     onNotesClicked: PropTypes.func,
     onPinClicked: PropTypes.func,
     onReadCached: PropTypes.func,
-    onReadClicked: PropTypes.func,
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      anchorEl: null,
-    };
+    onReadClicked: PropTypes.func
   }
 
-  handleMenuClicked = (e) => {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      anchorEl: null
+    }
+  }
+
+  handleMenuClicked = e => {
     this.setState({
-      anchorEl: e.currentTarget,
-    });
+      anchorEl: e.currentTarget
+    })
   }
 
   closeMenu = () => {
     this.setState({
-      anchorEl: null,
-    });
+      anchorEl: null
+    })
   }
 
   handleDeleteClicked = () => {
-    this.closeMenu();
+    this.closeMenu()
 
-    this.props.onDeleteClicked();
+    this.props.onDeleteClicked()
   }
 
   handleReadClicked = () => {
-    this.closeMenu();
+    this.closeMenu()
 
-    this.props.onReadClicked();
+    this.props.onReadClicked()
   }
 
   handlePinClicked = () => {
-    this.closeMenu();
+    this.closeMenu()
 
-    this.props.onPinClicked();
+    this.props.onPinClicked()
   }
 
   handleNotesClicked = () => {
-    this.closeMenu();
+    this.closeMenu()
 
-    this.props.onNotesClicked();
+    this.props.onNotesClicked()
   }
 
   handleReadCached = () => {
-    this.closeMenu();
+    this.closeMenu()
 
-    this.props.onReadCached();
+    this.props.onReadCached()
   }
 
   render() {
-    const article = this.props.article;
+    const article = this.props.article
 
     // const menuId = `more-menu-${article.id}`;
-    const menuId = 'more-menu';
+    const menuId = 'more-menu'
 
-    const readMenuItem =
-      <MenuItem
-        onTouchTap={this.handleReadClicked}
-      >
+    const readMenuItem = (
+      <MenuItem onTouchTap={this.handleReadClicked}>
         <Toggle
           defaultToggled={Boolean(article.read)}
           label={article.read ? 'Mark as Unread' : 'Mark as Read'}
           labelPosition={'right'}
           labelStyle={{ marginLeft: '0.7em' }}
         />
-      </MenuItem>;
+      </MenuItem>
+    )
 
-    const pinMenuItem =
-      <MenuItem
-        onTouchTap={this.handlePinClicked}
-      >
+    const pinMenuItem = (
+      <MenuItem onTouchTap={this.handlePinClicked}>
         <Toggle
           defaultToggled={isArticlePinned(article)}
-          label={isArticlePinned(article) === true ? 'Mark as Unpinned' : 'Mark as Pinned'}
+          label={
+            isArticlePinned(article) === true
+              ? 'Mark as Unpinned'
+              : 'Mark as Pinned'
+          }
           labelPosition={'right'}
           labelStyle={{ marginLeft: '0.7em' }}
         />
-      </MenuItem>;
+      </MenuItem>
+    )
 
-    const hasNotes = (article.notes || []).length !== 0;
+    const hasNotes = (article.notes || []).length !== 0
 
     return (
       <div
         style={{
           display: 'flex',
           flexDirection: 'row',
-          flexWrap: 'nowrap',
+          flexWrap: 'nowrap'
         }}
       >
-        <IconButton
-          onTouchTap={this.props.onNotesClicked}
-        >
-          <InsertCommentIcon
-            color={hasNotes ? null : 'silver'}
-          />
+        <IconButton onTouchTap={this.props.onNotesClicked}>
+          <InsertCommentIcon color={hasNotes ? null : 'silver'} />
         </IconButton>
         <IconButton
           aria-haspopup="true"
@@ -187,7 +190,6 @@ class ArticleMenu extends Component {
           open={Boolean(this.state.anchorEl)}
           onClose={() => this.closeMenu()}
         >
-
           {readMenuItem}
 
           {pinMenuItem}
@@ -203,38 +205,31 @@ class ArticleMenu extends Component {
             />
           </MenuItem>
 
-          {
-            article.read
-              ? <MenuItem disabled>
-                <ListItemIcon>
-                  <InfoIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={`Read: ${formatTimeToUser(article.read)}`}
-                />
-              </MenuItem>
-             : null
-          }
-          {
-            isArticlePinned(article)
-              ? <MenuItem disabled>
-                <ListItemIcon>
-                  <InfoIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary={`Pinned: ${formatTimeToUser(article.meta.pinned)}`}
-                />
-              </MenuItem>
-             : null
-          }
+          {article.read ? (
+            <MenuItem disabled>
+              <ListItemIcon>
+                <InfoIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={`Read: ${formatTimeToUser(article.read)}`}
+              />
+            </MenuItem>
+          ) : null}
+          {isArticlePinned(article) ? (
+            <MenuItem disabled>
+              <ListItemIcon>
+                <InfoIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={`Pinned: ${formatTimeToUser(article.meta.pinned)}`}
+              />
+            </MenuItem>
+          ) : null}
 
           <Divider />
 
           <MenuItem onTouchTap={this.handleReadCached}>
-            <ListItemText
-              inset
-              primary={'Read cached'}
-            />
+            <ListItemText inset primary={'Read cached'} />
           </MenuItem>
 
           <MenuItem onTouchTap={this.handleDeleteClicked}>
@@ -245,11 +240,11 @@ class ArticleMenu extends Component {
           </MenuItem>
         </Menu>
       </div>
-    );
+    )
   }
 }
 
-const MyListItem = withStyles(listItemStyles)(ListItem);
+const MyListItem = withStyles(listItemStyles)(ListItem)
 
 @withStyles(articleStyles)
 class Article extends Component {
@@ -261,74 +256,74 @@ class Article extends Component {
     onPin: PropTypes.func,
     onRead: PropTypes.func,
     onReadCached: PropTypes.func,
-    onUpdate: PropTypes.func,
-  };
+    onUpdate: PropTypes.func
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       editDialogOpen: false,
       deleteDialogOpen: false,
-      notesDialogOpen: false,
-    };
+      notesDialogOpen: false
+    }
   }
 
   handleNotesClicked = () => {
     this.setState({
-      notesDialogOpen: true,
-    });
+      notesDialogOpen: true
+    })
   }
 
   handleNotesClose = () => {
     this.setState({
-      notesDialogOpen: false,
-    });
+      notesDialogOpen: false
+    })
   }
 
   handleEditClicked = () => {
     this.setState({
-      editDialogOpen: true,
-    });
+      editDialogOpen: true
+    })
   }
 
   handleEditCancel = () => {
     this.setState({
-      editDialogOpen: false,
-    });
+      editDialogOpen: false
+    })
   }
 
-  handleEditFinished = (article) => {
-    this.props.onUpdate(article);
+  handleEditFinished = article => {
+    this.props.onUpdate(article)
 
     this.setState({
-      editDialogOpen: false,
-    });
+      editDialogOpen: false
+    })
   }
 
   handleDeleteClicked = () => {
     this.setState({
-      deleteDialogOpen: true,
-    });
+      deleteDialogOpen: true
+    })
   }
 
   closeDeleteDialog = () => {
     this.setState({
-      deleteDialogOpen: false,
-    });
+      deleteDialogOpen: false
+    })
   }
 
   handleDeleteCancel = () => {
-    this.closeDeleteDialog();
+    this.closeDeleteDialog()
   }
 
   handleDeleteConfirmed = () => {
-    this.props.onDelete();
-    this.closeDeleteDialog();
+    this.props.onDelete()
+    this.closeDeleteDialog()
   }
 
   render() {
-    const article = this.props.article;
+    const article = this.props.article
 
     return (
       <MyListItem
@@ -339,20 +334,24 @@ class Article extends Component {
         <ListItemText
           primary={
             <a
-              className={isArticlePinned(article) ? this.props.classes.pinnedArticleLink : this.props.classes.articleLink}
+              className={
+                isArticlePinned(article)
+                  ? this.props.classes.pinnedArticleLink
+                  : this.props.classes.articleLink
+              }
               href={article.url}
               rel="noopener"
               target="_blank"
-              onTouchTap={(e) => e.stopPropagation()}
+              onTouchTap={e => e.stopPropagation()}
             >
               {article.title}
             </a>
           }
-          secondary={!article.tags ? null : article.tags.map((tag) =>
-            <Tag
-              key={`tag-${tag}`}
-              tag={tag}
-            />)}
+          secondary={
+            !article.tags
+              ? null
+              : article.tags.map(tag => <Tag key={`tag-${tag}`} tag={tag} />)
+          }
           style={{ opacity: article.read ? 0.4 : 1.0 }}
         />
         <ListItemSecondaryAction>
@@ -365,17 +364,14 @@ class Article extends Component {
             onReadClicked={this.props.onRead}
           />
 
-          <Dialog
-            open={this.state.deleteDialogOpen}
-          >
+          <Dialog open={this.state.deleteDialogOpen}>
             <DialogTitle>{`Delete ${article.title}?`}</DialogTitle>
-            <DialogContent>{'Are you sure you want to delete article?'}</DialogContent>
+            <DialogContent>
+              {'Are you sure you want to delete article?'}
+            </DialogContent>
             <DialogActions>
               <Button onTouchTap={this.handleDeleteCancel}>{'Cancel'}</Button>
-              <Button
-                color="primary"
-                onTouchTap={this.handleDeleteConfirmed}
-              >
+              <Button color="primary" onTouchTap={this.handleDeleteConfirmed}>
                 {'Ok'}
               </Button>
             </DialogActions>
@@ -391,7 +387,6 @@ class Article extends Component {
 
           <NotesPopup
             articleId={article.id}
-            /* eslint-disable react/jsx-handler-names */
             handleClose={this.handleNotesClose}
             notes={article.notes}
             open={this.state.notesDialogOpen}
@@ -399,7 +394,7 @@ class Article extends Component {
           />
         </ListItemSecondaryAction>
       </MyListItem>
-    );
+    )
   }
 }
 
@@ -411,29 +406,33 @@ export class ArticlesList extends Component {
     classes: PropTypes.object,
     onDeleteArticle: PropTypes.func,
     onReadCached: PropTypes.func,
-    onUpdateArticle: PropTypes.func,
-  };
+    onUpdateArticle: PropTypes.func
+  }
 
-  renderArticle = (article) => (
+  renderArticle = article => (
     <Article
       article={article}
       articles={this.props.allArticles}
       key={`article-${article.id}`}
       onDelete={() => this.props.onDeleteArticle(article.id)}
-      onPin={() => this.props.onUpdateArticle(article.id, {
-        meta: { pinned: isArticlePinned(article) ? null : moment().format() },
-      })}
-      onRead={() => this.props.onUpdateArticle(article.id, {
-        read: article.read ? null : moment().format(),
-      })}
+      onPin={() =>
+        this.props.onUpdateArticle(article.id, {
+          meta: { pinned: isArticlePinned(article) ? null : moment().format() }
+        })
+      }
+      onRead={() =>
+        this.props.onUpdateArticle(article.id, {
+          read: article.read ? null : moment().format()
+        })
+      }
       onReadCached={() => this.props.onReadCached(article.id)}
-      onUpdate={(update) => this.props.onUpdateArticle(article.id, update)}
+      onUpdate={update => this.props.onUpdateArticle(article.id, update)}
     />
-  );
+  )
 
-  renderChildren = (article) => {
+  renderChildren = article => {
     if (!article.children) {
-      return null;
+      return null
     }
 
     return (
@@ -443,27 +442,26 @@ export class ArticlesList extends Component {
         key={`children-${article.id}`}
       >
         <List disablePadding>
-          {article.children.map((child) => [
+          {article.children.map(child => [
             this.renderArticle(child),
-            this.renderChildren(child),
+            this.renderChildren(child)
           ])}
         </List>
       </Collapse>
-    );
-  };
+    )
+  }
 
   render() {
-    return <List>
-      {this.props.articles.toJS().map((article) => {
-        if (article.parent) {
-          return null;
-        }
+    return (
+      <List>
+        {this.props.articles.toJS().map(article => {
+          if (article.parent) {
+            return null
+          }
 
-        return [
-          this.renderArticle(article),
-          this.renderChildren(article),
-        ];
-      })}
-    </List>;
+          return [this.renderArticle(article), this.renderChildren(article)]
+        })}
+      </List>
+    )
   }
 }

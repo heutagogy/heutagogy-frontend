@@ -1,3 +1,3 @@
-import ViewStateWrapper from './ViewStateWrapper';
+import ViewStateWrapper from './ViewStateWrapper'
 
-export default ViewStateWrapper;
+export default ViewStateWrapper

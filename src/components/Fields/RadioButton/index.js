@@ -1,1 +1,1 @@
-export default './RadioButton';
+export default './RadioButton'

@@ -1,8 +1,3 @@
-/* eslint-disable import/no-commonjs */
-/* eslint-disable global-require */
-/* eslint-disable import/no-nodejs-modules */
-/* eslint-disable import/no-extraneous-dependencies */
-
 const PORT = 3002;
 
 const path = require('path');

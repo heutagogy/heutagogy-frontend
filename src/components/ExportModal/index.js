@@ -1,3 +1,3 @@
-import ExportModal from './ExportModal';
+import ExportModal from './ExportModal'
 
-export default ExportModal;
+export default ExportModal
