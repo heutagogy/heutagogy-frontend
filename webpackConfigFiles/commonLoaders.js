@@ -3,7 +3,7 @@
 /* eslint-disable fp/no-mutation*/
 const path = require('path');
 
-module.exports = [
+const commonLoaders = [
   {
     test: /\.svg/,
     loader: 'url-loader',
@@ -38,13 +38,18 @@ module.exports = [
     include: path.resolve('./../'),
   },
   {
-    test: /\.js$/,
-    loader: 'eslint-loader',
-    exclude: /node_modules|bower_components|vendorModules/,
-    include: path.resolve('./../'),
-  },
-  {
     test: /\.json$/,
     loader: 'json-loader',
   },
 ];
+
+if (process.env.ESLINT !== 'disable') {
+  commonLoaders.push({
+    test: /\.js$/,
+    loader: 'eslint-loader',
+    exclude: /node_modules|bower_components|vendorModules/,
+    include: path.resolve('./../'),
+  });
+}
+
+module.exports = commonLoaders
