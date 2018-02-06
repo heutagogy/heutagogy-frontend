@@ -27,7 +27,7 @@ import { rememberArticles } from './../../actions/articles';
 import { isJsonString } from './../../utils/jsonUtils';
 import { getViewState } from './../../selectors/view';
 import { getArticles } from './../../selectors/articles';
-import Star from './_components/Star/index';
+import Stat from './components/Stat/index';
 
 export class HeaderBar extends Component {
   static propTypes = {
@@ -202,7 +202,7 @@ export class HeaderBar extends Component {
           }
           {
             !this.state.searchOpen && !this.state.saveOpen
-            ? <Star />
+            ? <Stat />
             : null
           }
         </AppBar>

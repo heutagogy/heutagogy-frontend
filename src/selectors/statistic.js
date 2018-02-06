@@ -1,6 +1,6 @@
 // @flow
 import { fromJS } from 'immutable';
-import type { State } from '../containers/HeaderBar/_components/Star/types';
+import type { State } from '../containers/HeaderBar/components/Stat/types';
 import type { Stat } from '../actions/statisticTypes';
 
 const fallbackStat: Stat = {

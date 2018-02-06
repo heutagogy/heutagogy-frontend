@@ -11,7 +11,7 @@ import { getStatistic } from 'src/actions/statistic';
 import type { Props, State } from './types';
 
 
-const StarStat = (props: Props): React$Element<*> => {
+const Stat = (props: Props): React$Element<*> => {
   const title = <p>
     <span><b>{`Read today: ${props.stat.user_read_today || 0}`}</b></span><br />
     <span>{`Read year: ${props.stat.user_read_year || 0}`}</span><br />
@@ -40,4 +40,4 @@ const mapStateToProps = (state: State) => ({
   stat: getStat(state),
 });
 
-export default connect(mapStateToProps, { getStatistic })(StarStat);
+export default connect(mapStateToProps, { getStatistic })(Stat);
