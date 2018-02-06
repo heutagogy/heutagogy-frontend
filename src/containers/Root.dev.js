@@ -1,7 +1,7 @@
-import { Component } from 'react';
+import { Component } from 'react'
 
-import DevTools from './DevTools';
-import RootBase from './Root.prod';
+import DevTools from './DevTools'
+import RootBase from './Root.prod'
 
 class Root extends Component {
   render() {
@@ -9,8 +9,8 @@ class Root extends Component {
       <RootBase {...this.props}>
         <DevTools />
       </RootBase>
-    );
+    )
   }
 }
 
-export default Root;
+export default Root

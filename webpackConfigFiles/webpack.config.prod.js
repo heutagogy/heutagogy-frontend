@@ -1,8 +1,3 @@
-/* eslint-disable import/no-commonjs*/
-/* eslint-disable import/no-nodejs-modules*/
-/* eslint-disable quote-props*/
-/* eslint-disable fp/no-mutation*/
-
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const webpack = require('webpack');
 const path = require('path');

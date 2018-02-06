@@ -1,9 +1,3 @@
-/* eslint-disable import/no-commonjs */
-/* eslint-disable global-require */
-/* eslint-disable import/no-nodejs-modules */
-/* eslint-disable no-param-reassign */
-/* eslint-disable callback-return */
-
 const PORT = 3001;
 
 const express = require('express');

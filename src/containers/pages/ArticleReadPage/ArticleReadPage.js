@@ -1,36 +1,34 @@
-/* eslint-disable react/no-danger */
-import { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 
-import Immutable from 'immutable';
+import Immutable from 'immutable'
 
-import { getArticles } from './../../../selectors/articles';
+import { getArticles } from './../../../selectors/articles'
 
-import { loadContent } from './../../../actions/entity';
-
+import { loadContent } from './../../../actions/entity'
 
 const mapStateToProps = (state, ownProps) => {
-  const articleId = ownProps.params.articleId;
+  const articleId = ownProps.params.articleId
 
   return {
-    article: getArticles(state).get(articleId),
-  };
-};
+    article: getArticles(state).get(articleId)
+  }
+}
 
 class ArticleReadPage extends Component {
   static propTypes = {
     article: PropTypes.instanceOf(Immutable.Map),
     loadContent: PropTypes.func,
-    params: PropTypes.object,
-  };
+    params: PropTypes.object
+  }
 
   componentDidMount() {
-    this.props.loadContent(this.props.params.articleId);
+    this.props.loadContent(this.props.params.articleId)
   }
 
   render() {
     if (!this.props.article) {
-      return <div>{'no'}</div>;
+      return <div>{'no'}</div>
     }
 
     return (
@@ -55,12 +53,12 @@ class ArticleReadPage extends Component {
                   height: auto;
                 }
               </style>
-              ${this.props.article.getIn(['content', 'html'])}`,
+              ${this.props.article.getIn(['content', 'html'])}`
           }}
         />
       </div>
-    );
+    )
   }
 }
 
-export default connect(mapStateToProps, { loadContent })(ArticleReadPage);
+export default connect(mapStateToProps, { loadContent })(ArticleReadPage)

@@ -8,7 +8,7 @@ cache:
 install:
 - npm install
 script:
-- npm run lint
+- npm run test:prettier
 - npm run flow
 - npm run test:unit
 - npm run build

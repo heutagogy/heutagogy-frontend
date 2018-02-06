@@ -1,54 +1,54 @@
-import { Component, PropTypes } from 'react';
-import PureRender from 'pure-render-decorator';
-import SelectFieldMaterial from 'material-ui/SelectField';
+import { Component, PropTypes } from 'react'
+import PureRender from 'pure-render-decorator'
+import SelectFieldMaterial from 'material-ui/SelectField'
 
 @PureRender
 class SelectField extends Component {
   static propTypes = {
     className: PropTypes.string,
     placeholder: PropTypes.string.isRequired,
-    onTouchTap: PropTypes.func,
+    onTouchTap: PropTypes.func
   }
 
   static defaultProps = {
     className: '',
-    placeholder: '',
+    placeholder: ''
   }
 
   static contextTypes = {
-    muiTheme: PropTypes.object,
+    muiTheme: PropTypes.object
   }
 
   getThematicStyles = () => ({
     underlineStyle: {
-      borderColor: this.context.muiTheme.placeholderColor,
+      borderColor: this.context.muiTheme.placeholderColor
     },
     underlineFocusStyle: {
       borderColor: this.context.muiTheme.orange,
-      borderWidth: 2,
+      borderWidth: 2
     },
     floatingLabelStyle: {
-      color: this.context.muiTheme.white,
+      color: this.context.muiTheme.white
     },
     floatingLabelFocusStyle: {
-      color: this.context.muiTheme.orange,
+      color: this.context.muiTheme.orange
     },
     inputStyle: {
       color: this.context.muiTheme.white,
       fontSize: 14,
-      minWidth: 235,
+      minWidth: 235
     },
     hintStyle: {
       color: this.context.muiTheme.hintColor,
-      fontSize: 14,
+      fontSize: 14
     },
     style: {
-      minWidth: 235,
-    },
+      minWidth: 235
+    }
   })
 
   render() {
-    const inlineStyle = this.getThematicStyles();
+    const inlineStyle = this.getThematicStyles()
 
     return (
       <div>
@@ -66,8 +66,8 @@ class SelectField extends Component {
           {...this.props}
         />
       </div>
-    );
+    )
   }
 }
 
-export default SelectField;
+export default SelectField

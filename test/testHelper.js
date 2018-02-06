@@ -1,4 +1,3 @@
-/* eslint-disable fp/no-mutation */
 import 'babel-polyfill';
 import React from 'react';
 import { jsdom } from 'jsdom';

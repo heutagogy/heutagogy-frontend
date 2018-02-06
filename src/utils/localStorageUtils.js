@@ -1,65 +1,65 @@
-import Immutable from 'immutable';
+import Immutable from 'immutable'
 
-const APP_KEY = 'globalApp';
+const APP_KEY = 'globalApp'
 const emptyApp = {
   authUser: {},
-  customData: {},
-};
+  customData: {}
+}
 
 class LocalStorageUtils {
   constructor() {
-    const app = this.getApp();
+    const app = this.getApp()
 
     if (!app) {
-      this.safeSave(APP_KEY, emptyApp);
+      this.safeSave(APP_KEY, emptyApp)
     }
   }
 
   setAuthenticatedUser(user) {
-    const app = this.getApp();
+    const app = this.getApp()
 
-    this.setApp({ ...app, authUser: user && user.toJS && user.toJS() });
+    this.setApp({ ...app, authUser: user && user.toJS && user.toJS() })
   }
 
   getAuthenticatedUser() {
-    const app = this.getApp();
+    const app = this.getApp()
 
-    return Immutable.fromJS(app.authUser);
+    return Immutable.fromJS(app.authUser)
   }
 
   getApp() {
-    return this.safeParse(localStorage.getItem(APP_KEY));
+    return this.safeParse(localStorage.getItem(APP_KEY))
   }
 
   setApp(app) {
-    this.safeSave(APP_KEY, app);
+    this.safeSave(APP_KEY, app)
   }
 
   setCustomValue(key, value) {
-    const app = this.getApp();
+    const app = this.getApp()
 
-    this.setApp({ ...app, customData: { ...app.customData, key: value } });
+    this.setApp({ ...app, customData: { ...app.customData, key: value } })
   }
 
   getCustomValue(key) {
-    const app = this.getApp();
+    const app = this.getApp()
 
-    return app.customData[key];
+    return app.customData[key]
   }
 
   safeParse(data) {
     try {
-      return JSON.parse(data);
+      return JSON.parse(data)
     } catch (err) {
-      console.error('INVALID DATA TO PARSE');
+      console.error('INVALID DATA TO PARSE')
 
-      return emptyApp;
+      return emptyApp
     }
   }
 
   safeSave(key, data) {
-    localStorage.setItem(key, JSON.stringify(data));
+    localStorage.setItem(key, JSON.stringify(data))
   }
 }
 
-export default new LocalStorageUtils();
+export default new LocalStorageUtils()

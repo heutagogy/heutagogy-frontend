@@ -1,9 +1,9 @@
 // @flow
-import type { Stat } from '../../../../actions/statisticTypes';
+import type { Stat } from '../../../../actions/statisticTypes'
 
 export type Props = {
   stat: Stat,
-  getStatistic: () => void,
+  getStatistic: () => void
 }
 
 export type State = {

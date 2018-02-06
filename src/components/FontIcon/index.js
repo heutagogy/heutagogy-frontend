@@ -1,3 +1,3 @@
-import FontIcon from './FontIcon';
+import FontIcon from './FontIcon'
 
-export default FontIcon;
+export default FontIcon

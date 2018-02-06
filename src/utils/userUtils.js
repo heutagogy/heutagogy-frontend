@@ -1,19 +1,18 @@
-import moment from 'moment';
+import moment from 'moment'
 
 class UserUtils {
   isAuthenticated(userData) {
     if (!userData) {
-      return false;
+      return false
     }
 
-    const now = moment();
+    const now = moment()
     const isNotExpired = userData.get('exp')
-          ? now.isSameOrBefore(moment(userData.get('exp')))
-          : false;
+      ? now.isSameOrBefore(moment(userData.get('exp')))
+      : false
 
-    return userData.get('access_token') && isNotExpired;
+    return userData.get('access_token') && isNotExpired
   }
 }
 
-
-export default new UserUtils();
+export default new UserUtils()

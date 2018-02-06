@@ -1,14 +1,14 @@
-import { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import PureRender from 'pure-render-decorator';
-import { reduxForm, Field } from 'redux-form/immutable';
-import { debounce } from 'lodash/function';
-import FontIcon from './../../FontIcon';
-import { renderTextField } from './../renders';
+import { Component, PropTypes } from 'react'
+import ReactDOM from 'react-dom'
+import PureRender from 'pure-render-decorator'
+import { reduxForm, Field } from 'redux-form/immutable'
+import { debounce } from 'lodash/function'
+import FontIcon from './../../FontIcon'
+import { renderTextField } from './../renders'
 
-import styles from './Search.less';
+import styles from './Search.less'
 
-const DEBOUNCE_DELAY = 400;
+const DEBOUNCE_DELAY = 400
 
 @PureRender
 class Search extends Component {
@@ -18,37 +18,38 @@ class Search extends Component {
     placeholder: PropTypes.string.isRequired,
     submit: PropTypes.func.isRequired,
     submitOnChange: PropTypes.bool,
-    onTouchTap: PropTypes.func,
+    onTouchTap: PropTypes.func
   }
 
   static defaultProps = {
     className: '',
-    placeholder: 'Search',
+    placeholder: 'Search'
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.handleChange = debounce(this.handleChange, DEBOUNCE_DELAY);
+    this.handleChange = debounce(this.handleChange, DEBOUNCE_DELAY)
   }
 
-  setRefForSearchInput = (node) => {
-    this.searchInputNode = node;
+  setRefForSearchInput = node => {
+    this.searchInputNode = node
   }
 
   handleSearchInputFocus = () => {
-    const fieldNode = ReactDOM.findDOMNode(this.searchInputNode);
-    const inputNode = fieldNode.querySelector('input');
+    const fieldNode = ReactDOM.findDOMNode(this.searchInputNode)
+    const inputNode = fieldNode.querySelector('input')
 
-    inputNode.focus();
+    inputNode.focus()
   }
 
-  submit = (form) => this.props.submit(form)
+  submit = form => this.props.submit(form)
 
-  handleChange = () => this.props.submitOnChange && this.props.handleSubmit(this.submit)()
+  handleChange = () =>
+    this.props.submitOnChange && this.props.handleSubmit(this.submit)()
 
   render() {
-    const { handleSubmit, placeholder, onTouchTap } = this.props;
+    const { handleSubmit, placeholder, onTouchTap } = this.props
 
     return (
       <form
@@ -72,10 +73,10 @@ class Search extends Component {
           />
         </div>
       </form>
-    );
+    )
   }
 }
 
 export default reduxForm({
-  form: 'MainSearch',
-})(Search);
+  form: 'MainSearch'
+})(Search)

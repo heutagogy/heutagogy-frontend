@@ -1,6 +1,3 @@
-/* eslint-disable import/no-commonjs*/
-/* eslint-disable import/no-nodejs-modules*/
-/* eslint-disable fp/no-mutation*/
 const path = require('path');
 
 module.exports = [
@@ -34,12 +31,6 @@ module.exports = [
   {
     test: /\.js$/,
     loader: 'babel-loader',
-    exclude: /node_modules|bower_components|vendorModules/,
-    include: path.resolve('./../'),
-  },
-  {
-    test: /\.js$/,
-    loader: 'eslint-loader',
     exclude: /node_modules|bower_components|vendorModules/,
     include: path.resolve('./../'),
   },

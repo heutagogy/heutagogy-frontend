@@ -1,5 +1,3 @@
-/* eslint-disable fp/no-mutation */
-
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -11,7 +9,7 @@ import { ZERO, ONE, TWO } from './../../../src/constants/Constants';
 const meta = 'data:text/plain;charset=utf-8,';
 
 describe('Export modal tests', () => {
-  let sandbox; //eslint-disable-line
+  let sandbox;
 
   beforeEach(() => {
     sandbox = sinon.sandbox.create();

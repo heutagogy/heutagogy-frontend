@@ -1,49 +1,55 @@
-import ReactGA from 'react-ga';
-import { ANALYTIC_USER_ID } from './../constants/Api';
+import ReactGA from 'react-ga'
+import { ANALYTIC_USER_ID } from './../constants/Api'
 
 const CATEGORIES = {
   USER_ACTIONS: 'User actions',
-  FORMS: 'Forms actions',
-};
+  FORMS: 'Forms actions'
+}
 
-const defaultConfig = process.env.NODE_ENV === 'production' ? {} : {
-  options: {
-    cookieDomain: 'none',
-  },
-};
+const defaultConfig =
+  process.env.NODE_ENV === 'production'
+    ? {}
+    : {
+        options: {
+          cookieDomain: 'none'
+        }
+      }
 
 const eventsHash = {
-  '@@router/LOCATION_CHANGE': ({ action, sendPageView }) => (
-    sendPageView(action.payload.pathname + (action.payload.search || ''))
-  ),
-  'redux-form/FOCUS': ({ action, sendEvent }) => (
-    sendEvent('FORMS', `Focus on ${action.meta.field} field in ${action.meta.form}`)
-  ),
-  'redux-form/BLUR': ({ action, sendEvent }) => (
-    sendEvent('FORMS', `Blur on ${action.meta.field} field in ${action.meta.form}`)
-  ),
-};
+  '@@router/LOCATION_CHANGE': ({ action, sendPageView }) =>
+    sendPageView(action.payload.pathname + (action.payload.search || '')),
+  'redux-form/FOCUS': ({ action, sendEvent }) =>
+    sendEvent(
+      'FORMS',
+      `Focus on ${action.meta.field} field in ${action.meta.form}`
+    ),
+  'redux-form/BLUR': ({ action, sendEvent }) =>
+    sendEvent(
+      'FORMS',
+      `Blur on ${action.meta.field} field in ${action.meta.form}`
+    )
+}
 
 class Analytic {
   constructor() {
     ReactGA.initialize(ANALYTIC_USER_ID, {
-      ...defaultConfig,
-    });
+      ...defaultConfig
+    })
     ReactGA.event({
       category: CATEGORIES.USER_ACTIONS,
-      action: 'User opened website',
-    });
+      action: 'User opened website'
+    })
   }
 
   sendPageView(path) {
-    ReactGA.pageview(path);
+    ReactGA.pageview(path)
   }
 
   sendEvent(category, action) {
     ReactGA.event({
       category: CATEGORIES[category] || 'Unknown',
-      action,
-    });
+      action
+    })
   }
 
   handleEvent(action) {
@@ -51,10 +57,10 @@ class Analytic {
       eventsHash[action.type]({
         action,
         sendEvent: this.sendEvent,
-        sendPageView: this.sendPageView,
-      });
+        sendPageView: this.sendPageView
+      })
     }
   }
 }
 
-export default (new Analytic());
+export default new Analytic()

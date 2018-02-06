@@ -1,3 +1,3 @@
-import RaisedButton from './RaisedButton';
+import RaisedButton from './RaisedButton'
 
-export default RaisedButton;
+export default RaisedButton

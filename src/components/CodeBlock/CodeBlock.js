@@ -1,49 +1,46 @@
-import { Component, PropTypes } from 'react';
+import { Component, PropTypes } from 'react'
 
-const hljs = window.hljs;
+const hljs = window.hljs
 
 export class CodeBlock extends Component {
   static propTypes = {
     language: PropTypes.string,
-    value: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired
   }
 
   static defaultProps = {
-    language: '',
+    language: ''
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.setRef = this.setRef.bind(this);
+    this.setRef = this.setRef.bind(this)
   }
 
   componentDidMount() {
-    this.highlightCode();
+    this.highlightCode()
   }
 
   componentDidUpdate() {
-    this.highlightCode();
+    this.highlightCode()
   }
 
   setRef(el) {
-    this.codeEl = el;
+    this.codeEl = el
   }
 
   highlightCode() {
-    hljs.highlightBlock(this.codeEl);
+    hljs.highlightBlock(this.codeEl)
   }
 
   render() {
     return (
       <pre>
-        <code
-          className={this.props.language}
-          ref={this.setRef}
-        >
+        <code className={this.props.language} ref={this.setRef}>
           {this.props.value}
         </code>
       </pre>
-    );
+    )
   }
 }

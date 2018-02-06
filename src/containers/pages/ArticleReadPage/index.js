@@ -1,2 +1,2 @@
-import ArticleReadPage from './ArticleReadPage';
-export default ArticleReadPage;
+import ArticleReadPage from './ArticleReadPage'
+export default ArticleReadPage

@@ -1,33 +1,38 @@
-/* eslint-disable react/jsx-no-bind */
+import Immutable from 'immutable'
+import { Component, PropTypes } from 'react'
+import {
+  TableHeader,
+  TableHeaderColumn,
+  Table,
+  TableBody,
+  TableRow,
+  TableRowColumn
+} from 'material-ui/Table'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import IconButton from 'material-ui/IconButton'
+import Checkbox from 'material-ui/Checkbox'
+import moment from 'moment'
+import MoreVertIcon from 'material-ui-icons/MoreVert'
+import Dialog from 'material-ui/Dialog'
+import FlatButton from 'material-ui/FlatButton'
+import DateRange from 'material-ui-icons/DateRange'
 
-import Immutable from 'immutable';
-import { Component, PropTypes } from 'react';
-import { TableHeader, TableHeaderColumn, Table, TableBody, TableRow, TableRowColumn } from 'material-ui/Table';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import Checkbox from 'material-ui/Checkbox';
-import moment from 'moment';
-import MoreVertIcon from 'material-ui-icons/MoreVert';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import DateRange from 'material-ui-icons/DateRange';
+import { ArticleMainColumn } from './ArticleMainColumn'
 
-import { ArticleMainColumn } from './ArticleMainColumn';
+import { ZERO, MINUS_ONE } from './../../constants/Constants'
+import { formatTimeToUser } from './../../utils/timeUtils'
+import NotesPopup from '../NotesPopup/NotesPopup'
+import Spinner from './../Spinner'
 
-import { ZERO, MINUS_ONE } from './../../constants/Constants';
-import { formatTimeToUser } from './../../utils/timeUtils';
-import NotesPopup from '../NotesPopup/NotesPopup';
-import Spinner from './../Spinner';
+import styles from './ArticlesTable.less'
 
-import styles from './ArticlesTable.less';
-
-const impossibleArticleId = -1;
+const impossibleArticleId = -1
 
 const notesInitialState = {
   notesArticleId: impossibleArticleId,
-  notesVisible: false,
-};
+  notesVisible: false
+}
 
 export class ArticlesTable extends Component {
   static propTypes = {
@@ -37,23 +42,19 @@ export class ArticlesTable extends Component {
     handleDateOrderingChange: PropTypes.func,
     handleOnRowSelection: PropTypes.func,
     selectable: PropTypes.bool,
-    selectedRows: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.array,
-    ]),
+    selectedRows: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     updateArticle: PropTypes.func,
-    updateArticleState: PropTypes.instanceOf(Immutable.Map),
+    updateArticleState: PropTypes.instanceOf(Immutable.Map)
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       ...notesInitialState,
-      deleteArticleId: impossibleArticleId,
-    };
-
-    [
+      deleteArticleId: impossibleArticleId
+    }
+    ;[
       'closeNotes',
       'getCurrentArticleId',
       'getCurrentNotes',
@@ -61,40 +62,41 @@ export class ArticlesTable extends Component {
       'getReadMenuItemText',
       'handleDelete',
       'handleDeleteCancelled',
-      'handleDeleteConfirmed',
-    ].forEach((method) => { this[method] = this[method].bind(this); });
+      'handleDeleteConfirmed'
+    ].forEach(method => {
+      this[method] = this[method].bind(this)
+    })
   }
 
   getReadMenuItemText(item) {
-    const readArticleClassName = 'read-article';
-    const fieldName = 'Read: ';
+    const readArticleClassName = 'read-article'
+    const fieldName = 'Read: '
     const handleOnRead = () => {
-      this.props.updateArticle(
-        item.get('id'),
-        { read: moment().format() }
-      );
-    };
+      this.props.updateArticle(item.get('id'), { read: moment().format() })
+    }
 
     if (item.get('read')) {
       return (
         <div className={readArticleClassName}>
           {`${fieldName}${formatTimeToUser(item.get('read'))}`}
         </div>
-      );
+      )
     }
 
     if (!this.props.updateArticle) {
-      return (
-        <div className={readArticleClassName}>
-          {`${fieldName}No`}
-        </div>
-      );
+      return <div className={readArticleClassName}>{`${fieldName}No`}</div>
     }
 
     return (
       <div>
-        { this.props.updateArticleState && this.props.updateArticleState.get('isInProgress')
-          ? <div>{fieldName}<Spinner /></div> : <Checkbox
+        {this.props.updateArticleState &&
+        this.props.updateArticleState.get('isInProgress') ? (
+          <div>
+            {fieldName}
+            <Spinner />
+          </div>
+        ) : (
+          <Checkbox
             className={readArticleClassName}
             iconStyle={{ marginTop: '6px' }}
             label={fieldName}
@@ -102,9 +104,10 @@ export class ArticlesTable extends Component {
             labelStyle={{ width: 'auto', lineHeight: '48px' }}
             style={{ verticalAlign: 'center' }}
             onCheck={handleOnRead}
-          />}
+          />
+        )}
       </div>
-    );
+    )
   }
 
   getDeleteDialog() {
@@ -120,8 +123,8 @@ export class ArticlesTable extends Component {
         label="Delete"
         primary
         onTouchTap={this.handleDeleteConfirmed}
-      />,
-    ];
+      />
+    ]
 
     return (
       <Dialog
@@ -130,55 +133,56 @@ export class ArticlesTable extends Component {
         onRequestClose={this.handleDeleteCancelled}
       >
         {'Are you sure you want to delete?'}
-      </Dialog>);
+      </Dialog>
+    )
   }
 
   getCurrentArticleId() {
-    const item = this.props.articles.get(this.state.notesArticleI);
+    const item = this.props.articles.get(this.state.notesArticleI)
 
-    return item.get('id');
+    return item.get('id')
   }
 
   getCurrentNotes() {
-    const item = this.props.articles.get(this.state.notesArticleI);
+    const item = this.props.articles.get(this.state.notesArticleI)
 
-    return item.get('notes') ? item.get('notes').toJS() : [];
+    return item.get('notes') ? item.get('notes').toJS() : []
   }
 
   getCurrentTitle() {
-    const item = this.props.articles.get(this.state.notesArticleI);
+    const item = this.props.articles.get(this.state.notesArticleI)
 
-    return item.get('title');
+    return item.get('title')
   }
 
   openNotes(i) {
     this.setState({
       notesArticleI: i,
-      notesVisible: true,
-    });
+      notesVisible: true
+    })
   }
 
   closeNotes() {
-    this.setState(notesInitialState);
+    this.setState(notesInitialState)
   }
 
   handleDelete(id) {
     this.setState({
-      deleteArticleId: id,
-    });
+      deleteArticleId: id
+    })
   }
 
   handleDeleteConfirmed() {
-    this.props.deleteArticle(this.state.deleteArticleId);
+    this.props.deleteArticle(this.state.deleteArticleId)
     this.setState({
-      deleteArticleId: impossibleArticleId,
-    });
+      deleteArticleId: impossibleArticleId
+    })
   }
 
   handleDeleteCancelled() {
     this.setState({
-      deleteArticleId: impossibleArticleId,
-    });
+      deleteArticleId: impossibleArticleId
+    })
   }
 
   render() {
@@ -213,91 +217,107 @@ export class ArticlesTable extends Component {
                   </IconButton>
                 </div>
               </TableHeaderColumn>
-              <TableHeaderColumn style={{ width: '10px' }}>{'Meta'}</TableHeaderColumn>
+              <TableHeaderColumn style={{ width: '10px' }}>
+                {'Meta'}
+              </TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody
             deselectOnClickaway={false}
             displayRowCheckbox={Boolean(this.props.selectable)}
           >
-      {this.props.articles.map((item, i) => { // eslint-disable-line
-        return (
-          <TableRow
-            key={i}
-            selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
-            style={{ backgroundColor: '#eee' }}
-          >
-            <ArticleMainColumn
-              notesLength={item.get('notes') ? item.get('notes').toJS().length : ZERO}
-              read={item.get('read')}
-              tags={item.get('tags') ? item.get('tags').toJS() : []}
-              title={item.get('title')}
-              url={item.get('url')}
-              onArticleChanged={({ title, tags }) => { this.props.updateArticle(item.get('id'), { title, tags }); }}
-              onNotesClick={() => this.openNotes(i)}
-            />
-            <TableRowColumn
-              className={styles.preventCellClick}
-              style={{ width: '5px', paddingLeft: '13px' }}
-            >
-              <div
-                className={styles.preventCellClickWrapper}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <IconMenu
-                  anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-                  className="icon-menu"
-                  iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                  targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-                  useLayerForClickAway
+            {this.props.articles.map((item, i) => {
+              return (
+                <TableRow
+                  key={i}
+                  selected={this.props.selectedRows.indexOf(i) !== MINUS_ONE}
+                  style={{ backgroundColor: '#eee' }}
                 >
-                  <MenuItem
-                    disabled
-                    primaryText={`Saved: ${formatTimeToUser(item.get('timestamp'))}`}
+                  <ArticleMainColumn
+                    notesLength={
+                      item.get('notes') ? item.get('notes').toJS().length : ZERO
+                    }
+                    read={item.get('read')}
+                    tags={item.get('tags') ? item.get('tags').toJS() : []}
+                    title={item.get('title')}
+                    url={item.get('url')}
+                    onArticleChanged={({ title, tags }) => {
+                      this.props.updateArticle(item.get('id'), { title, tags })
+                    }}
+                    onNotesClick={() => this.openNotes(i)}
                   />
-                  <MenuItem
-                    disabled={Boolean(item.get('read')) || !this.props.updateArticle}
+                  <TableRowColumn
+                    className={styles.preventCellClick}
+                    style={{ width: '5px', paddingLeft: '13px' }}
                   >
-                    {this.getReadMenuItemText(item)}
-                  </MenuItem>
-                  { this.props.deleteArticle
-                      ? <MenuItem
-                        primaryText="Delete"
-                        onTouchTap={() => this.handleDelete(item.get('id'))}
-                      /> : null }
-                </IconMenu>
-              </div>
-            </TableRowColumn>
-          </TableRow>
-        );
-      })}
+                    <div
+                      className={styles.preventCellClickWrapper}
+                      onClick={e => e.stopPropagation()}
+                    >
+                      <IconMenu
+                        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+                        className="icon-menu"
+                        iconButtonElement={
+                          <IconButton>
+                            <MoreVertIcon />
+                          </IconButton>
+                        }
+                        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+                        useLayerForClickAway
+                      >
+                        <MenuItem
+                          disabled
+                          primaryText={`Saved: ${formatTimeToUser(
+                            item.get('timestamp')
+                          )}`}
+                        />
+                        <MenuItem
+                          disabled={
+                            Boolean(item.get('read')) ||
+                            !this.props.updateArticle
+                          }
+                        >
+                          {this.getReadMenuItemText(item)}
+                        </MenuItem>
+                        {this.props.deleteArticle ? (
+                          <MenuItem
+                            primaryText="Delete"
+                            onTouchTap={() => this.handleDelete(item.get('id'))}
+                          />
+                        ) : null}
+                      </IconMenu>
+                    </div>
+                  </TableRowColumn>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
-        {
-          this.state.notesVisible === true
-          ? <NotesPopup
+        {this.state.notesVisible === true ? (
+          <NotesPopup
             articleId={this.getCurrentArticleId()}
             handleClose={this.closeNotes}
             notes={this.getCurrentNotes()}
             title={this.getCurrentTitle()}
           />
-          : null
-        }
+        ) : null}
       </div>
-    );
+    )
   }
 }
 
 export const getSelectedArticles = (articles, selectedRows) => {
-  if (articles.isEmpty() ||
-      selectedRows === 'none' ||
-      (Array.isArray(selectedRows) && selectedRows.length === ZERO)) {
-    return Immutable.fromJS([]);
+  if (
+    articles.isEmpty() ||
+    selectedRows === 'none' ||
+    (Array.isArray(selectedRows) && selectedRows.length === ZERO)
+  ) {
+    return Immutable.fromJS([])
   }
 
   if (selectedRows === 'all') {
-    return articles;
+    return articles
   }
 
-  return articles.filter((x, i) => selectedRows.includes(i));
-};
+  return articles.filter((x, i) => selectedRows.includes(i))
+}

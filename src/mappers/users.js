@@ -1,7 +1,7 @@
-export const mapUser = (payload) => {
+export const mapUser = payload => {
   const uiProperties = {
-    links: {},
-  };
+    links: {}
+  }
 
-  return { ...uiProperties, ...payload };
-};
+  return { ...uiProperties, ...payload }
+}

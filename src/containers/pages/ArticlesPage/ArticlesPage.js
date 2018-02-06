@@ -1,49 +1,46 @@
-/* eslint-disable react/jsx-no-bind */
+import Immutable from 'immutable'
+import { Component, PropTypes } from 'react'
+import { schema, denormalize } from 'normalizr'
+import { connect } from 'react-redux'
+import LinearProgress from 'material-ui/LinearProgress'
+import Pagination from 'rc-pagination'
+import en from 'rc-pagination/lib/locale/en_US'
+import moment from 'moment'
+import lazyCache from 'react-lazy-cache'
 
-// due to lazy cache
-/* eslint-disable react/no-unused-prop-types */
+import { replace } from 'react-router-redux'
 
-import Immutable from 'immutable';
-import { Component, PropTypes } from 'react';
-import { schema, denormalize } from 'normalizr';
-import { connect } from 'react-redux';
-import LinearProgress from 'material-ui/LinearProgress';
-import Pagination from 'rc-pagination';
-import en from 'rc-pagination/lib/locale/en_US';
-import moment from 'moment';
-import lazyCache from 'react-lazy-cache';
+import 'rc-pagination/assets/index.css'
+import './RcPaginationOverride.css' // should be placed after rc-pagination/assets/index.css
 
-import { replace } from 'react-router-redux';
-
-import 'rc-pagination/assets/index.css';
-import './RcPaginationOverride.css'; // should be placed after rc-pagination/assets/index.css
-
-import articleSchema from './../../../schemas/article';
-import styles from './ArticlesPage.less';
-import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
-import { ZERO, ONE, TWO } from './../../../constants/Constants';
-import { ArticlesList } from './../../../components/ArticlesList/ArticlesList';
-import { getArticles, getArticlesOrder, getNotes } from './../../../selectors/articles';
-import { getViewState } from './../../../selectors/view';
-import { getLinkHeader } from './../../../selectors/linkHeader';
-import { loadEntities } from './../../../actions/entity';
-import { getStatistic } from './../../../actions/statistic';
-import { updateArticle, deleteArticle } from './../../../actions/articles';
-import HeaderBar from '../../HeaderBar';
-
+import articleSchema from './../../../schemas/article'
+import styles from './ArticlesPage.less'
+import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates'
+import { ZERO, ONE, TWO } from './../../../constants/Constants'
+import { ArticlesList } from './../../../components/ArticlesList/ArticlesList'
+import {
+  getArticles,
+  getArticlesOrder,
+  getNotes
+} from './../../../selectors/articles'
+import { getViewState } from './../../../selectors/view'
+import { getLinkHeader } from './../../../selectors/linkHeader'
+import { loadEntities } from './../../../actions/entity'
+import { getStatistic } from './../../../actions/statistic'
+import { updateArticle, deleteArticle } from './../../../actions/articles'
+import HeaderBar from '../../HeaderBar'
 
 const inlineStyles = {
   routerContainer: {
     maxHeight: 'calc(100vh - 64px)',
-    overflowY: 'auto',
-  },
-};
+    overflowY: 'auto'
+  }
+}
 
-const MAX_PER_PAGE = 1000;
-const localStorageDateOrderingKey = 'heutagogy-date-ordering';
+const MAX_PER_PAGE = 1000
+const localStorageDateOrderingKey = 'heutagogy-date-ordering'
 
-const transformStrToTags = (str) =>
-  str.split(' ').map((s) => s.replace(/@/g, ''));
+const transformStrToTags = str => str.split(' ').map(s => s.replace(/@/g, ''))
 
 export class ArticlesPage extends Component {
   static propTypes = {
@@ -56,187 +53,204 @@ export class ArticlesPage extends Component {
     loadingArticlesStatus: PropTypes.instanceOf(Immutable.Map),
     notes: PropTypes.instanceOf(Immutable.Map),
     replace: PropTypes.func,
-    updateArticle: PropTypes.func,
+    updateArticle: PropTypes.func
   }
 
   constructor(props) {
-    super(props);
-
-    [
+    super(props)
+    ;[
       'handleUpdateInput',
       'onRowSelection',
       'onDateOrderingChange',
       'getCurrentArticles',
       'handleOnPageChange',
-      'loadAllArticlesFromServer',
-    ].forEach((method) => { this[method] = this[method].bind(this); });
+      'loadAllArticlesFromServer'
+    ].forEach(method => {
+      this[method] = this[method].bind(this)
+    })
 
     this.state = {
       dateOrdering: false,
-      pageSize: Math.min(MAX_PER_PAGE, 30), // eslint-disable-line
+      pageSize: Math.min(MAX_PER_PAGE, 30),
       selectedRows: [],
       selectedPage: 1,
-      searchText: '',
-    };
+      searchText: ''
+    }
   }
 
   componentWillMount() {
-    this.props.loadEntities({
-      href: `/bookmarks?per_page=${this.state.pageSize}`,
-      type: ARTICLES_VIEW_STATE,
-      schema: new schema.Array(articleSchema),
-    }).then(() => {
-      this.loadAllArticlesFromServer(this.props.linkHeader.get('last'));
-    });
+    this.props
+      .loadEntities({
+        href: `/bookmarks?per_page=${this.state.pageSize}`,
+        type: ARTICLES_VIEW_STATE,
+        schema: new schema.Array(articleSchema)
+      })
+      .then(() => {
+        this.loadAllArticlesFromServer(this.props.linkHeader.get('last'))
+      })
 
-    this.props.getStatistic();
+    this.props.getStatistic()
 
     this.setState({
-      dateOrdering: localStorage.getItem(localStorageDateOrderingKey) === 'true',
-    });
+      dateOrdering: localStorage.getItem(localStorageDateOrderingKey) === 'true'
+    })
 
     this.cache = lazyCache(this, {
       denormalizedArticles: {
         params: ['articlesOrder', 'articles', 'notes'],
-        fn: (articlesOrder, articles, notes) => (denormalize(
-          { articles: articlesOrder },
-          { articles: [articleSchema] },
-          new Immutable.Map({
-            articles,
-            notes,
-          })).articles),
+        fn: (articlesOrder, articles, notes) =>
+          denormalize(
+            { articles: articlesOrder },
+            { articles: [articleSchema] },
+            new Immutable.Map({
+              articles,
+              notes
+            })
+          ).articles
       },
 
       tags: {
         params: ['articles'],
-        fn: (articles) => (
-          articles.
-            toList().
-            flatMap((a) => a.get('tags')).
-            toSet().
-            delete(null).
-            toList()
-        ),
-      },
-    });
+        fn: articles =>
+          articles
+            .toList()
+            .flatMap(a => a.get('tags'))
+            .toSet()
+            .delete(null)
+            .toList()
+      }
+    })
   }
 
   componentWillReceiveProps(nextProps) {
-    this.cache.componentWillReceiveProps(nextProps);
+    this.cache.componentWillReceiveProps(nextProps)
   }
 
   onRowSelection(selectedRows) {
-    this.setState({ selectedRows });
+    this.setState({ selectedRows })
   }
 
   onDateOrderingChange() {
-    const newDateOrderingState = this.state.dateOrdering === false;
+    const newDateOrderingState = this.state.dateOrdering === false
 
     this.setState({
-      dateOrdering: newDateOrderingState,
-    });
+      dateOrdering: newDateOrderingState
+    })
 
-    localStorage.setItem(localStorageDateOrderingKey, newDateOrderingState);
+    localStorage.setItem(localStorageDateOrderingKey, newDateOrderingState)
   }
 
   getCurrentArticles() {
-    const articles = this.cache.denormalizedArticles;
+    const articles = this.cache.denormalizedArticles
 
-    const searchText = this.state.searchText.toLowerCase();
-    const tags = transformStrToTags(searchText);
+    const searchText = this.state.searchText.toLowerCase()
+    const tags = transformStrToTags(searchText)
 
-    /* eslint-disable */
-
-    let predicate = (a) => a.get('title').toLowerCase().includes(searchText);
+    let predicate = a =>
+      a
+        .get('title')
+        .toLowerCase()
+        .includes(searchText)
 
     if (searchText.startsWith('@')) {
-
-      predicate = (a) => tags.every((t1) =>
-        (a.get('tags') || []).some((t2) =>
-          t2.toLowerCase().includes(t1.toLowerCase())));
-
+      predicate = a =>
+        tags.every(t1 =>
+          (a.get('tags') || []).some(t2 =>
+            t2.toLowerCase().includes(t1.toLowerCase())
+          )
+        )
     } else if (searchText.startsWith('//')) {
-
-      predicate = (a) => (
-        a.get('notes') && a.get('notes').toJS().length > 0
+      predicate = a =>
+        (a.get('notes') && a.get('notes').toJS().length > 0
           ? a.get('notes').toJS()[0].text
           : ''
-      ).toLowerCase().
-        includes(searchText.substring(TWO).toLowerCase());
-
+        )
+          .toLowerCase()
+          .includes(searchText.substring(TWO).toLowerCase())
     }
 
-    /* eslint-enable */
-
-    const filtered = articles.filter(predicate);
-    const sortedByDate = this.state.dateOrdering === true
-      ? filtered.sort((a, b) =>
-        moment(b.get('timestamp')) - moment(a.get('timestamp'))
+    const filtered = articles.filter(predicate)
+    const sortedByDate =
+      this.state.dateOrdering === true
+        ? filtered.sort(
+            (a, b) => moment(b.get('timestamp')) - moment(a.get('timestamp'))
+          )
+        : filtered
+    const groupByUnreadPinned = sortedByDate
+      .groupBy(
+        item =>
+          item.get('read') === null && Boolean(item.getIn(['meta', 'pinned']))
       )
-      : filtered;
-    const groupByUnreadPinned = sortedByDate.groupBy((item) =>
-      item.get('read') === null &&
-      Boolean(item.getIn(['meta', 'pinned']))
-    ).toJS();
+      .toJS()
 
-    return Immutable.fromJS((
-      groupByUnreadPinned.true || []).concat(
-      groupByUnreadPinned.false || []
-    ));
+    return Immutable.fromJS(
+      (groupByUnreadPinned.true || []).concat(groupByUnreadPinned.false || [])
+    )
   }
 
-  handleUpdateInput = (searchText) => {
+  handleUpdateInput = searchText => {
     this.setState({
-      searchText,
-    });
-  };
+      searchText
+    })
+  }
 
   loadAllArticlesFromServer(last) {
     if (!last) {
-      return;
+      return
     }
 
-    const pageLast = parseInt(last.get('page'), 10);
-    const perPageLast = parseInt(last.get('per_page'), 10);
-    const total = pageLast * perPageLast;
-    const perPage = Math.trunc(Math.min(MAX_PER_PAGE, total) / perPageLast) * perPageLast;
-    const numberOfRequests = Math.ceil(total / perPage);
+    const pageLast = parseInt(last.get('page'), 10)
+    const perPageLast = parseInt(last.get('per_page'), 10)
+    const total = pageLast * perPageLast
+    const perPage =
+      Math.trunc(Math.min(MAX_PER_PAGE, total) / perPageLast) * perPageLast
+    const numberOfRequests = Math.ceil(total / perPage)
+    ;[...Array(numberOfRequests).keys()].reduce((seq, i) => {
+      const page = i + ONE
 
-    [...Array(numberOfRequests).keys()].reduce((seq, i) => {
-      const page = i + ONE;
-
-      return seq.then(() => this.props.loadEntities({
-        href: `/bookmarks?per_page=${perPage}&page=${page}`,
-        type: ARTICLES_VIEW_STATE,
-        schema: new schema.Array(articleSchema),
-        resetState: page === ONE,
-      }));
-    }, Promise.resolve());
+      return seq.then(() =>
+        this.props.loadEntities({
+          href: `/bookmarks?per_page=${perPage}&page=${page}`,
+          type: ARTICLES_VIEW_STATE,
+          schema: new schema.Array(articleSchema),
+          resetState: page === ONE
+        })
+      )
+    }, Promise.resolve())
   }
 
   handleOnPageChange(selectedPage) {
-    this.setState({ selectedPage });
+    this.setState({ selectedPage })
   }
 
   renderStatus() {
     return (
       <div>
-        { this.props.loadingArticlesStatus && this.props.loadingArticlesStatus.get('isInProgress')
-          ? <div className={styles.linearProgress}>
+        {this.props.loadingArticlesStatus &&
+        this.props.loadingArticlesStatus.get('isInProgress') ? (
+          <div className={styles.linearProgress}>
             <div style={{ margin: 10 }}>{'Loading articles...'}</div>
             <LinearProgress mode="indeterminate" />
-          </div> : null }
-        { this.props.loadingArticlesStatus && this.props.loadingArticlesStatus.get('isFailed')
-          ? <div className={styles.errorMessage}><i>{this.props.loadingArticlesStatus.get('message')}</i></div> : null }
+          </div>
+        ) : null}
+        {this.props.loadingArticlesStatus &&
+        this.props.loadingArticlesStatus.get('isFailed') ? (
+          <div className={styles.errorMessage}>
+            <i>{this.props.loadingArticlesStatus.get('message')}</i>
+          </div>
+        ) : null}
       </div>
-    );
+    )
   }
 
   render() {
-    const matchingArticles = this.getCurrentArticles();
-    const totalArticles = matchingArticles.size;
-    const lastCurrentPageIndex = this.state.selectedPage * this.state.pageSize;
-    const articles = matchingArticles.slice(lastCurrentPageIndex - this.state.pageSize, lastCurrentPageIndex);
+    const matchingArticles = this.getCurrentArticles()
+    const totalArticles = matchingArticles.size
+    const lastCurrentPageIndex = this.state.selectedPage * this.state.pageSize
+    const articles = matchingArticles.slice(
+      lastCurrentPageIndex - this.state.pageSize,
+      lastCurrentPageIndex
+    )
 
     return (
       <div>
@@ -251,13 +265,17 @@ export class ArticlesPage extends Component {
           <ArticlesList
             allArticles={this.props.articles}
             articles={articles}
-            onDeleteArticle={(articleId) => this.props.deleteArticle(articleId)}
-            onReadCached={(articleId) => this.props.replace(`/articles/${articleId}`)}
-            onUpdateArticle={(articleId, update) => this.props.updateArticle(articleId, update)}
+            onDeleteArticle={articleId => this.props.deleteArticle(articleId)}
+            onReadCached={articleId =>
+              this.props.replace(`/articles/${articleId}`)
+            }
+            onUpdateArticle={(articleId, update) =>
+              this.props.updateArticle(articleId, update)
+            }
           />
-          { this.renderStatus() }
-          { totalArticles > ZERO
-            ? <div className={styles.pagination}>
+          {this.renderStatus()}
+          {totalArticles > ZERO ? (
+            <div className={styles.pagination}>
               <Pagination
                 current={this.state.selectedPage}
                 locale={en}
@@ -265,22 +283,27 @@ export class ArticlesPage extends Component {
                 total={totalArticles}
                 onChange={this.handleOnPageChange}
               />
-            </div> : null }
+            </div>
+          ) : null}
         </div>
       </div>
-    );
+    )
   }
 }
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   articles: getArticles(state),
   notes: getNotes(state),
   articlesOrder: getArticlesOrder(state),
   linkHeader: getLinkHeader(state),
-  loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE),
-});
+  loadingArticlesStatus: getViewState(state, ARTICLES_VIEW_STATE)
+})
 
-const mapDispatchToProps = ({
-  loadEntities, updateArticle, deleteArticle, replace, getStatistic,
-});
+const mapDispatchToProps = {
+  loadEntities,
+  updateArticle,
+  deleteArticle,
+  replace,
+  getStatistic
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ArticlesPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ArticlesPage)

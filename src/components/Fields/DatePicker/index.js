@@ -1,1 +1,1 @@
-export default './DatePicker';
+export default './DatePicker'

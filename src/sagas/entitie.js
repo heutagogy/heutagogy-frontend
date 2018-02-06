@@ -1,16 +1,12 @@
-/* eslint-disable func-style*/
+import { takeEvery } from 'redux-saga'
 
-import { takeEvery } from 'redux-saga';
-
-function *handleSomething() {
-  console.info('HANDLERRR');
-  yield null;
+function* handleSomething() {
+  console.info('HANDLERRR')
+  yield null
 }
 
-export function *entitie() {
-  yield [
-    takeEvery('someactiontype', handleSomething),
-  ];
+export function* entitie() {
+  yield [takeEvery('someactiontype', handleSomething)]
 }
 
-export default entitie;
+export default entitie

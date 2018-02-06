@@ -1,70 +1,74 @@
-/* eslint-disable react/jsx-key */
-import { Component, PropTypes } from 'react';
-import Immutable from 'immutable';
-import Dialog from 'material-ui/Dialog';
+import { Component, PropTypes } from 'react'
+import Immutable from 'immutable'
+import Dialog from 'material-ui/Dialog'
 
-import FlatButton from './../Fields/FlatButton';
-import { ArticlesTable, getSelectedArticles } from './../ArticlesTable/ArticlesTable';
-import { TWO } from './../../constants/Constants';
-import styles from './ExportModal.less';
-
+import FlatButton from './../Fields/FlatButton'
+import {
+  ArticlesTable,
+  getSelectedArticles
+} from './../ArticlesTable/ArticlesTable'
+import { TWO } from './../../constants/Constants'
+import styles from './ExportModal.less'
 
 const inlineStyles = {
   titleStyle: {
     textAlign: 'center',
-    padding: '15px',
+    padding: '15px'
   },
   submit: {
     float: 'left',
-    margin: '0 10px',
+    margin: '0 10px'
   },
   close: {
-    margin: '0 10px',
-  },
-};
+    margin: '0 10px'
+  }
+}
 
 export class ExportModal extends Component {
   static propTypes = {
     articles: PropTypes.instanceOf(Immutable.List),
-    handleUnmount: PropTypes.func,
+    handleUnmount: PropTypes.func
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.bind();
+    this.bind()
 
-    this.state = { selectedRows: [] };
+    this.state = { selectedRows: [] }
   }
 
   onRowSelection(selectedRows) {
-    this.setState({ selectedRows });
+    this.setState({ selectedRows })
   }
 
   bind() {
-    this.onRowSelection = this.onRowSelection.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.onRowSelection = this.onRowSelection.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   handleSubmit() {
-    const tempLink = document.createElement('a');
-    const newArticles = getSelectedArticles(this.props.articles, this.state.selectedRows);
-    const content = encodeURIComponent(JSON.stringify(newArticles, null, TWO));
+    const tempLink = document.createElement('a')
+    const newArticles = getSelectedArticles(
+      this.props.articles,
+      this.state.selectedRows
+    )
+    const content = encodeURIComponent(JSON.stringify(newArticles, null, TWO))
 
     if (newArticles.isEmpty()) {
-      return;
+      return
     }
 
-    tempLink.setAttribute('href', `data:text/plain;charset=utf-8,${content}`);
-    tempLink.setAttribute('download', 'heutagogy.json');
+    tempLink.setAttribute('href', `data:text/plain;charset=utf-8,${content}`)
+    tempLink.setAttribute('download', 'heutagogy.json')
 
     if (document.createEvent) {
-      const event = document.createEvent('MouseEvents');
+      const event = document.createEvent('MouseEvents')
 
-      event.initEvent('click', true, true);
-      tempLink.dispatchEvent(event);
+      event.initEvent('click', true, true)
+      tempLink.dispatchEvent(event)
     } else {
-      tempLink.click();
+      tempLink.click()
     }
   }
 
@@ -82,8 +86,8 @@ export class ExportModal extends Component {
         primary
         style={inlineStyles.close}
         onTouchTap={this.props.handleUnmount}
-      />,
-    ];
+      />
+    ]
 
     return (
       <div>
@@ -108,8 +112,8 @@ export class ExportModal extends Component {
           </div>
         </Dialog>
       </div>
-    );
+    )
   }
 }
 
-export default ExportModal;
+export default ExportModal

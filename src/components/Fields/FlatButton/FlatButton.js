@@ -1,7 +1,7 @@
-import { Component, PropTypes } from 'react';
-import { Link } from 'react-router';
-import PureRender from 'pure-render-decorator';
-import MaterialFlatButtton from 'material-ui/FlatButton';
+import { Component, PropTypes } from 'react'
+import { Link } from 'react-router'
+import PureRender from 'pure-render-decorator'
+import MaterialFlatButtton from 'material-ui/FlatButton'
 
 @PureRender
 class FlatButton extends Component {
@@ -10,15 +10,15 @@ class FlatButton extends Component {
     label: PropTypes.string.isRequired,
     style: PropTypes.object,
     type: PropTypes.string,
-    onTouchTap: PropTypes.func,
+    onTouchTap: PropTypes.func
   }
 
   static defaultProps = {
-    className: '',
+    className: ''
   }
 
   render() {
-    const { href } = this.props;
+    const { href } = this.props
 
     return (
       <MaterialFlatButtton
@@ -29,8 +29,8 @@ class FlatButton extends Component {
         {...this.props}
         onTouchTap={this.props.onTouchTap}
       />
-    );
+    )
   }
 }
 
-export default FlatButton;
+export default FlatButton

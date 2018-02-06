@@ -1,3 +1,3 @@
-import HeaderBar from './HeaderBar';
+import HeaderBar from './HeaderBar'
 
-export default HeaderBar;
+export default HeaderBar

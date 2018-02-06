@@ -1,9 +1,9 @@
-import { createSelector } from 'reselect';
-import Immutable from 'immutable';
+import { createSelector } from 'reselect'
+import Immutable from 'immutable'
 
-const getLinkHeaderData = (state) => state.getIn(['entities', 'headers', 'link']);
+const getLinkHeaderData = state => state.getIn(['entities', 'headers', 'link'])
 
 export const getLinkHeader = createSelector(
   [getLinkHeaderData],
-  (res) => res || new Immutable.Map()
-);
+  res => res || new Immutable.Map()
+)

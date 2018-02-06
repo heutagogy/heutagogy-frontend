@@ -1,4 +1,3 @@
-/*eslint-disable*/
 var path = require("path");
 
 const outputDirectory = process.env.NIGHTWATCH_OUTPUT || "./e2eTestLog";

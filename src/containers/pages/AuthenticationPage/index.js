@@ -1,2 +1,2 @@
-import AuthenticationPage from './AuthenticationPage';
-export default AuthenticationPage;
+import AuthenticationPage from './AuthenticationPage'
+export default AuthenticationPage
