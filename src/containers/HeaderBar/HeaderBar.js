@@ -14,6 +14,7 @@ import AutoComplete from 'material-ui/AutoComplete';
 import ActionSearch from 'material-ui-icons/Search';
 import ContentAdd from 'material-ui-icons/Add';
 import DateRange from 'material-ui-icons/DateRange';
+import Tooltip from 'material-ui-next/Tooltip';
 
 import validUrl from 'valid-url';
 
@@ -28,6 +29,18 @@ import { isJsonString } from './../../utils/jsonUtils';
 import { getViewState } from './../../selectors/view';
 import { getArticles } from './../../selectors/articles';
 import Stat from './components/Stat/index';
+
+
+const openTooltipDelay = 1000;
+const searchTooltip = <p>
+  {'Search article by title'}<br />
+  {'Type @ to search by tag'}<br />
+  {'Type // to search by notes'}
+</p>;
+const saveTooltip = <p>{'Paste URL to save the article'}</p>;
+const dateTooltip = <p>{"Don't show unread first"}</p>;
+const dateTooltipUnreadFirst = <p>{'Show unread first'}</p>;
+
 
 export class HeaderBar extends Component {
   static propTypes = {
@@ -165,9 +178,14 @@ export class HeaderBar extends Component {
           }
           {
             !this.state.saveOpen
-            ? <IconButton onClick={() => this.handleToggle('searchOpen')} >
-              <ActionSearch />
-            </IconButton>
+            ? <Tooltip
+              enterDelay={openTooltipDelay}
+              title={searchTooltip}
+            >
+              <IconButton onClick={() => this.handleToggle('searchOpen')} >
+                <ActionSearch />
+              </IconButton>
+            </Tooltip>
             : null
           }
           {
@@ -183,21 +201,31 @@ export class HeaderBar extends Component {
           }
           {
             !this.state.searchOpen
-            ? <IconButton onClick={() => this.handleToggle('saveOpen')} >
-              <ContentAdd />
-            </IconButton>
+            ? <Tooltip
+              enterDelay={openTooltipDelay}
+              title={saveTooltip}
+            >
+              <IconButton onClick={() => this.handleToggle('saveOpen')} >
+                <ContentAdd />
+              </IconButton>
+            </Tooltip>
             : null
           }
           {
             !this.state.searchOpen && !this.state.saveOpen
-            ? <IconButton
-              iconStyle={{ height: '20px', width: '20px' }}
-              onClick={this.props.handleDateOrderingChange}
+            ? <Tooltip
+              enterDelay={openTooltipDelay}
+              title={this.props.dateOrdering === true ? dateTooltipUnreadFirst : dateTooltip}
             >
-              <DateRange
-                color={this.props.dateOrdering === true ? 'blue' : null}
-              />
-            </IconButton>
+              <IconButton
+                iconStyle={{ height: '20px', width: '20px' }}
+                onClick={this.props.handleDateOrderingChange}
+              >
+                <DateRange
+                  color={this.props.dateOrdering === true ? 'blue' : null}
+                />
+              </IconButton>
+            </Tooltip>
             : null
           }
           {
