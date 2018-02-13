@@ -25,6 +25,10 @@ const inlineStyles = {
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  textContent: {
+    flex: 1,
+    hidden: 'overflow',
+  },
 };
 
 class NotePaper extends Component {
@@ -79,7 +83,7 @@ class NotePaper extends Component {
             autoFocus
             multiline
             name="newnote"
-            style={{ flex: 1, overflow: 'hidden' }}
+            style={inlineStyles.textContent}
             value={this.state.currentText}
             onChange={(e) => this.setState({ currentText: e.target.value })}
           />
@@ -97,7 +101,7 @@ class NotePaper extends Component {
           </div>
         </div>
         : <div style={inlineStyles.paperContent}>
-          <div style={{ overflow: 'hidden' }}>
+          <div style={inlineStyles.textContent}>
             <ReactMarkdown
               renderers={{ code: CodeBlock }}
               source={this.props.note.text}
