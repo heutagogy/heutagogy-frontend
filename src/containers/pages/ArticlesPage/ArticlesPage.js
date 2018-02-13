@@ -21,7 +21,7 @@ import './RcPaginationOverride.css'; // should be placed after rc-pagination/ass
 import articleSchema from './../../../schemas/article';
 import styles from './ArticlesPage.less';
 import { ARTICLES_VIEW_STATE } from './../../../constants/ViewStates';
-import { ZERO, ONE, TWO } from './../../../constants/Constants';
+import { ZERO, ONE, THREE } from './../../../constants/Constants';
 import { ArticlesList } from './../../../components/ArticlesList/ArticlesList';
 import { getArticles, getArticlesOrder, getNotes } from './../../../selectors/articles';
 import { getViewState } from './../../../selectors/view';
@@ -159,10 +159,10 @@ export class ArticlesPage extends Component {
 
       predicate = (a) => (
         a.get('notes') && a.get('notes').toJS().length > 0
-          ? a.get('notes').toJS()[0].text
+          ? a.get('notes').toJS().map(note => note.text).join(' ')
           : ''
       ).toLowerCase().
-        includes(searchText.substring(TWO).toLowerCase());
+        includes(searchText.substring(THREE).toLowerCase());
 
     }
 
